@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Agregador presidencial 2026</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <header class="topbar">
+      <div>
+        <h1>Agregador presidencial 2026</h1>
+        <p>Pesquisas da Wikipédia com LOESS e agregação bayesiana leve.</p>
+      </div>
+      <div class="actions">
+        <button id="reloadButton" type="button">Atualizar</button>
+        <button id="downloadButton" type="button">CSV</button>
+      </div>
+    </header>
+
+    <main>
+      <section class="controls" aria-label="Controles">
+        <label>
+          Turno e cenário
+          <select id="scenarioSelect"></select>
+        </label>
+        <label>
+          Mês e ano
+          <select id="monthSelect" multiple size="6"></select>
+        </label>
+        <label>
+          Instituto
+          <select id="pollsterSelect" multiple size="6"></select>
+        </label>
+        <label>
+          Janela LOESS
+          <input id="loessSpan" type="range" min="0.15" max="0.75" value="0.35" step="0.05" />
+          <span id="loessSpanValue">0,35</span>
+        </label>
+        <label>
+          Meia-vida bayesiana
+          <input id="halfLife" type="range" min="14" max="180" value="60" step="7" />
+          <span id="halfLifeValue">60 dias</span>
+        </label>
+        <label>
+          Candidatos
+          <select id="candidateSelect" multiple size="6"></select>
+        </label>
+      </section>
+
+      <section class="chartShell">
+        <div class="chartHeader">
+          <div>
+            <h2 id="chartTitle">Carregando dados...</h2>
+            <p id="chartMeta"></p>
+          </div>
+          <div id="status" role="status">Lendo Wikipédia</div>
+        </div>
+        <canvas id="pollChart" width="1280" height="680" aria-label="Gráfico de pesquisas"></canvas>
+        <div id="legend" class="legend"></div>
+      </section>
+
+      <section class="dataPanel bayesPanel">
+        <h2>Média bayesiana</h2>
+        <p id="bayesMeta" class="panelMeta"></p>
+        <div class="tableWrap compactTable">
+          <table>
+            <thead>
+              <tr>
+                <th>Candidato</th>
+                <th>Média bayesiana</th>
+                <th>Obs.</th>
+                <th>Institutos</th>
+                <th>Com rating</th>
+                <th>Período usado</th>
+              </tr>
+            </thead>
+            <tbody id="bayesRows"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="dataPanel">
+        <h2>Pesquisas lidas</h2>
+        <div class="tableWrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Data</th>
+                <th>Instituto</th>
+                <th>Candidato</th>
+                <th>%</th>
+                <th>n</th>
+                <th>Cenário</th>
+              </tr>
+            </thead>
+            <tbody id="pollRows"></tbody>
+          </table>
+        </div>
+      </section>
+    </main>
+
+    <script src="./app.js"></script>
+  </body>
+</html>
