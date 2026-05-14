@@ -314,7 +314,9 @@ function mergeParsedCsvs(parsedFiles) {
         headers.push(header);
       }
     }
-    rows.push(...parsed.rows);
+    for (const row of parsed.rows) {
+      rows.push(row);
+    }
   }
   return { headers, rows };
 }
