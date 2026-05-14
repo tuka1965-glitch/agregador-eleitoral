@@ -1,0 +1,36 @@
+name: Restaurar agregador eleitoral
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  restaurar:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Baixar repositorio
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Restaurar arquivos da versao boa
+        run: |
+          git checkout b6b805c9d29ce72c10b89d4ed65d8a474930a42b -- README.md
+          git checkout b6b805c9d29ce72c10b89d4ed65d8a474930a42b -- index.html
+          git checkout b6b805c9d29ce72c10b89d4ed65d8a474930a42b -- app.js
+          git checkout b6b805c9d29ce72c10b89d4ed65d8a474930a42b -- styles.css
+          git checkout b6b805c9d29ce72c10b89d4ed65d8a474930a42b -- server.js
+          git checkout b6b805c9d29ce72c10b89d4ed65d8a474930a42b -- backtest_2018.js
+          git checkout b6b805c9d29ce72c10b89d4ed65d8a474930a42b -- backtest_2022.js
+          git checkout b6b805c9d29ce72c10b89d4ed65d8a474930a42b -- house_effect.js
+
+      - name: Commitar restauracao
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add README.md index.html app.js styles.css server.js backtest_2018.js backtest_2022.js house_effect.js
+          git commit -m "Restaura versao eleitoral anterior" || echo "Nada para restaurar"
+          git push
