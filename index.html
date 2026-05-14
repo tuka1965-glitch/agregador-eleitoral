@@ -3,533 +3,103 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Analisador Temporal SINESP VDE</title>
-    <link rel="stylesheet" href="styles.css" />
+    <title>Agregador presidencial 2026</title>
+    <link rel="stylesheet" href="./styles.css" />
   </head>
   <body>
     <header class="topbar">
       <div>
-        <h1>Analisador Temporal SINESP VDE</h1>
-        <p>Analise a base oficial SINESP VDE por UF, indicador e periodo.</p>
+        <h1>Agregador presidencial 2026</h1>
+        <p>Pesquisas da Wikipédia com LOESS e agregação bayesiana leve.</p>
       </div>
-      <label class="file-button">
-        <input id="fileInput" type="file" accept=".csv,.txt,.twbx" />
-        Abrir CSV local
-      </label>
+      <div class="actions">
+        <button id="reloadButton" type="button">Atualizar</button>
+        <button id="downloadButton" type="button">CSV</button>
+      </div>
     </header>
 
     <main>
-      <section class="panel controls">
+      <section class="controls" aria-label="Controles">
         <label>
-          Data
-          <select id="dateField"></select>
+          Turno e cenário
+          <select id="scenarioSelect"></select>
         </label>
         <label>
-          Valor
-          <select id="valueField"></select>
+          Mês e ano
+          <select id="monthSelect" multiple size="6"></select>
         </label>
         <label>
-          Formato da data
-          <select id="dateFormat">
-            <option value="auto">Automatico</option>
-            <option value="dmy">Dia/Mes/Ano</option>
-            <option value="mdy">Mes/Dia/Ano</option>
-            <option value="ymd">Ano/Mes/Dia</option>
-            <option value="excel">Serial Excel</option>
-          </select>
+          Instituto
+          <select id="pollsterSelect" multiple size="6"></select>
         </label>
         <label>
-          Campo UF
-          <select id="ufField"></select>
+          Janela LOESS
+          <input id="loessSpan" type="range" min="0.15" max="0.75" value="0.35" step="0.05" />
+          <span id="loessSpanValue">0,35</span>
         </label>
         <label>
-          Campo indicador
-          <select id="indicatorField"></select>
+          Meia-vida bayesiana
+          <input id="halfLife" type="range" min="14" max="180" value="60" step="7" />
+          <span id="halfLifeValue">60 dias</span>
         </label>
         <label>
-          Filtro extra
-          <select id="groupField"></select>
+          Candidatos
+          <select id="candidateSelect" multiple size="6"></select>
         </label>
-        <label>
-          Periodo
-          <select id="periodField">
-            <option value="month">Mensal</option>
-            <option value="quarter">Trimestral</option>
-            <option value="year">Anual</option>
-          </select>
-        </label>
-        <label>
-          Media movel
-          <input id="movingAverage" type="number" min="1" max="24" value="3" />
-        </label>
-        <button id="analyzeButton" type="button" disabled>Analisar</button>
       </section>
 
-      <section class="metrics" aria-live="polite">
-        <article>
-          <span>Linhas</span>
-          <strong id="rowCount">0</strong>
-        </article>
-        <article>
-          <span>Total</span>
-          <strong id="totalValue">0</strong>
-        </article>
-        <article>
-          <span>Tendencia</span>
-          <strong id="trendValue">-</strong>
-        </article>
-        <article>
-          <span>Anomalias</span>
-          <strong id="anomalyCount">0</strong>
-        </article>
-        <article>
-          <span>Ignoradas</span>
-          <strong id="skippedRows">0</strong>
-        </article>
-      </section>
-
-      <section class="report-actions">
-        <button id="exportPdf" type="button">Salvar relatorio em PDF</button>
-      </section>
-
-      <section id="warningBox" class="warning" hidden></section>
-      <section id="dataStatus" class="status" aria-live="polite">Carregando base oficial do repositorio...</section>
-
-      <section class="workspace">
-        <div class="chart-wrap">
-          <div class="chart-title">
-            <h2>Serie temporal</h2>
-            <span id="chartSubtitle">Nenhum arquivo carregado</span>
-          </div>
-          <svg id="chart" role="img" aria-label="Grafico de tendencia temporal"></svg>
-        </div>
-
-        <aside class="panel">
-          <h2>Filtros</h2>
-          <div class="filter-block">
-            <div class="filter-heading">
-              <span>UF</span>
-              <div class="filter-actions">
-                <button id="selectAllUfs" type="button" disabled>Todas</button>
-                <button id="selectNoUfs" type="button" disabled>Nenhuma</button>
-              </div>
-            </div>
-            <div id="ufFilters" class="filters"></div>
-          </div>
-          <div class="filter-block">
-            <div class="filter-heading">
-              <span>Indicador</span>
-              <div class="filter-actions">
-                <button id="selectAllIndicators" type="button" disabled>Todos</button>
-                <button id="selectNoIndicators" type="button" disabled>Nenhum</button>
-              </div>
-            </div>
-            <div id="indicatorFilters" class="filters"></div>
-          </div>
-          <div class="filter-block">
-            <div class="filter-heading">
-              <span>Filtro extra</span>
-              <div class="filter-actions">
-                <button id="selectAllGroups" type="button" disabled>Todos</button>
-                <button id="selectNoGroups" type="button" disabled>Nenhum</button>
-              </div>
-            </div>
-            <div id="filters" class="filters"></div>
-          </div>
-        </aside>
-      </section>
-
-      <section class="panel narrative-panel">
-        <div class="section-heading">
-          <h2>Analise automatica</h2>
-          <button id="copyAnalysis" type="button" disabled>Copiar</button>
-        </div>
-        <div id="analysisText" class="analysis-text">Carregue um CSV para gerar a leitura da serie historica.</div>
-      </section>
-
-      <section class="panel forecast-panel">
-        <div class="section-heading">
-          <h2>Projecao linear</h2>
-          <button id="copyForecast" type="button" disabled>Copiar</button>
-        </div>
-        <div id="forecastText" class="analysis-text">Carregue um CSV para projetar os proximos 3 periodos.</div>
-        <div class="table-scroll">
-          <table>
-            <thead>
-              <tr>
-                <th>Periodo projetado</th>
-                <th>Valor projetado</th>
-                <th>Base</th>
-              </tr>
-            </thead>
-            <tbody id="forecastBody">
-              <tr><td colspan="3">Sem projeção ainda.</td></tr>
-            </tbody>
-          </table>
-        </div>
-      </section>
-
-      <section class="panel highlights-panel">
-        <div class="section-heading">
-          <h2>Destaques</h2>
-          <button id="copyHighlights" type="button" disabled>Copiar</button>
-        </div>
-        <div class="territorial-controls">
-          <label>
-            Limiar aumento
-            <input id="highlightThreshold" type="number" min="1" max="300" value="10" />
-          </label>
-          <label>
-            Top destaques
-            <input id="highlightTopN" type="number" min="5" max="100" value="30" />
-          </label>
-        </div>
-        <div class="territorial-summary">
-          <article>
-            <span>Destaques</span>
-            <strong id="highlightCount">0</strong>
-          </article>
-          <article>
-            <span>Periodo recente</span>
-            <strong id="highlightPeriod">-</strong>
-          </article>
-          <article>
-            <span>Nivel territorial</span>
-            <strong id="highlightLocationLevel">-</strong>
-          </article>
-          <article>
-            <span>Maior aumento</span>
-            <strong id="highlightMax">-</strong>
-          </article>
-        </div>
-        <div id="highlightText" class="analysis-text">Carregue uma base com evento, data e UF ou municipio para listar pontos de atencao.</div>
-        <div class="table-scroll">
-          <table>
-            <thead>
-              <tr>
-                <th>Evento</th>
-                <th>Local</th>
-                <th>Ultimos 3 meses</th>
-                <th>Mesmo periodo anterior</th>
-                <th>Variacao</th>
-                <th>Periodo</th>
-              </tr>
-            </thead>
-            <tbody id="highlightBody">
-              <tr><td colspan="6">Sem destaques ainda.</td></tr>
-            </tbody>
-          </table>
-        </div>
-      </section>
-
-      <section class="panel territorial-panel">
-        <div class="section-heading">
-          <h2>Generalizacao territorial</h2>
-          <button id="copyTerritorial" type="button" disabled>Copiar</button>
-        </div>
-        <div class="territorial-controls">
-          <label>
-            Pre inicio
-            <input id="preStart" type="number" min="1900" max="2100" value="2015" />
-          </label>
-          <label>
-            Pre fim
-            <input id="preEnd" type="number" min="1900" max="2100" value="2017" />
-          </label>
-          <label>
-            Pos inicio
-            <input id="postStart" type="number" min="1900" max="2100" value="2018" />
-          </label>
-          <label>
-            Pos fim
-            <input id="postEnd" type="number" min="1900" max="2100" value="2020" />
-          </label>
-          <label>
-            Limiar relevante
-            <input id="territorialThreshold" type="number" min="1" max="80" value="10" />
-          </label>
-        </div>
-        <div class="territorial-summary">
-          <article>
-            <span>UFs com queda</span>
-            <strong id="fallingUfCount">0</strong>
-          </article>
-          <article>
-            <span>UF mediana</span>
-            <strong id="medianUfChange">-</strong>
-          </article>
-          <article>
-            <span>Brasil agregado</span>
-            <strong id="nationalChange">-</strong>
-          </article>
-          <article>
-            <span>Diagnostico</span>
-            <strong id="generalizationLabel">-</strong>
-          </article>
-        </div>
-        <div id="territorialText" class="analysis-text">Carregue um CSV com coluna de UF para avaliar se a tendencia e generalizada ou concentrada.</div>
-        <div class="table-scroll">
-          <table>
-            <thead>
-              <tr>
-                <th>UF</th>
-                <th>Pre</th>
-                <th>Pos</th>
-                <th>Variacao</th>
-                <th>Classe</th>
-              </tr>
-            </thead>
-            <tbody id="territorialBody">
-              <tr><td colspan="5">Sem dados territoriais ainda.</td></tr>
-            </tbody>
-          </table>
-        </div>
-      </section>
-
-      <section class="panel share-panel">
-        <div class="section-heading">
-          <h2>Participacao dos estados</h2>
-          <button id="copyShare" type="button" disabled>Copiar</button>
-        </div>
-        <div class="territorial-controls">
-          <label>
-            Ano inicio
-            <input id="shareStart" type="number" min="1900" max="2100" value="2015" />
-          </label>
-          <label>
-            Ano fim
-            <input id="shareEnd" type="number" min="1900" max="2100" value="2026" />
-          </label>
-          <label>
-            Top UFs
-            <input id="shareTopN" type="number" min="3" max="27" value="5" />
-          </label>
-        </div>
-        <div class="territorial-summary">
-          <article>
-            <span>Maior participacao</span>
-            <strong id="topShareUf">-</strong>
-          </article>
-          <article>
-            <span>Top UFs</span>
-            <strong id="topShareTotal">-</strong>
-          </article>
-          <article>
-            <span>UF mediana</span>
-            <strong id="medianShare">-</strong>
-          </article>
-          <article>
-            <span>Concentracao</span>
-            <strong id="shareConcentration">-</strong>
-          </article>
-        </div>
-        <div id="shareText" class="analysis-text">Carregue um CSV com coluna de UF para calcular a participacao estadual por indicador.</div>
-        <div class="table-scroll">
-          <table>
-            <thead>
-              <tr>
-                <th>UF</th>
-                <th>Total</th>
-                <th>Participacao</th>
-                <th>Ranking</th>
-              </tr>
-            </thead>
-            <tbody id="shareBody">
-              <tr><td colspan="4">Sem dados de participacao ainda.</td></tr>
-            </tbody>
-          </table>
-        </div>
-      </section>
-
-      <section class="panel population-panel">
-        <div class="section-heading">
-          <h2>Taxas por 100 mil habitantes</h2>
-          <button id="copyPopulation" type="button" disabled>Copiar</button>
-        </div>
-        <div class="territorial-controls population-controls">
-          <label>
-            Ano inicio
-            <input id="populationStart" type="number" min="1900" max="2100" value="2015" />
-          </label>
-          <label>
-            Ano fim
-            <input id="populationEnd" type="number" min="1900" max="2100" value="2026" />
-          </label>
-          <label class="population-file">
-            Base populacional
-            <input id="populationInput" type="file" accept=".csv,.txt" />
-          </label>
-          <p id="populationStatus" class="population-status">Tentando carregar data/populacao_uf_ano.csv.</p>
-        </div>
-        <div class="territorial-summary">
-          <article>
-            <span>Maior taxa</span>
-            <strong id="topRateUf">-</strong>
-          </article>
-          <article>
-            <span>Taxa mediana</span>
-            <strong id="medianRate">-</strong>
-          </article>
-          <article>
-            <span>UF-anos usados</span>
-            <strong id="populationYearsUsed">0</strong>
-          </article>
-          <article>
-            <span>Cobertura</span>
-            <strong id="populationCoverage">-</strong>
-          </article>
-        </div>
-        <div id="populationText" class="analysis-text">Carregue a base de populacao para calcular taxas estaduais por 100 mil habitantes.</div>
-        <div class="table-scroll">
-          <table>
-            <thead>
-              <tr>
-                <th>UF</th>
-                <th>Casos</th>
-                <th>Populacao acumulada</th>
-                <th>Taxa por 100 mil</th>
-                <th>Anos</th>
-              </tr>
-            </thead>
-            <tbody id="populationBody">
-              <tr><td colspan="5">Sem taxas ainda.</td></tr>
-            </tbody>
-          </table>
-        </div>
-      </section>
-
-      <section class="panel map-panel">
-        <div class="section-heading">
-          <h2>Mapas de taxas</h2>
-          <button id="copyMap" type="button" disabled>Copiar</button>
-        </div>
-        <div class="territorial-summary">
-          <article>
-            <span>Ano mapeado</span>
-            <strong id="mapYearUsed">-</strong>
-          </article>
-          <article>
-            <span>Maior taxa</span>
-            <strong id="mapMaxUf">-</strong>
-          </article>
-          <article>
-            <span>Taxa mediana</span>
-            <strong id="mapMedianRate">-</strong>
-          </article>
-          <article>
-            <span>Cobertura</span>
-            <strong id="mapCoverage">-</strong>
-          </article>
-        </div>
-        <div class="map-layout">
-          <div class="map-canvas">
-            <svg id="mapSvg" role="img" aria-label="Mapa coropletico de taxas por UF"></svg>
-            <div id="mapLegend" class="map-legend"></div>
-          </div>
+      <section class="chartShell">
+        <div class="chartHeader">
           <div>
-            <div id="mapText" class="analysis-text">Carregue dados criminais com UF e a base populacional para gerar o mapa de taxas do ultimo ano disponivel.</div>
-            <div class="table-scroll map-table-scroll">
-              <table>
-                <thead>
-                  <tr>
-                    <th>UF</th>
-                    <th>Casos</th>
-                    <th>Populacao</th>
-                    <th>Taxa anualizada</th>
-                  </tr>
-                </thead>
-                <tbody id="mapBody">
-                  <tr><td colspan="4">Sem mapa ainda.</td></tr>
-                </tbody>
-              </table>
-            </div>
+            <h2 id="chartTitle">Carregando dados...</h2>
+            <p id="chartMeta"></p>
           </div>
+          <div id="status" role="status">Lendo Wikipédia</div>
         </div>
+        <canvas id="pollChart" width="1280" height="680" aria-label="Gráfico de pesquisas"></canvas>
+        <div id="legend" class="legend"></div>
       </section>
 
-      <section class="panel state-anomaly-panel">
-        <div class="section-heading">
-          <h2>Atipicidade por Estado</h2>
-          <button id="copyStateAnomalies" type="button" disabled>Copiar</button>
-        </div>
-        <div class="territorial-controls">
-          <label>
-            Ano inicio
-            <input id="stateAnomalyStart" type="number" min="1900" max="2100" value="2015" />
-          </label>
-          <label>
-            Ano fim
-            <input id="stateAnomalyEnd" type="number" min="1900" max="2100" value="2026" />
-          </label>
-          <label>
-            Desvio minimo
-            <input id="stateAnomalyZ" type="number" min="1" max="5" step="0.1" value="2" />
-          </label>
-          <label>
-            Min. periodos UF
-            <input id="stateAnomalyMinPeriods" type="number" min="6" max="60" value="12" />
-          </label>
-        </div>
-        <div class="territorial-summary">
-          <article>
-            <span>Evento analisado</span>
-            <strong id="stateAnomalyEvent">-</strong>
-          </article>
-          <article>
-            <span>UFs com atipicos</span>
-            <strong id="stateAnomalyUfCount">0</strong>
-          </article>
-          <article>
-            <span>Pontos atipicos</span>
-            <strong id="stateAnomalyPointCount">0</strong>
-          </article>
-          <article>
-            <span>Maior desvio</span>
-            <strong id="stateAnomalyMax">-</strong>
-          </article>
-        </div>
-        <div id="stateAnomalyText" class="analysis-text">Carregue um CSV com coluna de UF para identificar atipicidades por estado.</div>
-        <div class="table-scroll">
+      <section class="dataPanel bayesPanel">
+        <h2>Média bayesiana</h2>
+        <p id="bayesMeta" class="panelMeta"></p>
+        <div class="tableWrap compactTable">
           <table>
             <thead>
               <tr>
-                <th>UF</th>
-                <th>Periodo</th>
-                <th>Valor</th>
-                <th>Media UF</th>
-                <th>Desvio</th>
-                <th>Tipo</th>
+                <th>Candidato</th>
+                <th>Média bayesiana</th>
+                <th>Obs.</th>
+                <th>Institutos</th>
+                <th>Com rating</th>
+                <th>Período usado</th>
               </tr>
             </thead>
-            <tbody id="stateAnomalyBody">
-              <tr><td colspan="6">Sem atipicidades estaduais ainda.</td></tr>
-            </tbody>
+            <tbody id="bayesRows"></tbody>
           </table>
         </div>
       </section>
 
-      <section class="panel table-panel">
-        <h2>Resumo por periodo</h2>
-        <div class="table-scroll">
+      <section class="dataPanel">
+        <h2>Pesquisas lidas</h2>
+        <div class="tableWrap">
           <table>
             <thead>
               <tr>
-                <th>Periodo</th>
-                <th>Valor</th>
-                <th>Media movel</th>
-                <th>Variacao</th>
-                <th>Var. ano anterior</th>
-                <th>Status</th>
+                <th>Data</th>
+                <th>Instituto</th>
+                <th>Candidato</th>
+                <th>%</th>
+                <th>n</th>
+                <th>Cenário</th>
               </tr>
             </thead>
-            <tbody id="summaryBody">
-              <tr><td colspan="6">Carregue um CSV para iniciar.</td></tr>
-            </tbody>
+            <tbody id="pollRows"></tbody>
           </table>
         </div>
       </section>
     </main>
 
-    <script src="app.js"></script>
+    <script src="./app.js"></script>
   </body>
 </html>
