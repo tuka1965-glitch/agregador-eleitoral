@@ -16,6 +16,10 @@ const COLORS = [
 
 const HOUSE_EFFECT_CORRECTION = 0.6;
 const BOLSONARO_SYSTEMIC_BIAS = 2.5;
+const REGIME_SHIFT_THRESHOLD = 3;
+const REGIME_HALF_LIFE_DAYS = 7;
+const MOMENTUM_WEIGHT = 2;
+const MOMENTUM_POLL_COUNT = 5;
 
 const POLLSTER_RATINGS = [
   ["AtlasIntel", 2.6, 79, -0.58, "A"],
@@ -168,6 +172,10 @@ function houseAdjustedValue(value, pollster) {
   const houseEffect = houseEffectFor(pollster);
   if (!houseEffect || houseEffect.n <= 2 || value < 15) return value;
   return clampPercent(value - HOUSE_EFFECT_CORRECTION * houseEffect.effect);
+}
+
+function mean(values) {
+  return values.reduce((sum, value) => sum + value, 0) / values.length;
 }
 
 function normalizeHeader(parts) {
@@ -564,7 +572,8 @@ function bayesianCurve(points, halfLifeDays, candidate = "") {
       const marginWeight = point.margin ? 1 / Math.max(0.0001, point.margin * point.margin) : 1;
       const qualityWeight = point.pollster ? pollsterQualityWeight(point.pollster) : 1;
       const houseWeight = point.pollster ? houseEffectWeight(point.pollster) : 1;
-      const w = sampleWeight * marginWeight * timeWeight * qualityWeight * houseWeight;
+      const momentumWeight = point.isRecent ? MOMENTUM_WEIGHT : 1;
+      const w = sampleWeight * marginWeight * timeWeight * qualityWeight * houseWeight * momentumWeight;
       const adjustedY = houseAdjustedValue(point.y, point.pollster);
       weightSum += w;
       valueSum += adjustedY * w;
@@ -588,7 +597,12 @@ function bayesianEstimateAt(points, allCandidatePoints, targetTime, halfLifeDays
     const sampleWeight = Math.max(300, point.sample || 1000);
     const marginWeight = point.margin ? 1 / Math.max(0.0001, point.margin * point.margin) : 1;
     const weight =
-      sampleWeight * marginWeight * timeWeight * pollsterQualityWeight(point.pollster) * houseEffectWeight(point.pollster);
+      sampleWeight *
+      marginWeight *
+      timeWeight *
+      pollsterQualityWeight(point.pollster) *
+      houseEffectWeight(point.pollster) *
+      (point.isRecent ? MOMENTUM_WEIGHT : 1);
     const adjustedPct = houseAdjustedValue(point.pct, point.pollster);
     weightSum += weight;
     valueSum += adjustedPct * weight;
@@ -618,6 +632,35 @@ function pollUnitsFromRows(rows, scenario) {
       units.get(key).candidates[poll.candidate] = poll.pct;
     });
   return [...units.values()].sort((a, b) => a.t - b.t);
+}
+
+function regimeStrengthFromRows(rows, scenario, candidates) {
+  const units = pollUnitsFromRows(rows, scenario);
+  const recent = units.slice(-MOMENTUM_POLL_COUNT);
+  const prior = units.slice(-MOMENTUM_POLL_COUNT * 2, -MOMENTUM_POLL_COUNT);
+  if (recent.length < MOMENTUM_POLL_COUNT || prior.length < MOMENTUM_POLL_COUNT) return 0;
+  return Math.max(
+    ...candidates.map((candidate) => {
+      const recentValues = recent.map((unit) => unit.candidates[candidate]).filter((value) => value != null);
+      const priorValues = prior.map((unit) => unit.candidates[candidate]).filter((value) => value != null);
+      if (!recentValues.length || !priorValues.length) return 0;
+      return Math.abs(mean(recentValues) - mean(priorValues));
+    }),
+  );
+}
+
+function effectiveHalfLife(rows, scenario, candidates, configuredHalfLife) {
+  return regimeStrengthFromRows(rows, scenario, candidates) >= REGIME_SHIFT_THRESHOLD
+    ? Math.min(configuredHalfLife, REGIME_HALF_LIFE_DAYS)
+    : configuredHalfLife;
+}
+
+function recentPollTimes(rows, scenario) {
+  return new Set(
+    pollUnitsFromRows(rows, scenario)
+      .slice(-MOMENTUM_POLL_COUNT)
+      .map((unit) => unit.t),
+  );
 }
 
 function bayesianMeanFromUnits(units, candidate) {
@@ -754,6 +797,9 @@ function drawChart() {
   });
 
   const byCandidate = groupBy(polls, (poll) => poll.candidate);
+  const activeCandidates = [...byCandidate.keys()];
+  const adaptiveHalfLife = effectiveHalfLife(polls, state.selectedScenario, activeCandidates, Number(els.halfLife.value));
+  const latestTimes = recentPollTimes(polls, state.selectedScenario);
   els.legend.innerHTML = "";
   [...byCandidate.entries()].forEach(([candidate, candidatePolls], idx) => {
     const color = COLORS[idx % COLORS.length];
@@ -764,9 +810,10 @@ function drawChart() {
       margin: poll.margin,
       pollster: poll.pollster,
       weight: Math.max(300, poll.sample || 1000),
+      isRecent: latestTimes.has(poll.t),
     }));
     const loessPoints = loess(points, Number(els.loessSpan.value));
-    const bayesPoints = bayesianCurve(points, Number(els.halfLife.value), candidate);
+    const bayesPoints = bayesianCurve(points, adaptiveHalfLife, candidate);
 
     ctx.strokeStyle = color;
     ctx.lineWidth = 2.5;
@@ -839,6 +886,8 @@ function renderBayesianSummary() {
   const latestTime = Math.max(...polls.map((poll) => poll.t));
   const windowStart = latestTime - halfLifeDays * dayMs;
   const windowPolls = polls.filter((poll) => poll.t >= windowStart && poll.t <= latestTime);
+  const adaptiveHalfLife = effectiveHalfLife(windowPolls, state.selectedScenario, [...state.selectedCandidates], halfLifeDays);
+  const latestTimes = recentPollTimes(windowPolls, state.selectedScenario);
   const byCandidate = groupBy(windowPolls, (poll) => poll.candidate);
   const allByCandidate = groupBy(polls, (poll) => poll.candidate);
 
@@ -846,7 +895,8 @@ function renderBayesianSummary() {
     .map((candidate) => {
       const candidateWindowPolls = byCandidate.get(candidate) || [];
       const candidateAllPolls = allByCandidate.get(candidate) || [];
-      const estimate = bayesianEstimateAt(candidateWindowPolls, candidateAllPolls, latestTime, halfLifeDays, candidate);
+      const candidateWindowPoints = candidateWindowPolls.map((poll) => ({ ...poll, isRecent: latestTimes.has(poll.t) }));
+      const estimate = bayesianEstimateAt(candidateWindowPoints, candidateAllPolls, latestTime, adaptiveHalfLife, candidate);
       if (estimate == null) return null;
       const dates = candidateWindowPolls.map((poll) => poll.t);
       return {
@@ -869,7 +919,7 @@ function renderBayesianSummary() {
       return houseEffect && houseEffect.n > 2;
     }).map((poll) => poll.pollster),
   ).size;
-  els.bayesMeta.textContent = `Janela: ${halfLifeDays} dias até ${dateKey(new Date(latestTime))}. Ponderação por recência, n, margem de erro, rating histórico, correção parcial de house effect com n > 2 (${houseAdjustedPollsters} institutos) e ajuste sistêmico Bolsonaro de +${BOLSONARO_SYSTEMIC_BIAS.toLocaleString("pt-BR")} pp.`;
+  els.bayesMeta.textContent = `Janela configurada: ${halfLifeDays} dias até ${dateKey(new Date(latestTime))}. Meia-vida efetiva: ${adaptiveHalfLife} dias. Ponderação por recência, n, margem de erro, rating histórico, momentum das últimas ${MOMENTUM_POLL_COUNT} pesquisas, correção parcial de house effect com n > 2 (${houseAdjustedPollsters} institutos) e ajuste sistêmico Bolsonaro de +${BOLSONARO_SYSTEMIC_BIAS.toLocaleString("pt-BR")} pp.`;
   els.bayesRows.innerHTML = rows
     .map(
       (row) => `<tr>

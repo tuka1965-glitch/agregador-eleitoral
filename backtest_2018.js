@@ -285,7 +285,8 @@ function bayesianMeanFromPolls(polls, candidate, targetTime, halfLifeDays, house
     const marginWeight = poll.margin ? 1 / Math.max(0.0001, poll.margin * poll.margin) : 1;
     const ratingWeight = pollsterQualityWeight(poll.pollster);
     const houseWeight = house && house.n > 2 ? Math.min(1.1, Math.max(0.35, 1 / (1 + Math.abs(house.effect) / 4))) : 1;
-    const weight = timeWeight * sampleWeight * marginWeight * ratingWeight * houseWeight;
+    const recentBoost = options.latestTimes?.has(poll.t) ? (options.momentumWeight || 1) : 1;
+    const weight = timeWeight * sampleWeight * marginWeight * ratingWeight * houseWeight * recentBoost;
     weightSum += weight;
     valueSum += value * weight;
   });
@@ -321,12 +322,31 @@ function computeHouseEffects(polls) {
   }]));
 }
 
+function regimeStrength(polls, candidates) {
+  const recent = polls.slice(-5);
+  const prior = polls.slice(-10, -5);
+  if (recent.length < 5 || prior.length < 5) return 0;
+  return Math.max(
+    ...candidates.map((candidate) => {
+      const r = recent.map((poll) => poll.candidates[candidate]).filter((value) => value != null);
+      const p = prior.map((poll) => poll.candidates[candidate]).filter((value) => value != null);
+      if (!r.length || !p.length) return 0;
+      return Math.abs(r.reduce((sum, value) => sum + value, 0) / r.length - p.reduce((sum, value) => sum + value, 0) / p.length);
+    }),
+  );
+}
+
 function aggregate(polls, cutoffDate, candidates, halfLifeDays, options = {}) {
   const cutoff = new Date(`${cutoffDate}T23:59:59Z`).getTime();
   const usable = polls.filter((poll) => poll.t <= cutoff);
   const houseEffects = computeHouseEffects(usable);
+  const effectiveHalfLife = options.dynamicRegime && regimeStrength(usable, candidates) >= 3 ? 7 : halfLifeDays;
+  const latestTimes = new Set(usable.slice(-5).map((poll) => poll.t));
   const estimates = Object.fromEntries(
-    candidates.map((candidate) => [candidate, bayesianMeanFromPolls(usable, candidate, cutoff, halfLifeDays, houseEffects, options)]),
+    candidates.map((candidate) => [
+      candidate,
+      bayesianMeanFromPolls(usable, candidate, cutoff, effectiveHalfLife, houseEffects, { ...options, latestTimes }),
+    ]),
   );
   if (options.bolsonaroRawBias && estimates.Bolsonaro != null) estimates.Bolsonaro += options.bolsonaroRawBias;
   return { usable: usable.length, estimates, houseEffects };
@@ -361,9 +381,12 @@ async function main() {
   const secondPolls = parseTables(secondSection, "Segundo turno");
   const baselineFirst = aggregate(firstPolls, "2018-10-06", ["Bolsonaro", "Haddad", "Ciro Gomes", "Alckmin", "Amoedo"], 14);
   const baselineSecond = aggregate(secondPolls, "2018-10-27", ["Bolsonaro", "Haddad"], 14);
-  const options = { houseCorrection: 0.6, bolsonaroRawBias: 2.5 };
+  const options = { houseCorrection: 0.6, bolsonaroRawBias: 2.5, dynamicRegime: true, momentumWeight: 2 };
+  const noBolsonaroBiasOptions = { houseCorrection: 0.6, bolsonaroRawBias: 0, dynamicRegime: true, momentumWeight: 2 };
   const first = aggregate(firstPolls, "2018-10-06", ["Bolsonaro", "Haddad", "Ciro Gomes", "Alckmin", "Amoedo"], 14, options);
   const second = aggregate(secondPolls, "2018-10-27", ["Bolsonaro", "Haddad"], 14, options);
+  const noBiasFirst = aggregate(firstPolls, "2018-10-06", ["Bolsonaro", "Haddad", "Ciro Gomes", "Alckmin", "Amoedo"], 14, noBolsonaroBiasOptions);
+  const noBiasSecond = aggregate(secondPolls, "2018-10-27", ["Bolsonaro", "Haddad"], 14, noBolsonaroBiasOptions);
   const baselineFirstValid = validVoteShare(baselineFirst.estimates, ["Bolsonaro", "Haddad", "Ciro Gomes", "Alckmin", "Amoedo"]);
   const baselineSecondValid = validVoteShare(baselineSecond.estimates, ["Bolsonaro", "Haddad"]);
   const firstValid = validVoteShare(first.estimates, ["Bolsonaro", "Haddad", "Ciro Gomes", "Alckmin", "Amoedo"]);
@@ -377,6 +400,14 @@ async function main() {
       second: { valid: baselineSecondValid, errors: errors(baselineSecondValid, SECOND_RESULTS), mae: mae(errors(baselineSecondValid, SECOND_RESULTS)) },
     },
     improvedOptions: options,
+    noBolsonaroBias: {
+      first: {
+        valid: validVoteShare(noBiasFirst.estimates, ["Bolsonaro", "Haddad", "Ciro Gomes", "Alckmin", "Amoedo"]),
+      },
+      second: {
+        valid: validVoteShare(noBiasSecond.estimates, ["Bolsonaro", "Haddad"]),
+      },
+    },
     first: { pollsUsed: first.usable, estimates: first.estimates, valid: firstValid, errors: firstErrors, mae: mae(firstErrors) },
     second: { pollsUsed: second.usable, estimates: second.estimates, valid: secondValid, errors: secondErrors, mae: mae(secondErrors) },
   }, null, 2));
