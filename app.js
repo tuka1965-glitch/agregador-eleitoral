@@ -76,6 +76,8 @@ const els = {
   bayesMeta: document.querySelector("#bayesMeta"),
   bayesRows: document.querySelector("#bayesRows"),
   pollRows: document.querySelector("#pollRows"),
+  commentaryMeta: document.querySelector("#commentaryMeta"),
+  commentaryBody: document.querySelector("#commentaryBody"),
   reloadButton: document.querySelector("#reloadButton"),
   downloadButton: document.querySelector("#downloadButton"),
 };
@@ -934,6 +936,119 @@ function renderBayesianSummary() {
     .join("");
 }
 
+function scenarioHistoryPolls() {
+  return state.polls.filter(
+    (poll) =>
+      poll.scenario === state.selectedScenario &&
+      state.selectedCandidates.has(poll.candidate) &&
+      state.selectedPollsters.has(poll.pollster),
+  );
+}
+
+function modelSnapshotAt(rows, candidates, targetTime, configuredHalfLife) {
+  const usable = rows.filter((poll) => poll.t <= targetTime);
+  if (!usable.length) return [];
+  const adaptiveHalfLife = effectiveHalfLife(usable, state.selectedScenario, candidates, configuredHalfLife);
+  const latestTimes = recentPollTimes(usable, state.selectedScenario);
+  const byCandidate = groupBy(usable, (poll) => poll.candidate);
+  return candidates
+    .map((candidate) => {
+      const candidatePolls = byCandidate.get(candidate) || [];
+      if (!candidatePolls.length) return null;
+      return {
+        candidate,
+        estimate: bayesianEstimateAt(
+          candidatePolls.map((poll) => ({ ...poll, isRecent: latestTimes.has(poll.t) })),
+          candidatePolls,
+          targetTime,
+          adaptiveHalfLife,
+          candidate,
+        ),
+      };
+    })
+    .filter(Boolean)
+    .sort((a, b) => b.estimate - a.estimate);
+}
+
+function pointsLabel(value) {
+  const abs = Math.abs(value);
+  return `${abs.toLocaleString("pt-BR", { maximumFractionDigits: 1 })} ${abs === 1 ? "ponto" : "pontos"}`;
+}
+
+function directionText(value) {
+  if (Math.abs(value) < 0.15) return "ficou praticamente estável";
+  return value > 0 ? `subiu ${pointsLabel(value)}` : `caiu ${pointsLabel(value)}`;
+}
+
+function renderCommentary() {
+  const rows = scenarioHistoryPolls();
+  const candidates = [...state.selectedCandidates];
+  if (!rows.length || candidates.length < 2) {
+    els.commentaryMeta.textContent = "Selecione ao menos dois candidatos para gerar um comentário.";
+    els.commentaryBody.innerHTML = "";
+    return;
+  }
+
+  const latestTime = Math.max(...rows.map((poll) => poll.t));
+  const configuredHalfLife = Number(els.halfLife.value);
+  const current = modelSnapshotAt(rows, candidates, latestTime, configuredHalfLife);
+  const previous14 = modelSnapshotAt(rows, candidates, latestTime - 14 * 86400000, configuredHalfLife);
+  const previous30 = modelSnapshotAt(rows, candidates, latestTime - 30 * 86400000, configuredHalfLife);
+  if (current.length < 2 || previous30.length < 2) {
+    els.commentaryMeta.textContent = "Ainda não há histórico suficiente para comparar a trajetória recente.";
+    els.commentaryBody.innerHTML = "";
+    return;
+  }
+
+  const currentMap = new Map(current.map((row) => [row.candidate, row.estimate]));
+  const prev14Map = new Map(previous14.map((row) => [row.candidate, row.estimate]));
+  const prev30Map = new Map(previous30.map((row) => [row.candidate, row.estimate]));
+  const leader = current[0];
+  const runnerUp = current[1];
+  const currentMargin = leader.estimate - runnerUp.estimate;
+  const prev30Leader = prev30Map.get(leader.candidate);
+  const prev30Runner = prev30Map.get(runnerUp.candidate);
+  const prev30Margin = prev30Leader != null && prev30Runner != null ? prev30Leader - prev30Runner : null;
+  const monthMovers = current
+    .map((row) => ({ ...row, change30: row.estimate - (prev30Map.get(row.candidate) ?? row.estimate) }))
+    .sort((a, b) => b.change30 - a.change30);
+  const biggestGain = monthMovers[0];
+  const biggestLoss = monthMovers.at(-1);
+
+  const paragraphs = [];
+  paragraphs.push(
+    `No agregado bayesiano de ${state.selectedScenario.toLowerCase()}, ${leader.candidate} aparece com ${leader.estimate.toLocaleString("pt-BR", { maximumFractionDigits: 1 })}% e ${runnerUp.candidate} com ${runnerUp.estimate.toLocaleString("pt-BR", { maximumFractionDigits: 1 })}%. ` +
+      `A vantagem atual é de ${pointsLabel(currentMargin)}; há 30 dias, ela era de ${prev30Margin == null ? "valor indisponível" : pointsLabel(prev30Margin)}.`,
+  );
+
+  if (candidates.length > 2) {
+    paragraphs.push(
+      `Nas últimas quatro semanas, ${leader.candidate} ${directionText(leader.estimate - (prev30Map.get(leader.candidate) ?? leader.estimate))}, enquanto ${runnerUp.candidate} ${directionText(runnerUp.estimate - (prev30Map.get(runnerUp.candidate) ?? runnerUp.estimate))}. ` +
+        `${biggestGain.candidate} foi quem mais ganhou terreno no período (${directionText(biggestGain.change30)}), e ${biggestLoss.candidate} teve o movimento mais fraco (${directionText(biggestLoss.change30)}).`,
+    );
+    paragraphs.push(
+      `A leitura do modelo é que ${currentMargin < 1 ? "a disputa principal está praticamente empatada" : `${leader.candidate} ainda lidera`} ` +
+        `e que a mudança mais relevante recente foi ${prev30Margin != null && currentMargin < prev30Margin ? "o estreitamento da diferença entre os dois primeiros colocados" : "a preservação da ordem dos principais candidatos"}. ` +
+        `Os nomes fora do pelotão da frente continuam com estimativas bem menores no agregado.`,
+    );
+  } else {
+    const leader14 = prev14Map.get(leader.candidate);
+    const runner14 = prev14Map.get(runnerUp.candidate);
+    const margin14 = leader14 != null && runner14 != null ? leader14 - runner14 : null;
+    paragraphs.push(
+      `Em 30 dias, ${leader.candidate} ${directionText(leader.estimate - (prev30Map.get(leader.candidate) ?? leader.estimate))}, e ${runnerUp.candidate} ${directionText(runnerUp.estimate - (prev30Map.get(runnerUp.candidate) ?? runnerUp.estimate))}. ` +
+        `Na comparação com 14 dias atrás, a margem passou de ${margin14 == null ? "valor indisponível" : pointsLabel(margin14)} para ${pointsLabel(currentMargin)}.`,
+    );
+    paragraphs.push(
+      `A leitura do modelo é que ${currentMargin < 1 ? "o confronto está tecnicamente aberto" : `${leader.candidate} mantém vantagem no confronto`} ` +
+        `e que ${prev30Margin != null && currentMargin > prev30Margin ? "a distância aumentou no último mês" : "a distância pouco mudou no último mês"}.`,
+    );
+  }
+
+  els.commentaryMeta.textContent = `Comparação automática do agregado até ${dateKey(new Date(latestTime))}, usando o histórico do cenário e os institutos selecionados.`;
+  els.commentaryBody.innerHTML = paragraphs.map((paragraph) => `<p>${escapeHtml(paragraph)}</p>`).join("");
+}
+
 function renderControls() {
   state.scenarios = [...new Set(state.polls.map((poll) => poll.scenario))];
   state.selectedScenario = state.scenarios.find((s) => /primeiro turno/i.test(s)) || state.scenarios[0];
@@ -980,6 +1095,7 @@ function render() {
   els.halfLifeValue.textContent = `${els.halfLife.value} dias`;
   renderBayesianSummary();
   renderTable();
+  renderCommentary();
   drawChart();
 }
 

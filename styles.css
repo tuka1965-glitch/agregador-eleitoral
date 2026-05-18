@@ -228,6 +228,22 @@ td:nth-child(5) {
   max-height: none;
 }
 
+.commentaryPanel {
+  grid-column: 1 / -1;
+}
+
+.commentaryBody {
+  display: grid;
+  gap: 12px;
+  margin-top: 14px;
+  max-width: 1100px;
+  line-height: 1.6;
+}
+
+.commentaryBody p {
+  color: #2d3833;
+}
+
 @media (max-width: 900px) {
   .topbar,
   .chartHeader {
