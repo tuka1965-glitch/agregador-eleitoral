@@ -1071,20 +1071,45 @@ function updateDateAndPollsterFilters() {
 }
 
 function updateCandidates() {
-  const candidates = [
-    ...new Set(
-      state.polls
-        .filter(
-          (poll) =>
-            poll.scenario === state.selectedScenario &&
-            state.selectedMonths.has(poll.month) &&
-            state.selectedPollsters.has(poll.pollster),
-        )
-        .map((poll) => poll.candidate),
-    ),
-  ];
+  const filteredPolls = state.polls.filter(
+    (poll) =>
+      poll.scenario === state.selectedScenario &&
+      state.selectedMonths.has(poll.month) &&
+      state.selectedPollsters.has(poll.pollster),
+  );
+  const latestMonth = [...state.selectedMonths].sort().at(-1);
+  const stats = new Map();
+
+  filteredPolls.forEach((poll) => {
+    if (!stats.has(poll.candidate)) {
+      stats.set(poll.candidate, {
+        candidate: poll.candidate,
+        latestTime: poll.t,
+        observations: 0,
+        latestMonthObservations: 0,
+      });
+    }
+    const row = stats.get(poll.candidate);
+    row.latestTime = Math.max(row.latestTime, poll.t);
+    row.observations += 1;
+    if (poll.month === latestMonth) row.latestMonthObservations += 1;
+  });
+
+  const candidates = [...stats.values()]
+    .sort(
+      (a, b) =>
+        Number(b.latestMonthObservations > 0) - Number(a.latestMonthObservations > 0) ||
+        b.latestTime - a.latestTime ||
+        b.latestMonthObservations - a.latestMonthObservations ||
+        b.observations - a.observations ||
+        a.candidate.localeCompare(b.candidate, "pt-BR"),
+    )
+    .map((row) => row.candidate);
+
   state.selectedCandidates = new Set(candidates.slice(0, Math.min(6, candidates.length)));
-  els.candidateSelect.innerHTML = candidates.map((candidate) => `<option selected>${candidate}</option>`).join("");
+  els.candidateSelect.innerHTML = candidates
+    .map((candidate) => `<option${state.selectedCandidates.has(candidate) ? " selected" : ""}>${candidate}</option>`)
+    .join("");
 }
 
 function render() {
