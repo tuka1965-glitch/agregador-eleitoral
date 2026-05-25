@@ -893,14 +893,10 @@ function renderTable() {
     .join("");
 }
 
-function renderBayesianSummary() {
+function bayesianSummaryData() {
   const polls = selectedPolls();
   const halfLifeDays = Number(els.halfLife.value);
-  if (!polls.length) {
-    els.bayesMeta.textContent = "Sem dados para os filtros atuais.";
-    els.bayesRows.innerHTML = "";
-    return;
-  }
+  if (!polls.length) return null;
 
   const dayMs = 24 * 60 * 60 * 1000;
   const latestTime = Math.max(...polls.map((poll) => poll.t));
@@ -939,6 +935,28 @@ function renderBayesianSummary() {
       return houseEffect && houseEffect.n > 2;
     }).map((poll) => poll.pollster),
   ).size;
+
+  return {
+    polls,
+    halfLifeDays,
+    latestTime,
+    windowStart,
+    windowPolls,
+    adaptiveHalfLife,
+    rows,
+    houseAdjustedPollsters,
+  };
+}
+
+function renderBayesianSummary() {
+  const summary = bayesianSummaryData();
+  if (!summary) {
+    els.bayesMeta.textContent = "Sem dados para os filtros atuais.";
+    els.bayesRows.innerHTML = "";
+    return;
+  }
+
+  const { halfLifeDays, latestTime, adaptiveHalfLife, houseAdjustedPollsters, rows } = summary;
   els.bayesMeta.textContent = `Janela configurada: ${halfLifeDays} dias até ${dateKey(new Date(latestTime))}. Meia-vida efetiva: ${adaptiveHalfLife} dias. Ponderação por recência, n, margem de erro, rating histórico, momentum das últimas ${MOMENTUM_POLL_COUNT} pesquisas, correção parcial de house effect com n > 2 (${houseAdjustedPollsters} institutos) e ajuste sistêmico Bolsonaro de +${BOLSONARO_SYSTEMIC_BIAS.toLocaleString("pt-BR")} pp.`;
   els.bayesRows.innerHTML = rows
     .map(
@@ -954,30 +972,25 @@ function renderBayesianSummary() {
     .join("");
 }
 
-function scenarioHistoryPolls() {
-  return state.polls.filter(
-    (poll) =>
-      poll.scenario === state.selectedScenario &&
-      state.selectedCandidates.has(poll.candidate) &&
-      state.selectedPollsters.has(poll.pollster),
-  );
-}
-
-function modelSnapshotAt(rows, candidates, targetTime, configuredHalfLife) {
-  const usable = rows.filter((poll) => poll.t <= targetTime);
+function modelSnapshotAt(rows, candidates, targetTime, configuredHalfLife, windowDays = null) {
+  const dayMs = 24 * 60 * 60 * 1000;
+  const windowStart = windowDays == null ? -Infinity : targetTime - windowDays * dayMs;
+  const usable = rows.filter((poll) => poll.t <= targetTime && poll.t >= windowStart);
   if (!usable.length) return [];
   const adaptiveHalfLife = effectiveHalfLife(usable, state.selectedScenario, candidates, configuredHalfLife);
   const latestTimes = recentPollTimes(usable, state.selectedScenario);
   const byCandidate = groupBy(usable, (poll) => poll.candidate);
+  const allByCandidate = groupBy(rows.filter((poll) => poll.t <= targetTime), (poll) => poll.candidate);
   return candidates
     .map((candidate) => {
       const candidatePolls = byCandidate.get(candidate) || [];
+      const allCandidatePolls = allByCandidate.get(candidate) || [];
       if (!candidatePolls.length) return null;
       return {
         candidate,
         estimate: bayesianEstimateAt(
           candidatePolls.map((poll) => ({ ...poll, isRecent: latestTimes.has(poll.t) })),
-          candidatePolls,
+          allCandidatePolls,
           targetTime,
           adaptiveHalfLife,
           candidate,
@@ -999,26 +1012,19 @@ function directionText(value) {
 }
 
 function renderCommentary() {
-  const rows = scenarioHistoryPolls();
-  const candidates = [...state.selectedCandidates];
-  if (!rows.length || candidates.length < 2) {
-    els.commentaryMeta.textContent = "Selecione ao menos dois candidatos para gerar um comentário.";
+  const summary = bayesianSummaryData();
+  if (!summary || summary.rows.length < 2) {
+    els.commentaryMeta.textContent = "Selecione ao menos dois itens com dados na tabela bayesiana para gerar um comentário.";
     els.commentaryBody.innerHTML = "";
     return;
   }
 
-  const latestTime = Math.max(...rows.map((poll) => poll.t));
-  const configuredHalfLife = Number(els.halfLife.value);
-  const current = modelSnapshotAt(rows, candidates, latestTime, configuredHalfLife);
-  const previous14 = modelSnapshotAt(rows, candidates, latestTime - 14 * 86400000, configuredHalfLife);
-  const previous30 = modelSnapshotAt(rows, candidates, latestTime - 30 * 86400000, configuredHalfLife);
-  if (current.length < 2 || previous30.length < 2) {
-    els.commentaryMeta.textContent = "Ainda não há histórico suficiente para comparar a trajetória recente.";
-    els.commentaryBody.innerHTML = "";
-    return;
-  }
+  const { polls, halfLifeDays, latestTime, adaptiveHalfLife, windowPolls } = summary;
+  const current = summary.rows;
+  const candidates = current.map((row) => row.candidate);
+  const previous14 = modelSnapshotAt(polls, candidates, latestTime - 14 * 86400000, halfLifeDays, halfLifeDays);
+  const previous30 = modelSnapshotAt(polls, candidates, latestTime - 30 * 86400000, halfLifeDays, halfLifeDays);
 
-  const currentMap = new Map(current.map((row) => [row.candidate, row.estimate]));
   const prev14Map = new Map(previous14.map((row) => [row.candidate, row.estimate]));
   const prev30Map = new Map(previous30.map((row) => [row.candidate, row.estimate]));
   const leader = current[0];
@@ -1032,38 +1038,46 @@ function renderCommentary() {
     .sort((a, b) => b.change30 - a.change30);
   const biggestGain = monthMovers[0];
   const biggestLoss = monthMovers.at(-1);
+  const comparisonAvailable = previous30.length >= 2;
 
   const paragraphs = [];
   paragraphs.push(
-    `No agregado bayesiano de ${state.selectedScenario.toLowerCase()}, ${leader.candidate} aparece com ${leader.estimate.toLocaleString("pt-BR", { maximumFractionDigits: 1 })}% e ${runnerUp.candidate} com ${runnerUp.estimate.toLocaleString("pt-BR", { maximumFractionDigits: 1 })}%. ` +
-      `A vantagem atual é de ${pointsLabel(currentMargin)}; há 30 dias, ela era de ${prev30Margin == null ? "valor indisponível" : pointsLabel(prev30Margin)}.`,
+    `Na tabela bayesiana exibida para ${state.selectedScenario.toLowerCase()}, ${leader.candidate} aparece com ${leader.estimate.toLocaleString("pt-BR", { maximumFractionDigits: 1 })}% e ${runnerUp.candidate} com ${runnerUp.estimate.toLocaleString("pt-BR", { maximumFractionDigits: 1 })}%. ` +
+      `A vantagem atual é de ${pointsLabel(currentMargin)}${prev30Margin == null ? "." : `; há 30 dias, com os mesmos filtros e janela bayesiana, ela era de ${pointsLabel(prev30Margin)}.`}`,
   );
 
-  if (candidates.length > 2) {
+  if (current.length > 2) {
+    if (comparisonAvailable) {
+      paragraphs.push(
+        `Dentro dos parâmetros selecionados, ${leader.candidate} ${directionText(leader.estimate - (prev30Map.get(leader.candidate) ?? leader.estimate))}, enquanto ${runnerUp.candidate} ${directionText(runnerUp.estimate - (prev30Map.get(runnerUp.candidate) ?? runnerUp.estimate))} em relação ao retrato de 30 dias atrás. ` +
+          `${biggestGain.candidate} foi quem mais ganhou terreno nessa comparação (${directionText(biggestGain.change30)}), e ${biggestLoss.candidate} teve o movimento mais fraco (${directionText(biggestLoss.change30)}).`,
+      );
+    } else {
+      paragraphs.push(
+        "Como a seleção atual não tem observações suficientes para reconstruir uma comparação confiável de 30 dias, o comentário se limita ao retrato da tabela bayesiana exibida agora.",
+      );
+    }
     paragraphs.push(
-      `Nas últimas quatro semanas, ${leader.candidate} ${directionText(leader.estimate - (prev30Map.get(leader.candidate) ?? leader.estimate))}, enquanto ${runnerUp.candidate} ${directionText(runnerUp.estimate - (prev30Map.get(runnerUp.candidate) ?? runnerUp.estimate))}. ` +
-        `${biggestGain.candidate} foi quem mais ganhou terreno no período (${directionText(biggestGain.change30)}), e ${biggestLoss.candidate} teve o movimento mais fraco (${directionText(biggestLoss.change30)}).`,
-    );
-    paragraphs.push(
-      `A leitura do modelo é que ${currentMargin < 1 ? "a disputa principal está praticamente empatada" : `${leader.candidate} ainda lidera`} ` +
-        `e que a mudança mais relevante recente foi ${prev30Margin != null && currentMargin < prev30Margin ? "o estreitamento da diferença entre os dois primeiros colocados" : "a preservação da ordem dos principais candidatos"}. ` +
-        `Os nomes fora do pelotão da frente continuam com estimativas bem menores no agregado.`,
+      `A leitura do modelo, portanto, deve ser tomada como uma interpretação da própria tabela: ${currentMargin < 1 ? "a disputa principal está praticamente empatada" : `${leader.candidate} lidera entre os itens selecionados`}. ` +
+        `Foram usadas ${windowPolls.length} observações candidato-pesquisa na janela efetiva da tabela, com meia-vida efetiva de ${adaptiveHalfLife} dias.`,
     );
   } else {
     const leader14 = prev14Map.get(leader.candidate);
     const runner14 = prev14Map.get(runnerUp.candidate);
     const margin14 = leader14 != null && runner14 != null ? leader14 - runner14 : null;
+    if (comparisonAvailable) {
+      paragraphs.push(
+        `Em relação a 30 dias atrás, ${leader.candidate} ${directionText(leader.estimate - (prev30Map.get(leader.candidate) ?? leader.estimate))}, e ${runnerUp.candidate} ${directionText(runnerUp.estimate - (prev30Map.get(runnerUp.candidate) ?? runnerUp.estimate))}. ` +
+          `Na comparação com 14 dias atrás, a margem passou de ${margin14 == null ? "valor indisponível" : pointsLabel(margin14)} para ${pointsLabel(currentMargin)}.`,
+      );
+    }
     paragraphs.push(
-      `Em 30 dias, ${leader.candidate} ${directionText(leader.estimate - (prev30Map.get(leader.candidate) ?? leader.estimate))}, e ${runnerUp.candidate} ${directionText(runnerUp.estimate - (prev30Map.get(runnerUp.candidate) ?? runnerUp.estimate))}. ` +
-        `Na comparação com 14 dias atrás, a margem passou de ${margin14 == null ? "valor indisponível" : pointsLabel(margin14)} para ${pointsLabel(currentMargin)}.`,
-    );
-    paragraphs.push(
-      `A leitura do modelo é que ${currentMargin < 1 ? "o confronto está tecnicamente aberto" : `${leader.candidate} mantém vantagem no confronto`} ` +
-        `e que ${prev30Margin != null && currentMargin > prev30Margin ? "a distância aumentou no último mês" : "a distância pouco mudou no último mês"}.`,
+      `A leitura do modelo, usando exatamente os filtros e a janela da tabela, é que ${currentMargin < 1 ? "o confronto está tecnicamente aberto" : `${leader.candidate} mantém vantagem no confronto`}. ` +
+        `Foram usadas ${windowPolls.length} observações candidato-pesquisa na janela efetiva da tabela, com meia-vida efetiva de ${adaptiveHalfLife} dias.`,
     );
   }
 
-  els.commentaryMeta.textContent = `Comparação automática do agregado até ${dateKey(new Date(latestTime))}, usando o histórico do cenário e os institutos selecionados.`;
+  els.commentaryMeta.textContent = `Comentário gerado a partir da mesma tabela bayesiana exibida acima, até ${dateKey(new Date(latestTime))}, respeitando cenário, meses, institutos, itens selecionados e meia-vida bayesiana.`;
   els.commentaryBody.innerHTML = paragraphs.map((paragraph) => `<p>${escapeHtml(paragraph)}</p>`).join("");
 }
 
