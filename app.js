@@ -79,7 +79,9 @@ const els = {
   commentaryMeta: document.querySelector("#commentaryMeta"),
   commentaryBody: document.querySelector("#commentaryBody"),
   reloadButton: document.querySelector("#reloadButton"),
+  copyChartButton: document.querySelector("#copyChartButton"),
   downloadButton: document.querySelector("#downloadButton"),
+  pdfButton: document.querySelector("#pdfButton"),
 };
 
 function cleanText(value) {
@@ -167,10 +169,26 @@ function clampPercent(value) {
 }
 
 function systemicCandidateBias(candidate) {
+  if (isSpecialChoice(candidate)) return 0;
   return /bolsonaro/i.test(candidate) ? BOLSONARO_SYSTEMIC_BIAS : 0;
 }
 
-function houseAdjustedValue(value, pollster) {
+function isSpecialChoice(candidate) {
+  const text = normalizeName(candidate).normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
+  return /(indecis|nao sabe|nao respondeu|branco|nulo|nenhum|absten|ausente|absent)/i.test(text);
+}
+
+function normalizeSpecialChoice(header) {
+  const text = normalizeName(header);
+  const plain = text.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
+  if (/indecis|nao sabe|nao respondeu/i.test(plain)) return "Indecisos";
+  if (/absten|ausente|absent/i.test(plain)) return "Absten\u00e7\u00e3o";
+  if (/branco|nulo|nenhum/i.test(plain)) return "Brancos/nulos/nenhum";
+  return text;
+}
+
+function houseAdjustedValue(value, pollster, candidate = "") {
+  if (isSpecialChoice(candidate)) return value;
   const houseEffect = houseEffectFor(pollster);
   if (!houseEffect || houseEffect.n <= 2 || value < 15) return value;
   return clampPercent(value - HOUSE_EFFECT_CORRECTION * houseEffect.effect);
@@ -414,11 +432,11 @@ function classifyColumns(headers) {
   });
 
   const blocked = new Set([columns.pollster, columns.date, columns.sample, columns.margin]);
-  const blockedWords = /(instituto|empresa|data|período|periodo|campo|amostra|entrevistados|margem|erro|indecisos|nenhum|branco|nulo|não sabe|nao sabe|vantagem|fonte|ref)/i;
+  const blockedWords = /(instituto|empresa|data|período|periodo|campo|amostra|entrevistados|margem|erro|vantagem|fonte|ref)/i;
   headers.forEach((header, index) => {
     if (blocked.has(index) || !header || blockedWords.test(header)) return;
     if (header.length > 32) return;
-    columns.candidates.push({ index, name: header });
+    columns.candidates.push({ index, name: normalizeSpecialChoice(header) });
   });
   return columns;
 }
@@ -573,10 +591,10 @@ function bayesianCurve(points, halfLifeDays, candidate = "") {
       const sampleWeight = Math.max(300, point.sample || 1000);
       const marginWeight = point.margin ? 1 / Math.max(0.0001, point.margin * point.margin) : 1;
       const qualityWeight = point.pollster ? pollsterQualityWeight(point.pollster) : 1;
-      const houseWeight = point.pollster ? houseEffectWeight(point.pollster) : 1;
+      const houseWeight = point.pollster && !isSpecialChoice(candidate) ? houseEffectWeight(point.pollster) : 1;
       const momentumWeight = point.isRecent ? MOMENTUM_WEIGHT : 1;
       const w = sampleWeight * marginWeight * timeWeight * qualityWeight * houseWeight * momentumWeight;
-      const adjustedY = houseAdjustedValue(point.y, point.pollster);
+      const adjustedY = houseAdjustedValue(point.y, point.pollster, candidate);
       weightSum += w;
       valueSum += adjustedY * w;
     });
@@ -603,9 +621,9 @@ function bayesianEstimateAt(points, allCandidatePoints, targetTime, halfLifeDays
       marginWeight *
       timeWeight *
       pollsterQualityWeight(point.pollster) *
-      houseEffectWeight(point.pollster) *
+      (isSpecialChoice(candidate) ? 1 : houseEffectWeight(point.pollster)) *
       (point.isRecent ? MOMENTUM_WEIGHT : 1);
-    const adjustedPct = houseAdjustedValue(point.pct, point.pollster);
+    const adjustedPct = houseAdjustedValue(point.pct, point.pollster, candidate);
     weightSum += weight;
     valueSum += adjustedPct * weight;
   });
@@ -1064,9 +1082,12 @@ function updateDateAndPollsterFilters() {
   const pollsters = [...new Set(scenarioPolls.map((poll) => poll.pollster).filter(isValidPollsterName))].sort((a, b) =>
     a.localeCompare(b, "pt-BR"),
   );
-  state.selectedMonths = new Set(months);
+  const defaultMonths = months.slice(Math.max(0, months.length - 4));
+  state.selectedMonths = new Set(defaultMonths);
   state.selectedPollsters = new Set(pollsters);
-  els.monthSelect.innerHTML = months.map((month) => `<option value="${month}" selected>${monthLabel(month)}</option>`).join("");
+  els.monthSelect.innerHTML = months
+    .map((month) => `<option value="${month}"${state.selectedMonths.has(month) ? " selected" : ""}>${monthLabel(month)}</option>`)
+    .join("");
   els.pollsterSelect.innerHTML = pollsters.map((pollster) => `<option selected>${pollster}</option>`).join("");
 }
 
@@ -1098,6 +1119,7 @@ function updateCandidates() {
   const candidates = [...stats.values()]
     .sort(
       (a, b) =>
+        Number(isSpecialChoice(a.candidate)) - Number(isSpecialChoice(b.candidate)) ||
         Number(b.latestMonthObservations > 0) - Number(a.latestMonthObservations > 0) ||
         b.latestTime - a.latestTime ||
         b.latestMonthObservations - a.latestMonthObservations ||
@@ -1106,7 +1128,13 @@ function updateCandidates() {
     )
     .map((row) => row.candidate);
 
-  state.selectedCandidates = new Set(candidates.slice(0, Math.min(6, candidates.length)));
+  const defaultCandidates = candidates.filter((candidate) => !isSpecialChoice(candidate)).slice(0, 6);
+  if (defaultCandidates.length < Math.min(6, candidates.length)) {
+    defaultCandidates.push(
+      ...candidates.filter((candidate) => isSpecialChoice(candidate)).slice(0, 6 - defaultCandidates.length),
+    );
+  }
+  state.selectedCandidates = new Set(defaultCandidates);
   els.candidateSelect.innerHTML = candidates
     .map((candidate) => `<option${state.selectedCandidates.has(candidate) ? " selected" : ""}>${candidate}</option>`)
     .join("");
@@ -1212,6 +1240,164 @@ function downloadCsv() {
   URL.revokeObjectURL(url);
 }
 
+function downloadBlob(blob, filename) {
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = filename;
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+async function copyChart() {
+  els.copyChartButton.disabled = true;
+  const previousStatus = els.status.textContent;
+  try {
+    const blob = await new Promise((resolve) => els.chart.toBlob(resolve, "image/png"));
+    if (!blob) throw new Error("Canvas sem imagem.");
+    if (navigator.clipboard && window.ClipboardItem) {
+      await navigator.clipboard.write([new ClipboardItem({ "image/png": blob })]);
+      els.status.textContent = "Gráfico copiado";
+    } else {
+      downloadBlob(blob, "grafico-agregador-eleitoral.png");
+      els.status.textContent = "PNG exportado";
+    }
+  } catch (error) {
+    const blob = await new Promise((resolve) => els.chart.toBlob(resolve, "image/png"));
+    if (blob) downloadBlob(blob, "grafico-agregador-eleitoral.png");
+    els.status.textContent = "PNG exportado";
+  } finally {
+    window.setTimeout(() => {
+      els.status.textContent = previousStatus;
+      els.copyChartButton.disabled = false;
+    }, 1800);
+  }
+}
+
+function asciiText(value) {
+  return String(value || "")
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/[^\x20-\x7e]/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+function pdfEscape(value) {
+  return asciiText(value).replace(/[\\()]/g, "\\$&");
+}
+
+function wrapPdfText(value, max = 92) {
+  const words = asciiText(value).split(" ").filter(Boolean);
+  const lines = [];
+  let line = "";
+  words.forEach((word) => {
+    if ((line + " " + word).trim().length > max) {
+      if (line) lines.push(line);
+      line = word;
+    } else {
+      line = `${line} ${word}`.trim();
+    }
+  });
+  if (line) lines.push(line);
+  return lines;
+}
+
+function selectedLabels(select) {
+  return [...select.selectedOptions].map((option) => option.textContent.trim());
+}
+
+function reportTextLines() {
+  const bayesRows = [...els.bayesRows.querySelectorAll("tr")].slice(0, 10).map((row) =>
+    [...row.cells].map((cell) => cell.textContent.trim()).join(" | "),
+  );
+  const commentary = [...els.commentaryBody.querySelectorAll("p")].flatMap((p) => wrapPdfText(p.textContent, 96));
+  return [
+    "Relatorio do Agregador Eleitoral",
+    `Gerado em ${new Date().toLocaleString("pt-BR")}`,
+    `Cenario: ${els.chartTitle.textContent}`,
+    `Resumo: ${els.chartMeta.textContent}`,
+    `Meses: ${selectedLabels(els.monthSelect).join(", ")}`,
+    `Institutos: ${selectedLabels(els.pollsterSelect).length} selecionados`,
+    `Visualizacao: ${selectedLabels(els.candidateSelect).join(", ")}`,
+    "",
+    "Media bayesiana",
+    ...bayesRows,
+    "",
+    "Comentario do agregado",
+    ...commentary,
+  ].filter((line, index, lines) => line || lines[index - 1]);
+}
+
+function jpegDataFromCanvas() {
+  const dataUrl = els.chart.toDataURL("image/jpeg", 0.92);
+  const [, base64] = dataUrl.split(",");
+  return atob(base64);
+}
+
+function makePdf() {
+  const pageW = 595;
+  const pageH = 842;
+  const margin = 42;
+  const imageBinary = jpegDataFromCanvas();
+  const imageW = 511;
+  const imageH = Math.round(imageW * (els.chart.height / Math.max(1, els.chart.width)));
+  let y = pageH - margin;
+  const commands = ["q", "1 1 1 rg", `0 0 ${pageW} ${pageH} re f`, "Q"];
+
+  reportTextLines()
+    .flatMap((line) => (line ? wrapPdfText(line, 96) : [""]))
+    .slice(0, 34)
+    .forEach((line, index) => {
+      if (!line) {
+        y -= 10;
+        return;
+      }
+      const size = index === 0 ? 16 : 9;
+      commands.push(`BT /F1 ${size} Tf ${margin} ${y} Td (${pdfEscape(line)}) Tj ET`);
+      y -= index === 0 ? 20 : 12;
+    });
+
+  const imageY = Math.max(45, y - imageH - 16);
+  commands.push(`q ${imageW} 0 0 ${imageH} ${margin} ${imageY} cm /Im1 Do Q`);
+  const content = commands.join("\n");
+  const objects = [
+    "<< /Type /Catalog /Pages 2 0 R >>",
+    "<< /Type /Pages /Kids [3 0 R] /Count 1 >>",
+    `<< /Type /Page /Parent 2 0 R /MediaBox [0 0 ${pageW} ${pageH}] /Resources << /Font << /F1 5 0 R >> /XObject << /Im1 6 0 R >> >> /Contents 4 0 R >>`,
+    `<< /Length ${content.length} >>\nstream\n${content}\nendstream`,
+    "<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>",
+    `<< /Type /XObject /Subtype /Image /Width ${els.chart.width} /Height ${els.chart.height} /ColorSpace /DeviceRGB /BitsPerComponent 8 /Filter /DCTDecode /Length ${imageBinary.length} >>\nstream\n${imageBinary}\nendstream`,
+  ];
+  let pdf = "%PDF-1.4\n";
+  const offsets = [0];
+  objects.forEach((object, index) => {
+    offsets.push(pdf.length);
+    pdf += `${index + 1} 0 obj\n${object}\nendobj\n`;
+  });
+  const xref = pdf.length;
+  pdf += `xref\n0 ${objects.length + 1}\n0000000000 65535 f \n`;
+  offsets.slice(1).forEach((offset) => {
+    pdf += `${String(offset).padStart(10, "0")} 00000 n \n`;
+  });
+  pdf += `trailer\n<< /Size ${objects.length + 1} /Root 1 0 R >>\nstartxref\n${xref}\n%%EOF`;
+  return new Blob([Uint8Array.from(pdf, (char) => char.charCodeAt(0))], { type: "application/pdf" });
+}
+
+function exportPdf() {
+  els.pdfButton.disabled = true;
+  const previousStatus = els.status.textContent;
+  try {
+    downloadBlob(makePdf(), "relatorio-agregador-eleitoral.pdf");
+    els.status.textContent = "PDF exportado";
+  } finally {
+    window.setTimeout(() => {
+      els.status.textContent = previousStatus;
+      els.pdfButton.disabled = false;
+    }, 1800);
+  }
+}
+
 els.scenarioSelect.addEventListener("change", () => {
   state.selectedScenario = els.scenarioSelect.value;
   updateDateAndPollsterFilters();
@@ -1235,7 +1421,9 @@ els.candidateSelect.addEventListener("change", () => {
 els.loessSpan.addEventListener("input", render);
 els.halfLife.addEventListener("input", render);
 els.reloadButton.addEventListener("click", loadData);
+els.copyChartButton.addEventListener("click", copyChart);
 els.downloadButton.addEventListener("click", downloadCsv);
+els.pdfButton.addEventListener("click", exportPdf);
 window.addEventListener("resize", drawChart);
 
 loadData().catch((error) => {
