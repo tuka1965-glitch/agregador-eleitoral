@@ -59,6 +59,8 @@ const state = {
   selectedMonths: new Set(),
   selectedPollsters: new Set(),
   houseEffects: new Map(),
+  probabilityRows: [],
+  probabilityMode: "",
 };
 
 const els = {
@@ -1122,6 +1124,8 @@ function renderFirstRoundVictoryProbabilities(summary, validRows, displayRows) {
   if (displayRows.length < 2 || validRows.length < 2) {
     els.probabilityMeta.textContent = "São necessários ao menos dois candidatos com votos válidos para simular.";
     els.probabilityRows.innerHTML = "";
+    state.probabilityRows = [];
+    state.probabilityMode = "first";
     return;
   }
 
@@ -1189,12 +1193,16 @@ function renderFirstRoundVictoryProbabilities(summary, validRows, displayRows) {
   els.probabilityMeta.textContent =
     `${VICTORY_SIMULATIONS.toLocaleString("pt-BR")} simulações. Cálculo sobre votos válidos: indecisos, brancos/nulos e abstenção ficam fora; Outros permanece no denominador quando selecionado.`;
   els.probabilityRows.innerHTML = rows.map(probabilityRowHtml).join("");
+  state.probabilityRows = rows;
+  state.probabilityMode = "first";
 }
 
 function renderSecondRoundVictoryProbabilities(summary, displayRows) {
   if (displayRows.length < 2) {
     els.probabilityMeta.textContent = "São necessários ao menos dois candidatos com votos válidos para simular o segundo turno.";
     els.probabilityRows.innerHTML = "";
+    state.probabilityRows = [];
+    state.probabilityMode = "second";
     return;
   }
 
@@ -1225,6 +1233,8 @@ function renderSecondRoundVictoryProbabilities(summary, displayRows) {
   els.probabilityMeta.textContent =
     `${VICTORY_SIMULATIONS.toLocaleString("pt-BR")} simulações de segundo turno, usando os confrontos diretos disponíveis nos filtros atuais.`;
   els.probabilityRows.innerHTML = rows.map(probabilityRowHtml).join("");
+  state.probabilityRows = rows;
+  state.probabilityMode = "second";
 }
 
 function renderVictoryProbabilities() {
@@ -1232,6 +1242,8 @@ function renderVictoryProbabilities() {
   if (!summary) {
     els.probabilityMeta.textContent = "Sem dados para estimar probabilidades.";
     els.probabilityRows.innerHTML = "";
+    state.probabilityRows = [];
+    state.probabilityMode = "";
     return;
   }
 
@@ -1252,6 +1264,8 @@ function renderVictoryProbabilities() {
 
   els.probabilityMeta.textContent = "Selecione um cenário de primeiro ou segundo turno para estimar probabilidades.";
   els.probabilityRows.innerHTML = "";
+  state.probabilityRows = [];
+  state.probabilityMode = "";
 }
 
 function modelSnapshotAt(rows, candidates, targetTime, configuredHalfLife, windowDays = null) {
@@ -1291,6 +1305,59 @@ function pointsLabel(value) {
 function directionText(value) {
   if (Math.abs(value) < 0.15) return "ficou praticamente estável";
   return value > 0 ? `subiu ${pointsLabel(value)}` : `caiu ${pointsLabel(value)}`;
+}
+
+function probabilityPointText(value) {
+  if (value == null || value === "na") return "sem estimativa";
+  return percentText(value * 100);
+}
+
+function appendProbabilityCommentary(paragraphs) {
+  const rows = state.probabilityRows.filter((row) => row.secondRoundWin !== "na");
+  if (!rows.length) return;
+
+  if (state.probabilityMode === "first") {
+    const firstRoundLeader = [...rows].sort((a, b) => (b.firstRoundWin || 0) - (a.firstRoundWin || 0))[0];
+    const runoffLeaders = [...rows].sort((a, b) => (b.runoff || 0) - (a.runoff || 0)).slice(0, 2);
+    const secondRoundLeader = [...rows]
+      .filter((row) => row.secondRoundWin != null)
+      .sort((a, b) => b.secondRoundWin - a.secondRoundWin)[0];
+
+    paragraphs.push(
+      `Nas simulações de probabilidade, a chance de vitória já no primeiro turno é ${firstRoundLeader.firstRoundWin > 0.01 ? `maior para ${firstRoundLeader.candidate}, com ${probabilityPointText(firstRoundLeader.firstRoundWin)}` : "muito baixa para todos os nomes selecionados"}. ` +
+        `A passagem ao segundo turno está concentrada em ${runoffLeaders.map((row) => `${row.candidate} (${probabilityPointText(row.runoff)})`).join(" e ")}.`,
+    );
+
+    if (secondRoundLeader) {
+      paragraphs.push(
+        `Considerando os confrontos diretos disponíveis, ${secondRoundLeader.candidate} aparece com a melhor probabilidade de vencer no segundo turno entre os cenários simulados (${probabilityPointText(secondRoundLeader.secondRoundWin)}). ` +
+          `Essa leitura combina a probabilidade de chegar ao segundo turno com o desempenho nos confrontos disponíveis, por isso candidatos sem chance relevante de classificação podem aparecer sem estimativa final.`,
+      );
+    }
+    return;
+  }
+
+  if (state.probabilityMode === "second") {
+    const ranked = [...rows]
+      .filter((row) => row.secondRoundWin != null)
+      .sort((a, b) => b.secondRoundWin - a.secondRoundWin);
+    if (!ranked.length) {
+      paragraphs.push(
+        "Na simulação de segundo turno, os filtros atuais não oferecem confrontos diretos suficientes para transformar as médias bayesianas em probabilidades de vitória.",
+      );
+      return;
+    }
+
+    const leader = ranked[0];
+    const runnerUp = ranked[1];
+    paragraphs.push(
+      `Na tabela de probabilidades do segundo turno, ${leader.candidate} tem a maior chance estimada de vitória (${probabilityPointText(leader.secondRoundWin)}).` +
+        (runnerUp ? ` Em seguida aparece ${runnerUp.candidate}, com ${probabilityPointText(runnerUp.secondRoundWin)}.` : ""),
+    );
+    paragraphs.push(
+      `Essa probabilidade é calculada apenas a partir dos confrontos diretos que permanecem dentro dos filtros atuais de mês, instituto e cenário; quando um nome aparece sem dados, significa que não há confronto suficiente nesse recorte.`,
+    );
+  }
 }
 
 function renderCommentary() {
@@ -1358,6 +1425,8 @@ function renderCommentary() {
         `Foram usadas ${windowPolls.length} observações candidato-pesquisa na janela efetiva da tabela, com meia-vida efetiva de ${adaptiveHalfLife} dias.`,
     );
   }
+
+  appendProbabilityCommentary(paragraphs);
 
   els.commentaryMeta.textContent = `Comentário gerado a partir da mesma tabela bayesiana exibida acima, até ${dateKey(new Date(latestTime))}, respeitando cenário, meses, institutos, itens selecionados e meia-vida bayesiana.`;
   els.commentaryBody.innerHTML = paragraphs.map((paragraph) => `<p>${escapeHtml(paragraph)}</p>`).join("");
