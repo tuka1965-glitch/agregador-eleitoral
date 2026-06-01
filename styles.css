@@ -80,6 +80,26 @@ button:disabled {
   opacity: 0.7;
 }
 
+.panelActions,
+.panelHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.panelActions {
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+.panelHeader button,
+.panelActions button {
+  min-height: 34px;
+  padding: 0 12px;
+  white-space: nowrap;
+}
+
 main {
   display: grid;
   grid-template-columns: minmax(220px, 300px) minmax(0, 1fr);

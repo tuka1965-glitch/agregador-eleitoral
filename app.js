@@ -84,6 +84,10 @@ const els = {
   commentaryBody: document.querySelector("#commentaryBody"),
   reloadButton: document.querySelector("#reloadButton"),
   copyChartButton: document.querySelector("#copyChartButton"),
+  copyChartPanelButton: document.querySelector("#copyChartPanelButton"),
+  copyBayesButton: document.querySelector("#copyBayesButton"),
+  copyProbabilityButton: document.querySelector("#copyProbabilityButton"),
+  copyPollsButton: document.querySelector("#copyPollsButton"),
   downloadButton: document.querySelector("#downloadButton"),
   pdfButton: document.querySelector("#pdfButton"),
 };
@@ -1462,7 +1466,9 @@ function downloadBlob(blob, filename) {
 }
 
 async function copyChart() {
-  els.copyChartButton.disabled = true;
+  [els.copyChartButton, els.copyChartPanelButton].filter(Boolean).forEach((button) => {
+    button.disabled = true;
+  });
   const previousStatus = els.status.textContent;
   try {
     const blob = await new Promise((resolve) => els.chart.toBlob(resolve, "image/png"));
@@ -1481,9 +1487,54 @@ async function copyChart() {
   } finally {
     window.setTimeout(() => {
       els.status.textContent = previousStatus;
-      els.copyChartButton.disabled = false;
+      [els.copyChartButton, els.copyChartPanelButton].filter(Boolean).forEach((button) => {
+        button.disabled = false;
+      });
     }, 1800);
   }
+}
+
+function tableToTsv(table) {
+  const rows = [...table.querySelectorAll("tr")];
+  return rows
+    .map((row) =>
+      [...row.children]
+        .map((cell) => cell.textContent.replace(/\s+/g, " ").trim())
+        .map((value) => value.replaceAll("\t", " ").replaceAll("\n", " "))
+        .join("\t"),
+    )
+    .join("\n");
+}
+
+async function copyText(text, label, button = null) {
+  const previousStatus = els.status.textContent;
+  if (button) button.disabled = true;
+  try {
+    await navigator.clipboard.writeText(text);
+    els.status.textContent = `${label} copiada`;
+  } catch (error) {
+    const textarea = document.createElement("textarea");
+    textarea.value = text;
+    textarea.setAttribute("readonly", "");
+    textarea.style.position = "fixed";
+    textarea.style.left = "-9999px";
+    document.body.appendChild(textarea);
+    textarea.select();
+    document.execCommand("copy");
+    textarea.remove();
+    els.status.textContent = `${label} copiada`;
+  } finally {
+    window.setTimeout(() => {
+      els.status.textContent = previousStatus;
+      if (button) button.disabled = false;
+    }, 1800);
+  }
+}
+
+function copyTable(tableSelector, label, button) {
+  const table = document.querySelector(tableSelector);
+  if (!table) return;
+  copyText(tableToTsv(table), label, button);
 }
 
 function asciiText(value) {
@@ -1640,6 +1691,12 @@ els.loessSpan.addEventListener("input", render);
 els.halfLife.addEventListener("input", render);
 els.reloadButton.addEventListener("click", loadData);
 els.copyChartButton.addEventListener("click", copyChart);
+els.copyChartPanelButton.addEventListener("click", copyChart);
+els.copyBayesButton.addEventListener("click", () => copyTable(".bayesPanel table", "Tabela bayesiana", els.copyBayesButton));
+els.copyProbabilityButton.addEventListener("click", () =>
+  copyTable(".probabilityPanel table", "Tabela de probabilidades", els.copyProbabilityButton),
+);
+els.copyPollsButton.addEventListener("click", () => copyTable(".pollsPanel table", "Tabela de pesquisas", els.copyPollsButton));
 els.downloadButton.addEventListener("click", downloadCsv);
 els.pdfButton.addEventListener("click", exportPdf);
 window.addEventListener("resize", drawChart);

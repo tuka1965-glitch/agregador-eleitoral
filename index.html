@@ -41,8 +41,8 @@
         </label>
         <label>
           Meia-vida bayesiana
-          <input id="halfLife" type="range" min="14" max="180" value="60" step="7" />
-          <span id="halfLifeValue">60 dias</span>
+          <input id="halfLife" type="range" min="7" max="180" value="21" step="7" />
+          <span id="halfLifeValue">21 dias</span>
         </label>
         <label>
           Candidatos
@@ -56,14 +56,20 @@
             <h2 id="chartTitle">Carregando dados...</h2>
             <p id="chartMeta"></p>
           </div>
-          <div id="status" role="status">Lendo Wikipédia</div>
+          <div class="panelActions">
+            <button id="copyChartPanelButton" type="button">Copiar gráfico</button>
+            <div id="status" role="status">Lendo Wikipédia</div>
+          </div>
         </div>
         <canvas id="pollChart" width="1280" height="680" aria-label="Gráfico de pesquisas"></canvas>
         <div id="legend" class="legend"></div>
       </section>
 
       <section class="dataPanel bayesPanel">
-        <h2>Média bayesiana</h2>
+        <div class="panelHeader">
+          <h2>Média bayesiana</h2>
+          <button id="copyBayesButton" type="button">Copiar</button>
+        </div>
         <p id="bayesMeta" class="panelMeta"></p>
         <div class="tableWrap compactTable">
           <table>
@@ -83,7 +89,10 @@
       </section>
 
       <section class="dataPanel probabilityPanel">
-        <h2>Probabilidades de vitória</h2>
+        <div class="panelHeader">
+          <h2>Probabilidades de vitória</h2>
+          <button id="copyProbabilityButton" type="button">Copiar</button>
+        </div>
         <p id="probabilityMeta" class="panelMeta"></p>
         <div class="tableWrap compactTable">
           <table>
@@ -101,8 +110,11 @@
         </div>
       </section>
 
-      <section class="dataPanel">
-        <h2>Pesquisas lidas</h2>
+      <section class="dataPanel pollsPanel">
+        <div class="panelHeader">
+          <h2>Pesquisas lidas</h2>
+          <button id="copyPollsButton" type="button">Copiar</button>
+        </div>
         <div class="tableWrap">
           <table>
             <thead>
