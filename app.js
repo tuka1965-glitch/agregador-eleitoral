@@ -20,6 +20,8 @@ const REGIME_SHIFT_THRESHOLD = 3;
 const REGIME_HALF_LIFE_DAYS = 7;
 const MOMENTUM_WEIGHT = 2;
 const MOMENTUM_POLL_COUNT = 5;
+const VICTORY_SIMULATIONS = 100000;
+const VICTORY_SIMULATION_SEED = 20260601;
 
 const POLLSTER_RATINGS = [
   ["AtlasIntel", 2.6, 79, -0.58, "A"],
@@ -75,6 +77,8 @@ const els = {
   legend: document.querySelector("#legend"),
   bayesMeta: document.querySelector("#bayesMeta"),
   bayesRows: document.querySelector("#bayesRows"),
+  probabilityMeta: document.querySelector("#probabilityMeta"),
+  probabilityRows: document.querySelector("#probabilityRows"),
   pollRows: document.querySelector("#pollRows"),
   commentaryMeta: document.querySelector("#commentaryMeta"),
   commentaryBody: document.querySelector("#commentaryBody"),
@@ -176,6 +180,11 @@ function systemicCandidateBias(candidate) {
 function isSpecialChoice(candidate) {
   const text = normalizeName(candidate).normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
   return /(indecis|nao sabe|nao respondeu|branco|nulo|nenhum|absten|ausente|absent)/i.test(text);
+}
+
+function isOtherChoice(candidate) {
+  const text = normalizeName(candidate).normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
+  return /^outros?$|outros candidatos|demais/.test(text);
 }
 
 function normalizeSpecialChoice(header) {
@@ -972,6 +981,194 @@ function renderBayesianSummary() {
     .join("");
 }
 
+function seededRandom(seed) {
+  let value = seed >>> 0;
+  return () => {
+    value += 0x6d2b79f5;
+    let t = value;
+    t = Math.imul(t ^ (t >>> 15), t | 1);
+    t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+}
+
+function normalRandom(random) {
+  const u1 = Math.max(Number.EPSILON, random());
+  const u2 = random();
+  return Math.sqrt(-2 * Math.log(u1)) * Math.cos(2 * Math.PI * u2);
+}
+
+function simulationSd(candidate, summary) {
+  const candidatePolls = summary.windowPolls.filter((poll) => poll.candidate === candidate);
+  if (!candidatePolls.length) return 4;
+  const margins = candidatePolls.map((poll) => poll.margin).filter((value) => value != null && value > 0);
+  const avgMargin = margins.length ? mean(margins) : 3;
+  const totalSample = candidatePolls.reduce((sum, poll) => sum + Math.max(300, poll.sample || 1000), 0);
+  const p = (summary.rows.find((row) => row.candidate === candidate)?.estimate || 0) / 100;
+  const samplingSd = Math.sqrt(Math.max(0.0001, p * (1 - p)) / Math.max(300, totalSample)) * 100;
+  return Math.min(8, Math.max(1.2, avgMargin / Math.sqrt(candidatePolls.length), samplingSd * 2));
+}
+
+function percentText(value) {
+  if (value == null || Number.isNaN(value)) return "sem dados";
+  if (value > 0 && value < 0.05) return "<0,1%";
+  return `${value.toLocaleString("pt-BR", { maximumFractionDigits: 1 })}%`;
+}
+
+function pairKey(a, b) {
+  return [a, b].sort((x, y) => x.localeCompare(y, "pt-BR")).join("|");
+}
+
+function secondRoundRowsFor(candidateA, candidateB) {
+  const candidateSet = new Set([candidateA, candidateB]);
+  const secondRoundPolls = state.polls.filter(
+    (poll) =>
+      /segundo turno/i.test(poll.round || poll.scenario) &&
+      state.selectedMonths.has(poll.month) &&
+      state.selectedPollsters.has(poll.pollster) &&
+      candidateSet.has(poll.candidate),
+  );
+  const units = [...groupBy(secondRoundPolls, (poll) => [poll.scenario, poll.pollId, poll.scenarioIndex || 1].join("|")).values()]
+    .map((polls) => ({
+      pollster: polls[0].pollster,
+      dateMid: polls[0].dateMid,
+      t: polls[0].t,
+      sample: polls[0].sample,
+      margin: polls[0].margin,
+      candidates: Object.fromEntries(polls.map((poll) => [poll.candidate, poll.pct])),
+    }))
+    .filter((unit) => unit.candidates[candidateA] != null && unit.candidates[candidateB] != null);
+  return units.map((unit) => {
+    const a = unit.candidates[candidateA];
+    const b = unit.candidates[candidateB];
+    return {
+      candidate: candidateA,
+      pollster: unit.pollster,
+      t: unit.t,
+      dateMid: unit.dateMid,
+      sample: unit.sample,
+      margin: unit.margin,
+      pct: (a / Math.max(0.0001, a + b)) * 100,
+    };
+  });
+}
+
+function secondRoundWinProbability(candidate, opponent) {
+  const pairRows = secondRoundRowsFor(candidate, opponent);
+  if (!pairRows.length) return null;
+  const latestTime = Math.max(...pairRows.map((poll) => poll.t));
+  const halfLifeDays = Number(els.halfLife.value);
+  const latestTimes = recentPollTimes(pairRows.map((poll) => ({ ...poll, scenario: "Segundo turno", pollId: `${poll.pollster}|${poll.dateMid}` })), "Segundo turno");
+  const estimate = bayesianEstimateAt(
+    pairRows.map((poll) => ({ ...poll, isRecent: latestTimes.has(poll.t) })),
+    pairRows,
+    latestTime,
+    halfLifeDays,
+    candidate,
+  );
+  const margins = pairRows.map((poll) => poll.margin).filter((value) => value != null && value > 0);
+  const avgMargin = margins.length ? mean(margins) : 3;
+  const sd = Math.min(8, Math.max(1.4, avgMargin / Math.sqrt(pairRows.length)));
+  const random = seededRandom(VICTORY_SIMULATION_SEED + candidate.length * 31 + opponent.length * 17);
+  let wins = 0;
+  for (let i = 0; i < VICTORY_SIMULATIONS; i += 1) {
+    if (estimate + normalRandom(random) * sd > 50) wins += 1;
+  }
+  return wins / VICTORY_SIMULATIONS;
+}
+
+function renderVictoryProbabilities() {
+  const summary = bayesianSummaryData();
+  if (!summary || !/primeiro turno/i.test(state.selectedScenario)) {
+    els.probabilityMeta.textContent = "Selecione um cenário de primeiro turno para estimar probabilidades.";
+    els.probabilityRows.innerHTML = "";
+    return;
+  }
+
+  const validRows = summary.rows.filter((row) => !isSpecialChoice(row.candidate));
+  const displayRows = validRows.filter((row) => !isOtherChoice(row.candidate)).slice(0, 6);
+  if (displayRows.length < 2 || validRows.length < 2) {
+    els.probabilityMeta.textContent = "São necessários ao menos dois candidatos com votos válidos para simular.";
+    els.probabilityRows.innerHTML = "";
+    return;
+  }
+
+  const random = seededRandom(VICTORY_SIMULATION_SEED);
+  const candidates = validRows.map((row) => ({
+    candidate: row.candidate,
+    mean: row.estimate,
+    sd: simulationSd(row.candidate, summary),
+  }));
+  const displaySet = new Set(displayRows.map((row) => row.candidate));
+  const stats = new Map(displayRows.map((row) => [row.candidate, { firstRoundWins: 0, runoff: 0, opponents: new Map() }]));
+
+  for (let i = 0; i < VICTORY_SIMULATIONS; i += 1) {
+    const draw = candidates.map((row) => ({
+      candidate: row.candidate,
+      value: Math.max(0, row.mean + normalRandom(random) * row.sd),
+    }));
+    const total = draw.reduce((sum, row) => sum + row.value, 0) || 1;
+    const validShares = draw
+      .map((row) => ({ candidate: row.candidate, share: (row.value / total) * 100 }))
+      .sort((a, b) => b.share - a.share);
+    const leader = validShares[0];
+    const runnerUp = validShares[1];
+
+    if (leader.share > 50 && displaySet.has(leader.candidate)) {
+      stats.get(leader.candidate).firstRoundWins += 1;
+    }
+    [leader, runnerUp].forEach((row) => {
+      if (!displaySet.has(row.candidate)) return;
+      const candidateStats = stats.get(row.candidate);
+      const opponent = row.candidate === leader.candidate ? runnerUp.candidate : leader.candidate;
+      candidateStats.runoff += 1;
+      candidateStats.opponents.set(opponent, (candidateStats.opponents.get(opponent) || 0) + 1);
+    });
+  }
+
+  const pairProbabilities = new Map();
+  const rows = displayRows.map((row) => {
+    const candidateStats = stats.get(row.candidate);
+    let weightedSecondRound = null;
+    if (candidateStats.runoff) {
+      let knownOpponentRuns = 0;
+      let winProbabilitySum = 0;
+      candidateStats.opponents.forEach((count, opponent) => {
+        const key = pairKey(row.candidate, opponent);
+        if (!pairProbabilities.has(key)) {
+          pairProbabilities.set(key, secondRoundWinProbability(row.candidate, opponent));
+        }
+        const probability = pairProbabilities.get(key);
+        if (probability == null) return;
+        knownOpponentRuns += count;
+        winProbabilitySum += probability * count;
+      });
+      weightedSecondRound = knownOpponentRuns ? winProbabilitySum / knownOpponentRuns : null;
+    }
+    return {
+      candidate: row.candidate,
+      estimate: row.estimate,
+      firstRoundWin: stats.get(row.candidate).firstRoundWins / VICTORY_SIMULATIONS,
+      runoff: stats.get(row.candidate).runoff / VICTORY_SIMULATIONS,
+      secondRoundWin: weightedSecondRound,
+    };
+  });
+
+  els.probabilityMeta.textContent =
+    `${VICTORY_SIMULATIONS.toLocaleString("pt-BR")} simulações. Cálculo sobre votos válidos: indecisos, brancos/nulos e abstenção ficam fora; Outros permanece no denominador quando selecionado.`;
+  els.probabilityRows.innerHTML = rows
+    .map(
+      (row) => `<tr>
+        <td>${escapeHtml(row.candidate)}</td>
+        <td>${percentText(row.firstRoundWin * 100)}</td>
+        <td>${percentText(row.runoff * 100)}</td>
+        <td>${percentText(row.secondRoundWin == null ? null : row.secondRoundWin * 100)}</td>
+        <td>${row.estimate.toLocaleString("pt-BR", { maximumFractionDigits: 1 })}%</td>
+      </tr>`,
+    )
+    .join("");
+}
+
 function modelSnapshotAt(rows, candidates, targetTime, configuredHalfLife, windowDays = null) {
   const dayMs = 24 * 60 * 60 * 1000;
   const windowStart = windowDays == null ? -Infinity : targetTime - windowDays * dayMs;
@@ -1161,6 +1358,7 @@ function render() {
   els.loessSpanValue.textContent = Number(els.loessSpan.value).toLocaleString("pt-BR");
   els.halfLifeValue.textContent = `${els.halfLife.value} dias`;
   renderBayesianSummary();
+  renderVictoryProbabilities();
   renderTable();
   renderCommentary();
   drawChart();
@@ -1325,6 +1523,9 @@ function reportTextLines() {
   const bayesRows = [...els.bayesRows.querySelectorAll("tr")].slice(0, 10).map((row) =>
     [...row.cells].map((cell) => cell.textContent.trim()).join(" | "),
   );
+  const probabilityRows = [...els.probabilityRows.querySelectorAll("tr")].slice(0, 10).map((row) =>
+    [...row.cells].map((cell) => cell.textContent.trim()).join(" | "),
+  );
   const commentary = [...els.commentaryBody.querySelectorAll("p")].flatMap((p) => wrapPdfText(p.textContent, 96));
   return [
     "Relatorio do Agregador Eleitoral",
@@ -1337,6 +1538,9 @@ function reportTextLines() {
     "",
     "Media bayesiana",
     ...bayesRows,
+    "",
+    "Probabilidades de vitoria",
+    ...probabilityRows,
     "",
     "Comentario do agregado",
     ...commentary,

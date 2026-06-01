@@ -190,6 +190,10 @@ canvas {
   grid-column: 2;
 }
 
+.probabilityPanel {
+  grid-column: 2;
+}
+
 .panelMeta {
   margin-top: 6px;
   color: var(--muted);
@@ -262,6 +266,10 @@ td:nth-child(5) {
   }
 
   .bayesPanel {
+    grid-column: 1;
+  }
+
+  .probabilityPanel {
     grid-column: 1;
   }
 }
