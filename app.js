@@ -79,6 +79,7 @@ const els = {
   bayesRows: document.querySelector("#bayesRows"),
   probabilityMeta: document.querySelector("#probabilityMeta"),
   probabilityRows: document.querySelector("#probabilityRows"),
+  probabilityBaseHeader: document.querySelector("#probabilityBaseHeader"),
   pollRows: document.querySelector("#pollRows"),
   commentaryMeta: document.querySelector("#commentaryMeta"),
   commentaryBody: document.querySelector("#commentaryBody"),
@@ -1023,11 +1024,12 @@ function pairKey(a, b) {
   return [a, b].sort((x, y) => x.localeCompare(y, "pt-BR")).join("|");
 }
 
-function secondRoundRowsFor(candidateA, candidateB) {
+function secondRoundRowsFor(candidateA, candidateB, scenario = null) {
   const candidateSet = new Set([candidateA, candidateB]);
   const secondRoundPolls = state.polls.filter(
     (poll) =>
       /segundo turno/i.test(poll.round || poll.scenario) &&
+      (!scenario || poll.scenario === scenario) &&
       state.selectedMonths.has(poll.month) &&
       state.selectedPollsters.has(poll.pollster) &&
       candidateSet.has(poll.candidate),
@@ -1057,8 +1059,8 @@ function secondRoundRowsFor(candidateA, candidateB) {
   });
 }
 
-function secondRoundWinProbability(candidate, opponent) {
-  const pairRows = secondRoundRowsFor(candidate, opponent);
+function secondRoundWinProbability(candidate, opponent, scenario = null) {
+  const pairRows = secondRoundRowsFor(candidate, opponent, scenario);
   if (!pairRows.length) return null;
   const latestTime = Math.max(...pairRows.map((poll) => poll.t));
   const halfLifeDays = Number(els.halfLife.value);
@@ -1073,7 +1075,7 @@ function secondRoundWinProbability(candidate, opponent) {
   const margins = pairRows.map((poll) => poll.margin).filter((value) => value != null && value > 0);
   const avgMargin = margins.length ? mean(margins) : 3;
   const sd = Math.min(8, Math.max(1.4, avgMargin / Math.sqrt(pairRows.length)));
-  const random = seededRandom(VICTORY_SIMULATION_SEED + candidate.length * 31 + opponent.length * 17);
+  const random = seededRandom(VICTORY_SIMULATION_SEED + candidate.length * 31 + opponent.length * 17 + (scenario || "").length);
   let wins = 0;
   for (let i = 0; i < VICTORY_SIMULATIONS; i += 1) {
     if (estimate + normalRandom(random) * sd > 50) wins += 1;
@@ -1081,16 +1083,42 @@ function secondRoundWinProbability(candidate, opponent) {
   return wins / VICTORY_SIMULATIONS;
 }
 
-function renderVictoryProbabilities() {
-  const summary = bayesianSummaryData();
-  if (!summary || !/primeiro turno/i.test(state.selectedScenario)) {
-    els.probabilityMeta.textContent = "Selecione um cenário de primeiro turno para estimar probabilidades.";
-    els.probabilityRows.innerHTML = "";
-    return;
-  }
+function probabilityRowHtml(row) {
+  const firstRound = row.firstRoundWin === "na" ? "—" : percentText(row.firstRoundWin == null ? null : row.firstRoundWin * 100);
+  const runoff = row.runoff === "na" ? "—" : percentText(row.runoff == null ? null : row.runoff * 100);
+  const secondRound =
+    row.secondRoundWin === "na" ? "—" : percentText(row.secondRoundWin == null ? null : row.secondRoundWin * 100);
+  return `<tr>
+        <td>${escapeHtml(row.candidate)}</td>
+        <td>${firstRound}</td>
+        <td>${runoff}</td>
+        <td>${secondRound}</td>
+        <td>${row.estimate.toLocaleString("pt-BR", { maximumFractionDigits: 1 })}%</td>
+      </tr>`;
+}
 
-  const validRows = summary.rows.filter((row) => !isSpecialChoice(row.candidate));
-  const displayRows = validRows.filter((row) => !isOtherChoice(row.candidate)).slice(0, 6);
+function currentSecondRoundOpponentWeights(candidate) {
+  const scenarioPolls = state.polls.filter(
+    (poll) =>
+      poll.scenario === state.selectedScenario &&
+      /segundo turno/i.test(poll.round || poll.scenario) &&
+      state.selectedMonths.has(poll.month) &&
+      state.selectedPollsters.has(poll.pollster) &&
+      !isSpecialChoice(poll.candidate) &&
+      !isOtherChoice(poll.candidate),
+  );
+  const weights = new Map();
+  [...groupBy(scenarioPolls, (poll) => [poll.pollId, poll.scenarioIndex || 1].join("|")).values()].forEach((polls) => {
+    const names = [...new Set(polls.map((poll) => poll.candidate))];
+    if (!names.includes(candidate)) return;
+    names
+      .filter((name) => name !== candidate)
+      .forEach((opponent) => weights.set(opponent, (weights.get(opponent) || 0) + 1));
+  });
+  return weights;
+}
+
+function renderFirstRoundVictoryProbabilities(summary, validRows, displayRows) {
   if (displayRows.length < 2 || validRows.length < 2) {
     els.probabilityMeta.textContent = "São necessários ao menos dois candidatos com votos válidos para simular.";
     els.probabilityRows.innerHTML = "";
@@ -1138,7 +1166,7 @@ function renderVictoryProbabilities() {
       let knownOpponentRuns = 0;
       let winProbabilitySum = 0;
       candidateStats.opponents.forEach((count, opponent) => {
-        const key = pairKey(row.candidate, opponent);
+        const key = `${row.candidate}|${opponent}`;
         if (!pairProbabilities.has(key)) {
           pairProbabilities.set(key, secondRoundWinProbability(row.candidate, opponent));
         }
@@ -1160,17 +1188,70 @@ function renderVictoryProbabilities() {
 
   els.probabilityMeta.textContent =
     `${VICTORY_SIMULATIONS.toLocaleString("pt-BR")} simulações. Cálculo sobre votos válidos: indecisos, brancos/nulos e abstenção ficam fora; Outros permanece no denominador quando selecionado.`;
-  els.probabilityRows.innerHTML = rows
-    .map(
-      (row) => `<tr>
-        <td>${escapeHtml(row.candidate)}</td>
-        <td>${percentText(row.firstRoundWin * 100)}</td>
-        <td>${percentText(row.runoff * 100)}</td>
-        <td>${percentText(row.secondRoundWin == null ? null : row.secondRoundWin * 100)}</td>
-        <td>${row.estimate.toLocaleString("pt-BR", { maximumFractionDigits: 1 })}%</td>
-      </tr>`,
-    )
-    .join("");
+  els.probabilityRows.innerHTML = rows.map(probabilityRowHtml).join("");
+}
+
+function renderSecondRoundVictoryProbabilities(summary, displayRows) {
+  if (displayRows.length < 2) {
+    els.probabilityMeta.textContent = "São necessários ao menos dois candidatos com votos válidos para simular o segundo turno.";
+    els.probabilityRows.innerHTML = "";
+    return;
+  }
+
+  const pairProbabilities = new Map();
+  const rows = displayRows.map((row) => {
+    const opponentWeights = currentSecondRoundOpponentWeights(row.candidate);
+    let knownOpponentRuns = 0;
+    let winProbabilitySum = 0;
+    opponentWeights.forEach((count, opponent) => {
+      const key = `${row.candidate}|${opponent}|${state.selectedScenario}`;
+      if (!pairProbabilities.has(key)) {
+        pairProbabilities.set(key, secondRoundWinProbability(row.candidate, opponent, state.selectedScenario));
+      }
+      const probability = pairProbabilities.get(key);
+      if (probability == null) return;
+      knownOpponentRuns += count;
+      winProbabilitySum += probability * count;
+    });
+    return {
+      candidate: row.candidate,
+      estimate: row.estimate,
+      firstRoundWin: "na",
+      runoff: "na",
+      secondRoundWin: knownOpponentRuns ? winProbabilitySum / knownOpponentRuns : null,
+    };
+  });
+
+  els.probabilityMeta.textContent =
+    `${VICTORY_SIMULATIONS.toLocaleString("pt-BR")} simulações de segundo turno, usando os confrontos diretos disponíveis nos filtros atuais.`;
+  els.probabilityRows.innerHTML = rows.map(probabilityRowHtml).join("");
+}
+
+function renderVictoryProbabilities() {
+  const summary = bayesianSummaryData();
+  if (!summary) {
+    els.probabilityMeta.textContent = "Sem dados para estimar probabilidades.";
+    els.probabilityRows.innerHTML = "";
+    return;
+  }
+
+  const validRows = summary.rows.filter((row) => !isSpecialChoice(row.candidate));
+  const displayRows = validRows.filter((row) => !isOtherChoice(row.candidate)).slice(0, 6);
+  const isFirstRound = /primeiro turno/i.test(state.selectedScenario);
+  const isSecondRound = /segundo turno/i.test(state.selectedScenario);
+  els.probabilityBaseHeader.textContent = isSecondRound ? "Base 2º turno" : "Base 1º turno";
+
+  if (isFirstRound) {
+    renderFirstRoundVictoryProbabilities(summary, validRows, displayRows);
+    return;
+  }
+  if (isSecondRound) {
+    renderSecondRoundVictoryProbabilities(summary, displayRows);
+    return;
+  }
+
+  els.probabilityMeta.textContent = "Selecione um cenário de primeiro ou segundo turno para estimar probabilidades.";
+  els.probabilityRows.innerHTML = "";
 }
 
 function modelSnapshotAt(rows, candidates, targetTime, configuredHalfLife, windowDays = null) {
