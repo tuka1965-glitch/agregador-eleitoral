@@ -1163,6 +1163,24 @@ function secondRoundWinProbability(candidate, opponent, scenario = null) {
   return wins / VICTORY_SIMULATIONS;
 }
 
+function secondRoundProbabilityFromPairCache(cache, candidate, opponent, scenario = null) {
+  const candidates = [candidate, opponent].sort((a, b) => a.localeCompare(b, "pt-BR"));
+  const key = `${candidates.join("|")}|${scenario || ""}`;
+  if (!cache.has(key)) {
+    const probability = secondRoundWinProbability(candidates[0], candidates[1], scenario);
+    cache.set(
+      key,
+      probability == null
+        ? null
+        : new Map([
+            [candidates[0], probability],
+            [candidates[1], 1 - probability],
+          ]),
+    );
+  }
+  return cache.get(key)?.get(candidate) ?? null;
+}
+
 function probabilityRowHtml(row) {
   const firstRound = row.firstRoundWin === "na" ? "—" : percentText(row.firstRoundWin == null ? null : row.firstRoundWin * 100);
   const runoff = row.runoff === "na" ? "—" : percentText(row.runoff == null ? null : row.runoff * 100);
@@ -1248,11 +1266,7 @@ function renderFirstRoundVictoryProbabilities(summary, validRows, displayRows) {
       let knownOpponentRuns = 0;
       let winProbabilitySum = 0;
       candidateStats.opponents.forEach((count, opponent) => {
-        const key = `${row.candidate}|${opponent}`;
-        if (!pairProbabilities.has(key)) {
-          pairProbabilities.set(key, secondRoundWinProbability(row.candidate, opponent));
-        }
-        const probability = pairProbabilities.get(key);
+        const probability = secondRoundProbabilityFromPairCache(pairProbabilities, row.candidate, opponent);
         if (probability == null) return;
         knownOpponentRuns += count;
         winProbabilitySum += probability * count;
@@ -1290,11 +1304,7 @@ function renderSecondRoundVictoryProbabilities(summary, displayRows) {
     let knownOpponentRuns = 0;
     let winProbabilitySum = 0;
     opponentWeights.forEach((count, opponent) => {
-      const key = `${row.candidate}|${opponent}|${state.selectedScenario}`;
-      if (!pairProbabilities.has(key)) {
-        pairProbabilities.set(key, secondRoundWinProbability(row.candidate, opponent, state.selectedScenario));
-      }
-      const probability = pairProbabilities.get(key);
+      const probability = secondRoundProbabilityFromPairCache(pairProbabilities, row.candidate, opponent, state.selectedScenario);
       if (probability == null) return;
       knownOpponentRuns += count;
       winProbabilitySum += probability * count;
