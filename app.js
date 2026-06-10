@@ -203,6 +203,77 @@ function normalizeSpecialChoice(header) {
   return text;
 }
 
+function candidateKey(value) {
+  return normalizeName(value)
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/\b(de|da|do|das|dos|e|jr|junior|filho|neto)\b/gi, " ")
+    .replace(/[^a-z0-9]+/gi, "")
+    .toLowerCase();
+}
+
+const CANDIDATE_PARTIES =
+  "agirmobiliza|mobiliza|solidariedade|republicanos|cidadania|podemos|uniao|avante|novo|rede|psdb|pstu|prtb|pcob|pcdob|pcb|pco|psol|psb|psc|psd|pdt|mdb|pl|pt|pv|up|dc";
+
+function candidateParty(value) {
+  const plain = normalizeName(value)
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .trim();
+  const match = plain.match(new RegExp(`(${CANDIDATE_PARTIES})\\s*$`, "i"));
+  return match ? match[1].toLowerCase() : "";
+}
+
+function stripCandidateParty(value) {
+  const plain = normalizeName(value).replace(/\s+/g, " ").trim();
+  return plain
+    .replace(new RegExp(`\\s*[-–/]?\\s*(?:${CANDIDATE_PARTIES})\\s*$`, "i"), "")
+    .replace(new RegExp(`(?:${CANDIDATE_PARTIES})$`, "i"), "")
+    .trim();
+}
+
+const CANDIDATE_ALIASES = [
+  ["Lula", ["lula", "luizinaciolula", "luizinaciolulasilva", "lulasilva"]],
+  ["Jair Bolsonaro", ["jairbolsonaro", "bolsonaro"]],
+  ["Flavio Bolsonaro", ["flaviobolsonaro"]],
+  ["Ronaldo Caiado", ["caiado", "ronaldocaiado"]],
+  ["Tarcisio de Freitas", ["tarcisio", "tarcisiofreitas"]],
+  ["Michelle Bolsonaro", ["michelle", "michellebolsonaro"]],
+  ["Eduardo Bolsonaro", ["eduardobolsonaro"]],
+  ["Ratinho Junior", ["ratinho", "ratinhojunior", "carlosmassa", "carlosmassaratinhojunior"]],
+  ["Romeu Zema", ["zema", "romeuzema"]],
+  ["Eduardo Leite", ["leite", "eduardoleite"]],
+  ["Fernando Haddad", ["haddad", "fernandohaddad"]],
+  ["Geraldo Alckmin", ["alckmin", "geraldoalckmin"]],
+  ["Simone Tebet", ["tebet", "simonetebet"]],
+  ["Ciro Gomes", ["ciro", "cirogomes"]],
+  ["Pablo Marcal", ["pablo", "pablomarcal", "marcal"]],
+  ["Marina Silva", ["marina", "marinasilva"]],
+  ["Joao Campos", ["joaocampos"]],
+  ["Sergio Moro", ["moro", "sergiomoro"]],
+  ["Aecio Neves", ["aecio", "aecioneves"]],
+  ["Luciano Huck", ["huck", "lucianohuck"]],
+].flatMap(([canonical, aliases]) => aliases.map((alias) => [alias, canonical]));
+
+const CANDIDATE_ALIAS_INDEX = new Map(CANDIDATE_ALIASES);
+const CANDIDATE_PARTY_ALIAS_INDEX = new Map([
+  ["flavio|pl", "Flavio Bolsonaro"],
+  ["eduardo|pl", "Eduardo Bolsonaro"],
+  ["eduardo|psdb", "Eduardo Leite"],
+  ["joao|psb", "Joao Campos"],
+]);
+
+function canonicalCandidateName(header) {
+  const special = normalizeSpecialChoice(header);
+  if (isSpecialChoice(special) || isOtherChoice(special)) return special;
+  const party = candidateParty(special);
+  const withoutParty = stripCandidateParty(special);
+  const key = candidateKey(withoutParty);
+  const partyAlias = CANDIDATE_PARTY_ALIAS_INDEX.get(`${key}|${party}`);
+  if (partyAlias) return partyAlias;
+  return CANDIDATE_ALIAS_INDEX.get(key) || withoutParty || special;
+}
+
 function houseAdjustedValue(value, pollster, candidate = "") {
   if (isSpecialChoice(candidate)) return value;
   const houseEffect = houseEffectFor(pollster);
@@ -452,7 +523,7 @@ function classifyColumns(headers) {
   headers.forEach((header, index) => {
     if (blocked.has(index) || !header || blockedWords.test(header)) return;
     if (header.length > 32) return;
-    columns.candidates.push({ index, name: normalizeSpecialChoice(header) });
+    columns.candidates.push({ index, name: canonicalCandidateName(header) });
   });
   return columns;
 }
