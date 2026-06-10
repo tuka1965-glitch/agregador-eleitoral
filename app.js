@@ -213,7 +213,7 @@ function candidateKey(value) {
 }
 
 const CANDIDATE_PARTIES =
-  "agirmobiliza|mobiliza|solidariedade|republicanos|cidadania|podemos|uniao|avante|novo|rede|psdb|pstu|prtb|pcob|pcdob|pcb|pco|psol|psb|psc|psd|pdt|mdb|pl|pt|pv|up|dc";
+  "agirmobiliza|mobiliza|missao|solidariedade|republicanos|cidadania|podemos|uniao|avante|novo|rede|psdb|pstu|prtb|pcob|pcdob|pcb|pco|psol|psb|psc|psd|pdt|mdb|pl|pt|pv|up|dc";
 
 function candidateParty(value) {
   const plain = normalizeName(value)
@@ -253,6 +253,13 @@ const CANDIDATE_ALIASES = [
   ["Sergio Moro", ["moro", "sergiomoro"]],
   ["Aecio Neves", ["aecio", "aecioneves"]],
   ["Luciano Huck", ["huck", "lucianohuck"]],
+  ["Renan Santos", ["renan", "renansantos", "renanmissao", "renansantosmissao"]],
+  ["Augusto Curi", ["cury", "augustocuri"]],
+  ["Cabo Daciolo", ["daciolo", "cabodaciolo"]],
+  ["Samara Martins", ["samara", "samaramartins"]],
+  ["Rui Costa Pimenta", ["pimenta", "ruicostapimenta"]],
+  ["Edimilson Costa", ["costa", "edimilsoncosta"]],
+  ["Joaquim Barbosa", ["barbosa", "joaquimbarbosa"]],
 ].flatMap(([canonical, aliases]) => aliases.map((alias) => [alias, canonical]));
 
 const CANDIDATE_ALIAS_INDEX = new Map(CANDIDATE_ALIASES);
