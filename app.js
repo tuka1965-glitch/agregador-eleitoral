@@ -1693,13 +1693,88 @@ function downloadBlob(blob, filename) {
   URL.revokeObjectURL(url);
 }
 
+function canvasToBlob(canvas, type = "image/png", quality = undefined) {
+  return new Promise((resolve) => canvas.toBlob(resolve, type, quality));
+}
+
+function chartLegendItems() {
+  return [...els.legend.querySelectorAll(".legendItem")].map((item) => ({
+    label: item.textContent.trim(),
+    color: item.querySelector(".swatch")?.style.background || "#65726c",
+  }));
+}
+
+function chartCanvasWithLegend() {
+  const source = els.chart;
+  const legendItems = chartLegendItems();
+  if (!legendItems.length) return source;
+
+  const dpr = source.width / Math.max(1, source.getBoundingClientRect().width);
+  const outerPad = Math.round(18 * dpr);
+  const rowGap = Math.round(10 * dpr);
+  const columnGap = Math.round(18 * dpr);
+  const swatch = Math.round(12 * dpr);
+  const itemGap = Math.round(7 * dpr);
+  const fontSize = Math.round(13 * dpr);
+  const lineHeight = Math.round(24 * dpr);
+  const legendTop = Math.round(14 * dpr);
+  const maxLineWidth = source.width - outerPad * 2;
+
+  const output = document.createElement("canvas");
+  const measure = output.getContext("2d");
+  measure.font = `700 ${fontSize}px Inter, system-ui, sans-serif`;
+
+  const rows = [[]];
+  let currentWidth = 0;
+  legendItems.forEach((item) => {
+    const itemWidth = swatch + itemGap + Math.ceil(measure.measureText(item.label).width);
+    const nextWidth = currentWidth ? currentWidth + columnGap + itemWidth : itemWidth;
+    if (nextWidth > maxLineWidth && rows[rows.length - 1].length) {
+      rows.push([item]);
+      currentWidth = itemWidth;
+    } else {
+      rows[rows.length - 1].push(item);
+      currentWidth = nextWidth;
+    }
+  });
+
+  const legendHeight = legendTop + rows.length * lineHeight + Math.max(0, rows.length - 1) * rowGap + outerPad;
+  output.width = source.width;
+  output.height = source.height + legendHeight;
+
+  const ctx = output.getContext("2d");
+  ctx.fillStyle = "#ffffff";
+  ctx.fillRect(0, 0, output.width, output.height);
+  ctx.drawImage(source, 0, 0);
+  ctx.font = `700 ${fontSize}px Inter, system-ui, sans-serif`;
+  ctx.textAlign = "left";
+  ctx.textBaseline = "middle";
+
+  let y = source.height + legendTop + lineHeight / 2;
+  rows.forEach((row) => {
+    let x = outerPad;
+    row.forEach((item) => {
+      ctx.fillStyle = item.color;
+      ctx.beginPath();
+      ctx.arc(x + swatch / 2, y, swatch / 2, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.fillStyle = "#65726c";
+      ctx.fillText(item.label, x + swatch + itemGap, y);
+      x += swatch + itemGap + Math.ceil(ctx.measureText(item.label).width) + columnGap;
+    });
+    y += lineHeight + rowGap;
+  });
+
+  return output;
+}
+
 async function copyChart() {
   [els.copyChartButton, els.copyChartPanelButton].filter(Boolean).forEach((button) => {
     button.disabled = true;
   });
   const previousStatus = els.status.textContent;
   try {
-    const blob = await new Promise((resolve) => els.chart.toBlob(resolve, "image/png"));
+    const blob = await canvasToBlob(chartCanvasWithLegend(), "image/png");
     if (!blob) throw new Error("Canvas sem imagem.");
     if (navigator.clipboard && window.ClipboardItem) {
       await navigator.clipboard.write([new ClipboardItem({ "image/png": blob })]);
@@ -1709,7 +1784,7 @@ async function copyChart() {
       els.status.textContent = "PNG exportado";
     }
   } catch (error) {
-    const blob = await new Promise((resolve) => els.chart.toBlob(resolve, "image/png"));
+    const blob = await canvasToBlob(chartCanvasWithLegend(), "image/png");
     if (blob) downloadBlob(blob, "grafico-agregador-eleitoral.png");
     els.status.textContent = "PNG exportado";
   } finally {
