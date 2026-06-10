@@ -1181,6 +1181,38 @@ function secondRoundProbabilityFromPairCache(cache, candidate, opponent, scenari
   return cache.get(key)?.get(candidate) ?? null;
 }
 
+function simulatedPairWinProbability(candidate, opponent, modelByCandidate) {
+  const candidateModel = modelByCandidate.get(candidate);
+  const opponentModel = modelByCandidate.get(opponent);
+  if (!candidateModel || !opponentModel) return null;
+  const random = seededRandom(VICTORY_SIMULATION_SEED + candidate.length * 43 + opponent.length * 29);
+  let wins = 0;
+  for (let i = 0; i < VICTORY_SIMULATIONS; i += 1) {
+    const candidateDraw = candidateModel.mean + normalRandom(random) * candidateModel.sd;
+    const opponentDraw = opponentModel.mean + normalRandom(random) * opponentModel.sd;
+    if (candidateDraw > opponentDraw) wins += 1;
+  }
+  return wins / VICTORY_SIMULATIONS;
+}
+
+function simulatedPairProbabilityFromCache(cache, candidate, opponent, modelByCandidate) {
+  const candidates = [candidate, opponent].sort((a, b) => a.localeCompare(b, "pt-BR"));
+  const key = candidates.join("|");
+  if (!cache.has(key)) {
+    const probability = simulatedPairWinProbability(candidates[0], candidates[1], modelByCandidate);
+    cache.set(
+      key,
+      probability == null
+        ? null
+        : new Map([
+            [candidates[0], probability],
+            [candidates[1], 1 - probability],
+          ]),
+    );
+  }
+  return cache.get(key)?.get(candidate) ?? null;
+}
+
 function probabilityRowHtml(row) {
   const firstRound = row.firstRoundWin === "na" ? "—" : percentText(row.firstRoundWin == null ? null : row.firstRoundWin * 100);
   const runoff = row.runoff === "na" ? "—" : percentText(row.runoff == null ? null : row.runoff * 100);
@@ -1231,6 +1263,7 @@ function renderFirstRoundVictoryProbabilities(summary, validRows, displayRows) {
     mean: row.estimate,
     sd: simulationSd(row.candidate, summary),
   }));
+  const modelByCandidate = new Map(candidates.map((row) => [row.candidate, row]));
   const displaySet = new Set(displayRows.map((row) => row.candidate));
   const stats = new Map(displayRows.map((row) => [row.candidate, { firstRoundWins: 0, runoff: 0, opponents: new Map() }]));
 
@@ -1266,7 +1299,7 @@ function renderFirstRoundVictoryProbabilities(summary, validRows, displayRows) {
       let knownOpponentRuns = 0;
       let winProbabilitySum = 0;
       candidateStats.opponents.forEach((count, opponent) => {
-        const probability = secondRoundProbabilityFromPairCache(pairProbabilities, row.candidate, opponent);
+        const probability = simulatedPairProbabilityFromCache(pairProbabilities, row.candidate, opponent, modelByCandidate);
         if (probability == null) return;
         knownOpponentRuns += count;
         winProbabilitySum += probability * count;
