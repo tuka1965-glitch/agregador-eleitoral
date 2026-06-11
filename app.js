@@ -1332,22 +1332,26 @@ function renderSecondRoundVictoryProbabilities(summary, displayRows) {
   }
 
   const pairProbabilities = new Map();
+  const modelByCandidate = new Map(
+    displayRows.map((row) => [
+      row.candidate,
+      {
+        candidate: row.candidate,
+        mean: row.estimate,
+        sd: simulationSd(row.candidate, summary),
+      },
+    ]),
+  );
   const rows = displayRows.map((row) => {
-    const opponentWeights = currentSecondRoundOpponentWeights(row.candidate);
-    let knownOpponentRuns = 0;
-    let winProbabilitySum = 0;
-    opponentWeights.forEach((count, opponent) => {
-      const probability = secondRoundProbabilityFromPairCache(pairProbabilities, row.candidate, opponent, state.selectedScenario);
-      if (probability == null) return;
-      knownOpponentRuns += count;
-      winProbabilitySum += probability * count;
-    });
+    const strongestOpponent = displayRows.find((candidateRow) => candidateRow.candidate !== row.candidate)?.candidate;
     return {
       candidate: row.candidate,
       estimate: row.estimate,
       firstRoundWin: "na",
       runoff: "na",
-      secondRoundWin: knownOpponentRuns ? winProbabilitySum / knownOpponentRuns : null,
+      secondRoundWin: strongestOpponent
+        ? simulatedPairProbabilityFromCache(pairProbabilities, row.candidate, strongestOpponent, modelByCandidate)
+        : null,
     };
   });
 
@@ -1356,6 +1360,8 @@ function renderSecondRoundVictoryProbabilities(summary, displayRows) {
   els.probabilityRows.innerHTML = rows.map(probabilityRowHtml).join("");
   state.probabilityRows = rows;
   state.probabilityMode = "second";
+  els.probabilityMeta.textContent =
+    `${VICTORY_SIMULATIONS.toLocaleString("pt-BR")} simulacoes de segundo turno contra o adversario mais forte na tabela atual.`;
 }
 
 function renderVictoryProbabilities() {
