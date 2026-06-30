@@ -2135,6 +2135,8 @@ function reportPageCanvases() {
   newPage();
   text("Relatorio do Agregador Eleitoral", margin, y, 20, "#1c2421", 800);
   y += 25 * scale;
+  text("Tulio Kahn - tuka1965@gmail.com", margin, y, 10, "#0b6f77", 700);
+  y += 17 * scale;
   text(`Gerado em ${new Date().toLocaleString("pt-BR")}`, margin, y, 9, "#65726c", 400);
   y += 20 * scale;
   const chipY = y;

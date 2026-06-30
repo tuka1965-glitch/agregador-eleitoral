@@ -54,6 +54,10 @@ h1 {
   color: var(--muted);
 }
 
+.authorLine {
+  font-weight: 700;
+}
+
 .actions {
   display: flex;
   flex-wrap: wrap;
