@@ -55,6 +55,7 @@ const state = {
   polls: [],
   scenarios: [],
   selectedScenario: "",
+  selectedScenarioKey: "all",
   selectedCandidates: new Set(),
   selectedMonths: new Set(),
   selectedPollsters: new Set(),
@@ -64,6 +65,7 @@ const state = {
 };
 
 const els = {
+  roundSelect: document.querySelector("#roundSelect"),
   scenarioSelect: document.querySelector("#scenarioSelect"),
   monthSelect: document.querySelector("#monthSelect"),
   pollsterSelect: document.querySelector("#pollsterSelect"),
@@ -837,10 +839,27 @@ function computeHouseEffects(rows) {
   );
 }
 
+function scenarioKeyForPoll(poll) {
+  return poll.scenarioVariant || "Cenario unico";
+}
+
+function scenarioMatches(poll) {
+  return state.selectedScenarioKey === "all" || scenarioKeyForPoll(poll) === state.selectedScenarioKey;
+}
+
+function roundPolls() {
+  return state.polls.filter((poll) => poll.scenario === state.selectedScenario && scenarioMatches(poll));
+}
+
+function selectedScenarioLabel() {
+  return state.selectedScenarioKey === "all" ? state.selectedScenario : `${state.selectedScenario} - ${state.selectedScenarioKey}`;
+}
+
 function selectedPolls() {
   return state.polls.filter(
     (poll) =>
       poll.scenario === state.selectedScenario &&
+      scenarioMatches(poll) &&
       state.selectedCandidates.has(poll.candidate) &&
       state.selectedMonths.has(poll.month) &&
       state.selectedPollsters.has(poll.pollster),
@@ -851,6 +870,7 @@ function selectedPollsForExport() {
   return state.polls.filter(
     (poll) =>
       poll.scenario === state.selectedScenario &&
+      scenarioMatches(poll) &&
       state.selectedMonths.has(poll.month) &&
       state.selectedPollsters.has(poll.pollster),
   );
@@ -1110,6 +1130,7 @@ function secondRoundRowsFor(candidateA, candidateB, scenario = null) {
     (poll) =>
       /segundo turno/i.test(poll.round || poll.scenario) &&
       (!scenario || poll.scenario === scenario) &&
+      scenarioMatches(poll) &&
       state.selectedMonths.has(poll.month) &&
       state.selectedPollsters.has(poll.pollster) &&
       candidateSet.has(poll.candidate),
@@ -1232,6 +1253,7 @@ function currentSecondRoundOpponentWeights(candidate) {
     (poll) =>
       poll.scenario === state.selectedScenario &&
       /segundo turno/i.test(poll.round || poll.scenario) &&
+      scenarioMatches(poll) &&
       state.selectedMonths.has(poll.month) &&
       state.selectedPollsters.has(poll.pollster) &&
       !isSpecialChoice(poll.candidate) &&
@@ -1562,14 +1584,33 @@ function renderCommentary() {
 function renderControls() {
   state.scenarios = [...new Set(state.polls.map((poll) => poll.scenario))];
   state.selectedScenario = state.scenarios.find((s) => /primeiro turno/i.test(s)) || state.scenarios[0];
-  els.scenarioSelect.innerHTML = state.scenarios.map((scenario) => `<option>${scenario}</option>`).join("");
-  els.scenarioSelect.value = state.selectedScenario;
+  els.roundSelect.innerHTML = state.scenarios.map((scenario) => `<option>${scenario}</option>`).join("");
+  els.roundSelect.value = state.selectedScenario;
+  updateScenarioOptions();
   updateDateAndPollsterFilters();
   updateCandidates();
 }
 
+function updateScenarioOptions() {
+  const variants = [
+    ...new Set(
+      state.polls
+        .filter((poll) => poll.scenario === state.selectedScenario && poll.scenarioVariant)
+        .map(scenarioKeyForPoll),
+    ),
+  ].sort((a, b) => a.localeCompare(b, "pt-BR"));
+  const previous = state.selectedScenarioKey;
+  state.selectedScenarioKey = previous !== "all" && variants.includes(previous) ? previous : "all";
+  els.scenarioSelect.innerHTML = [
+    `<option value="all"${state.selectedScenarioKey === "all" ? " selected" : ""}>Todos os cenários</option>`,
+    ...variants.map(
+      (variant) => `<option value="${escapeHtml(variant)}"${state.selectedScenarioKey === variant ? " selected" : ""}>${variant}</option>`,
+    ),
+  ].join("");
+}
+
 function updateDateAndPollsterFilters() {
-  const scenarioPolls = state.polls.filter((poll) => poll.scenario === state.selectedScenario);
+  const scenarioPolls = roundPolls();
   const months = [...new Set(scenarioPolls.map((poll) => poll.month))].sort();
   const pollsters = [...new Set(scenarioPolls.map((poll) => poll.pollster).filter(isValidPollsterName))].sort((a, b) =>
     a.localeCompare(b, "pt-BR"),
@@ -1587,6 +1628,7 @@ function updateCandidates() {
   const filteredPolls = state.polls.filter(
     (poll) =>
       poll.scenario === state.selectedScenario &&
+      scenarioMatches(poll) &&
       state.selectedMonths.has(poll.month) &&
       state.selectedPollsters.has(poll.pollster),
   );
@@ -1634,7 +1676,7 @@ function updateCandidates() {
 
 function render() {
   const polls = selectedPolls();
-  els.chartTitle.textContent = state.selectedScenario || "Sem cenário";
+  els.chartTitle.textContent = selectedScenarioLabel() || "Sem cenário";
   els.chartMeta.textContent = `${polls.length} observações candidato-pesquisa · ${new Set(polls.map((p) => p.pollster)).size} institutos · ${new Set(polls.map((p) => p.month)).size} meses`;
   els.loessSpanValue.textContent = Number(els.loessSpan.value).toLocaleString("pt-BR");
   els.halfLifeValue.textContent = `${els.halfLife.value} dias`;
@@ -1747,9 +1789,14 @@ function canvasToBlob(canvas, type = "image/png", quality = undefined) {
 }
 
 function chartLegendItems() {
-  return [...els.legend.querySelectorAll(".legendItem")].map((item) => ({
+  const domItems = [...els.legend.querySelectorAll(".legendItem")].map((item) => ({
     label: item.textContent.trim(),
     color: item.querySelector(".swatch")?.style.background || "#65726c",
+  }));
+  if (domItems.length) return domItems;
+  return [...groupBy(selectedPolls(), (poll) => poll.candidate).keys()].map((candidate, index) => ({
+    label: candidate,
+    color: COLORS[index % COLORS.length],
   }));
 }
 
@@ -2185,8 +2232,16 @@ function exportPdf() {
   }
 }
 
+els.roundSelect.addEventListener("change", () => {
+  state.selectedScenario = els.roundSelect.value;
+  state.selectedScenarioKey = "all";
+  updateScenarioOptions();
+  updateDateAndPollsterFilters();
+  updateCandidates();
+  render();
+});
 els.scenarioSelect.addEventListener("change", () => {
-  state.selectedScenario = els.scenarioSelect.value;
+  state.selectedScenarioKey = els.scenarioSelect.value;
   updateDateAndPollsterFilters();
   updateCandidates();
   render();
