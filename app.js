@@ -1922,74 +1922,240 @@ function selectedLabels(select) {
   return [...select.selectedOptions].map((option) => option.textContent.trim());
 }
 
-function reportTextLines() {
-  const bayesRows = [...els.bayesRows.querySelectorAll("tr")].slice(0, 10).map((row) =>
-    [...row.cells].map((cell) => cell.textContent.trim()).join(" | "),
-  );
-  const probabilityRows = [...els.probabilityRows.querySelectorAll("tr")].slice(0, 10).map((row) =>
-    [...row.cells].map((cell) => cell.textContent.trim()).join(" | "),
-  );
-  const commentary = [...els.commentaryBody.querySelectorAll("p")].flatMap((p) => wrapPdfText(p.textContent, 96));
-  return [
-    "Relatorio do Agregador Eleitoral",
-    `Gerado em ${new Date().toLocaleString("pt-BR")}`,
-    `Cenario: ${els.chartTitle.textContent}`,
-    `Resumo: ${els.chartMeta.textContent}`,
-    `Meses: ${selectedLabels(els.monthSelect).join(", ")}`,
-    `Institutos: ${selectedLabels(els.pollsterSelect).length} selecionados`,
-    `Visualizacao: ${selectedLabels(els.candidateSelect).join(", ")}`,
-    "",
-    "Media bayesiana",
-    ...bayesRows,
-    "",
-    "Probabilidades de vitoria",
-    ...probabilityRows,
-    "",
-    "Comentario do agregado",
-    ...commentary,
-  ].filter((line, index, lines) => line || lines[index - 1]);
+function tableData(tableSelector, maxRows) {
+  const table = document.querySelector(tableSelector);
+  if (!table) return { headers: [], rows: [] };
+  return {
+    headers: [...table.querySelectorAll("thead th")].map((cell) => cell.textContent.trim()),
+    rows: [...table.querySelectorAll("tbody tr")].slice(0, maxRows).map((row) =>
+      [...row.cells].map((cell) => cell.textContent.trim()),
+    ),
+  };
 }
 
-function jpegDataFromCanvas() {
-  const dataUrl = els.chart.toDataURL("image/jpeg", 0.92);
+function wrapCanvasText(ctx, text, maxWidth) {
+  const words = asciiText(text).split(" ").filter(Boolean);
+  const lines = [];
+  let line = "";
+  words.forEach((word) => {
+    const nextLine = `${line} ${word}`.trim();
+    if (line && ctx.measureText(nextLine).width > maxWidth) {
+      lines.push(line);
+      line = word;
+    } else {
+      line = nextLine;
+    }
+  });
+  if (line) lines.push(line);
+  return lines.length ? lines : [""];
+}
+
+function jpegDataFromCanvas(canvas) {
+  const dataUrl = canvas.toDataURL("image/jpeg", 0.92);
   const [, base64] = dataUrl.split(",");
   return atob(base64);
+}
+
+function reportPageCanvases() {
+  const scale = 2;
+  const pageW = 595 * scale;
+  const pageH = 842 * scale;
+  const margin = 42 * scale;
+  const contentW = pageW - margin * 2;
+  const pages = [];
+  let canvas;
+  let ctx;
+  let y;
+
+  function newPage() {
+    canvas = document.createElement("canvas");
+    canvas.width = pageW;
+    canvas.height = pageH;
+    ctx = canvas.getContext("2d");
+    ctx.fillStyle = "#f6f7f2";
+    ctx.fillRect(0, 0, pageW, pageH);
+    ctx.fillStyle = "#65726c";
+    ctx.font = `${9 * scale}px Inter, system-ui, sans-serif`;
+    ctx.textAlign = "right";
+    ctx.fillText(`Pagina ${pages.length + 1}`, pageW - margin, pageH - 22 * scale);
+    pages.push(canvas);
+    y = margin;
+  }
+
+  function ensureSpace(height) {
+    if (y + height > pageH - margin) newPage();
+  }
+
+  function text(value, x, baseline, size = 10, color = "#1c2421", weight = 400) {
+    ctx.fillStyle = color;
+    ctx.font = `${weight} ${size * scale}px Inter, system-ui, sans-serif`;
+    ctx.textAlign = "left";
+    ctx.textBaseline = "alphabetic";
+    ctx.fillText(asciiText(value), x, baseline);
+  }
+
+  function paragraph(value, x, maxWidth, size = 10, lineHeight = 15, color = "#2d3833") {
+    ctx.font = `400 ${size * scale}px Inter, system-ui, sans-serif`;
+    const lines = wrapCanvasText(ctx, value, maxWidth);
+    lines.forEach((line) => {
+      text(line, x, y, size, color, 400);
+      y += lineHeight * scale;
+    });
+  }
+
+  function panel(height) {
+    ensureSpace(height);
+    const top = y;
+    ctx.fillStyle = "#ffffff";
+    ctx.strokeStyle = "#d8ded5";
+    ctx.lineWidth = scale;
+    ctx.beginPath();
+    ctx.roundRect(margin, top, contentW, height, 8 * scale);
+    ctx.fill();
+    ctx.stroke();
+    return top;
+  }
+
+  function sectionTitle(title, meta = "") {
+    const height = meta ? 58 * scale : 42 * scale;
+    const top = panel(height);
+    text(title, margin + 18 * scale, top + 25 * scale, 13, "#1c2421", 700);
+    if (meta) text(meta, margin + 18 * scale, top + 44 * scale, 8.5, "#65726c", 400);
+    y = top + height + 12 * scale;
+  }
+
+  function chip(label, value, x, chipY, width) {
+    ctx.fillStyle = "#eef3ee";
+    ctx.strokeStyle = "#d8ded5";
+    ctx.beginPath();
+    ctx.roundRect(x, chipY, width, 38 * scale, 6 * scale);
+    ctx.fill();
+    ctx.stroke();
+    text(label, x + 10 * scale, chipY + 14 * scale, 7.5, "#65726c", 700);
+    text(value, x + 10 * scale, chipY + 30 * scale, 8.5, "#1c2421", 700);
+  }
+
+  function drawTable(title, meta, table, widths, maxRows) {
+    sectionTitle(title, meta);
+    const x = margin + 12 * scale;
+    const tableW = contentW - 24 * scale;
+    const colWidths = widths.map((width) => width * tableW);
+    const headerH = 28 * scale;
+    const lineH = 11 * scale;
+    const pad = 7 * scale;
+    const rows = table.rows.slice(0, maxRows);
+    const header = table.headers;
+
+    function drawHeader() {
+      ensureSpace(headerH + 22 * scale);
+      ctx.fillStyle = "#eef3ee";
+      ctx.strokeStyle = "#d8ded5";
+      ctx.fillRect(x, y, tableW, headerH);
+      ctx.strokeRect(x, y, tableW, headerH);
+      let cx = x;
+      header.forEach((cell, index) => {
+        text(cell, cx + pad, y + 18 * scale, 8, "#1c2421", 700);
+        cx += colWidths[index] || colWidths.at(-1);
+      });
+      y += headerH;
+    }
+
+    drawHeader();
+    rows.forEach((row, rowIndex) => {
+      ctx.font = `400 ${8 * scale}px Inter, system-ui, sans-serif`;
+      const wrapped = row.map((cell, index) => wrapCanvasText(ctx, cell, (colWidths[index] || colWidths.at(-1)) - pad * 2));
+      const rowH = Math.max(24 * scale, Math.max(...wrapped.map((lines) => lines.length)) * lineH + pad * 2);
+      if (y + rowH > pageH - margin) {
+        newPage();
+        drawHeader();
+      }
+      ctx.fillStyle = rowIndex % 2 ? "#fbfcf8" : "#ffffff";
+      ctx.strokeStyle = "#d8ded5";
+      ctx.fillRect(x, y, tableW, rowH);
+      ctx.strokeRect(x, y, tableW, rowH);
+      let cx = x;
+      wrapped.forEach((lines, index) => {
+        lines.slice(0, 3).forEach((line, lineIndex) => {
+          text(line, cx + pad, y + pad + (lineIndex + 1) * lineH - 2 * scale, 8, "#2d3833", 400);
+        });
+        cx += colWidths[index] || colWidths.at(-1);
+      });
+      y += rowH;
+    });
+    y += 18 * scale;
+  }
+
+  newPage();
+  text("Relatorio do Agregador Eleitoral", margin, y, 20, "#1c2421", 800);
+  y += 25 * scale;
+  text(`Gerado em ${new Date().toLocaleString("pt-BR")}`, margin, y, 9, "#65726c", 400);
+  y += 20 * scale;
+  const chipY = y;
+  chip("Cenario", els.chartTitle.textContent || "-", margin, chipY, 178 * scale);
+  chip("Meses", selectedLabels(els.monthSelect).slice(0, 4).join(", ") || "-", margin + 190 * scale, chipY, 156 * scale);
+  chip("Institutos", `${selectedLabels(els.pollsterSelect).length} selecionados`, margin + 358 * scale, chipY, 153 * scale);
+  y += 58 * scale;
+
+  const chart = chartCanvasWithLegend();
+  const chartH = Math.round(contentW * (chart.height / Math.max(1, chart.width)));
+  sectionTitle("Grafico de pesquisas", els.chartMeta.textContent);
+  ensureSpace(chartH + 18 * scale);
+  ctx.drawImage(chart, margin + 12 * scale, y, contentW - 24 * scale, chartH);
+  y += chartH + 22 * scale;
+
+  drawTable(
+    "Media bayesiana",
+    els.bayesMeta.textContent,
+    tableData(".bayesPanel table", 10),
+    [0.23, 0.16, 0.1, 0.13, 0.13, 0.25],
+    10,
+  );
+  drawTable(
+    "Probabilidades de vitoria",
+    els.probabilityMeta.textContent,
+    tableData(".probabilityPanel table", 10),
+    [0.24, 0.17, 0.17, 0.22, 0.2],
+    10,
+  );
+
+  sectionTitle("Comentario do agregado");
+  [...els.commentaryBody.querySelectorAll("p")].forEach((p) => {
+    ensureSpace(70 * scale);
+    paragraph(p.textContent, margin + 18 * scale, contentW - 36 * scale, 10, 15, "#2d3833");
+    y += 6 * scale;
+  });
+
+  drawTable(
+    "Pesquisas lidas",
+    "Amostra das pesquisas exibidas nos filtros atuais.",
+    tableData(".pollsPanel table", 24),
+    [0.14, 0.24, 0.2, 0.08, 0.1, 0.24],
+    24,
+  );
+
+  return pages;
 }
 
 function makePdf() {
   const pageW = 595;
   const pageH = 842;
-  const margin = 42;
-  const imageBinary = jpegDataFromCanvas();
-  const imageW = 511;
-  const imageH = Math.round(imageW * (els.chart.height / Math.max(1, els.chart.width)));
-  let y = pageH - margin;
-  const commands = ["q", "1 1 1 rg", `0 0 ${pageW} ${pageH} re f`, "Q"];
-
-  reportTextLines()
-    .flatMap((line) => (line ? wrapPdfText(line, 96) : [""]))
-    .slice(0, 34)
-    .forEach((line, index) => {
-      if (!line) {
-        y -= 10;
-        return;
-      }
-      const size = index === 0 ? 16 : 9;
-      commands.push(`BT /F1 ${size} Tf ${margin} ${y} Td (${pdfEscape(line)}) Tj ET`);
-      y -= index === 0 ? 20 : 12;
-    });
-
-  const imageY = Math.max(45, y - imageH - 16);
-  commands.push(`q ${imageW} 0 0 ${imageH} ${margin} ${imageY} cm /Im1 Do Q`);
-  const content = commands.join("\n");
-  const objects = [
-    "<< /Type /Catalog /Pages 2 0 R >>",
-    "<< /Type /Pages /Kids [3 0 R] /Count 1 >>",
-    `<< /Type /Page /Parent 2 0 R /MediaBox [0 0 ${pageW} ${pageH}] /Resources << /Font << /F1 5 0 R >> /XObject << /Im1 6 0 R >> >> /Contents 4 0 R >>`,
-    `<< /Length ${content.length} >>\nstream\n${content}\nendstream`,
-    "<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>",
-    `<< /Type /XObject /Subtype /Image /Width ${els.chart.width} /Height ${els.chart.height} /ColorSpace /DeviceRGB /BitsPerComponent 8 /Filter /DCTDecode /Length ${imageBinary.length} >>\nstream\n${imageBinary}\nendstream`,
-  ];
+  const pages = reportPageCanvases();
+  const objects = ["<< /Type /Catalog /Pages 2 0 R >>"];
+  const pageObjectIds = pages.map((_, index) => 3 + index * 3);
+  objects.push(`<< /Type /Pages /Kids [${pageObjectIds.map((id) => `${id} 0 R`).join(" ")}] /Count ${pages.length} >>`);
+  pages.forEach((page, index) => {
+    const pageId = pageObjectIds[index];
+    const contentId = pageId + 1;
+    const imageId = pageId + 2;
+    const imageName = `Im${index + 1}`;
+    const imageBinary = jpegDataFromCanvas(page);
+    const content = `q ${pageW} 0 0 ${pageH} 0 0 cm /${imageName} Do Q`;
+    objects.push(
+      `<< /Type /Page /Parent 2 0 R /MediaBox [0 0 ${pageW} ${pageH}] /Resources << /XObject << /${imageName} ${imageId} 0 R >> >> /Contents ${contentId} 0 R >>`,
+      `<< /Length ${content.length} >>\nstream\n${content}\nendstream`,
+      `<< /Type /XObject /Subtype /Image /Width ${page.width} /Height ${page.height} /ColorSpace /DeviceRGB /BitsPerComponent 8 /Filter /DCTDecode /Length ${imageBinary.length} >>\nstream\n${imageBinary}\nendstream`,
+    );
+  });
   let pdf = "%PDF-1.4\n";
   const offsets = [0];
   objects.forEach((object, index) => {
