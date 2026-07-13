@@ -25,6 +25,7 @@ const VICTORY_SIMULATION_SEED = 20260601;
 
 const POLLSTER_RATINGS = [
   ["AtlasIntel", 5.82, 15, 2.0, "D"],
+  ["Gerp", 5.82, 15, 2.0, "D"],
   ["Datafolha", 3.16, 190, -0.4, "B+"],
   ["Ipec (antigo Ibope)", 3.34, 1089, -0.61, "A"],
   ["Paraná Pesquisas", 3.33, 126, -0.42, "B+"],
