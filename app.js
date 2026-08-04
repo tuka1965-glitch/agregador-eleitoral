@@ -1583,7 +1583,9 @@ function renderCommentary() {
 }
 
 function renderControls() {
-  state.scenarios = [...new Set(state.polls.map((poll) => poll.scenario))];
+  const parsedScenarios = [...new Set(state.polls.map((poll) => poll.scenario))];
+  const electionRounds = parsedScenarios.filter((scenario) => /primeiro turno|segundo turno/i.test(scenario));
+  state.scenarios = electionRounds.length ? electionRounds : parsedScenarios.filter((scenario) => !/^tabela$/i.test(scenario));
   state.selectedScenario = state.scenarios.find((s) => /primeiro turno/i.test(s)) || state.scenarios[0];
   els.roundSelect.innerHTML = state.scenarios.map((scenario) => `<option>${scenario}</option>`).join("");
   els.roundSelect.value = state.selectedScenario;
