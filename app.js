@@ -460,6 +460,15 @@ function getScenarioBase(headingPath) {
   return round || headingPath.find((heading) => !isCalendarHeading(heading)) || "Tabela";
 }
 
+function inferRoundFromTable(headingPath, columns) {
+  const headingRound = headingPath.find((heading) => /primeiro turno|segundo turno/i.test(heading));
+  if (headingRound) return headingRound;
+
+  const mainCandidates = columns.candidates.filter(({ name }) => !isSpecialChoice(name) && !isOtherChoice(name));
+  if (mainCandidates.length <= 2 && columns.candidates.length <= 4) return "Segundo turno";
+  return "Primeiro turno";
+}
+
 function expandRowCells(row) {
   const cells = [...row.children].filter((cell) => ["TH", "TD"].includes(cell.tagName));
   return cells.map((cell) => ({
@@ -563,8 +572,9 @@ function parseTables(html) {
     if (columns.date < 0 || columns.candidates.length < 2) return;
 
     const headingPath = getHeadingPath(table);
-    const round = headingPath.find((h) => /primeiro turno|segundo turno/i.test(h)) || headingPath[0] || "Tabela";
-    const baseScenario = getScenarioBase(headingPath);
+    const round = inferRoundFromTable(headingPath, columns);
+    const parsedBaseScenario = getScenarioBase(headingPath);
+    const baseScenario = /primeiro turno|segundo turno/i.test(parsedBaseScenario) ? parsedBaseScenario : round;
     const tableYear = inferYear(headingPath);
     const bodyRows = buildGrid(dataRows);
     const tableRecords = [];
