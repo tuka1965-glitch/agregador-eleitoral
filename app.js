@@ -1,6 +1,3 @@
-Warning: truncated output (original token count: 22055)
-Total output lines: 2311
-
 const PAGE_TITLE = "Pesquisas de opinião para a eleição presidencial no Brasil em 2026";
 const API_URL = `https://pt.wikipedia.org/w/api.php?action=parse&page=${encodeURIComponent(PAGE_TITLE)}&prop=text&format=json&origin=*`;
 const VERSIONED_DATA_URL = "./data/wikipedia-latest.json";
@@ -152,6 +149,69 @@ const POLLSTER_ALIAS_INDEX = new Map(
 function canonicalPollsterName(name) {
   const cleaned = cleanText(name);
   return POLLSTER_ALIAS_INDEX.get(normalizePollsterKey(cleaned)) || cleaned;
+}
+
+function levenshteinDistance(a, b) {
+  const previous = Array.from({ length: b.length + 1 }, (_, index) => index);
+  for (let i = 1; i <= a.length; i += 1) {
+    let diagonal = previous[0];
+    previous[0] = i;
+    for (let j = 1; j <= b.length; j += 1) {
+      const above = previous[j];
+      previous[j] = a[i - 1] === b[j - 1]
+        ? diagonal
+        : Math.min(previous[j] + 1, previous[j - 1] + 1, diagonal + 1);
+      diagonal = above;
+    }
+  }
+  return previous[b.length];
+}
+
+function pollsterSimilarity(a, b) {
+  const left = normalizePollsterKey(a);
+  const right = normalizePollsterKey(b);
+  if (!left || !right) return 0;
+  if (left === right || left.includes(right) || right.includes(left)) return 1;
+  const distance = levenshteinDistance(left, right);
+  return 1 - distance / Math.max(left.length, right.length);
+}
+
+function consolidatePollsterNames(rows) {
+  const names = [...new Set(rows.map((row) => row.pollster).filter(Boolean))];
+  const canonicalByKey = new Map();
+  const frequency = new Map();
+  rows.forEach((row) => frequency.set(row.pollster, (frequency.get(row.pollster) || 0) + 1));
+
+  names.forEach((name) => {
+    const explicit = canonicalPollsterName(name);
+    const key = normalizePollsterKey(explicit);
+    if (canonicalByKey.has(key)) return;
+
+    const rating = pollsterRatingFor(explicit);
+    if (rating) {
+      canonicalByKey.set(key, rating.name);
+      return;
+    }
+
+    const similar = names
+      .filter((candidate) => candidate !== name)
+      .map((candidate) => ({ candidate, score: pollsterSimilarity(explicit, candidate) }))
+      .filter(({ score }) => score >= 0.9)
+      .sort((a, b) => (b.score - a.score) || (frequency.get(b.candidate) - frequency.get(a.candidate)));
+    const representative = similar[0]?.candidate;
+    if (representative) {
+      const representativeKey = normalizePollsterKey(canonicalPollsterName(representative));
+      canonicalByKey.set(key, canonicalPollsterName(representative));
+      canonicalByKey.set(representativeKey, canonicalPollsterName(representative));
+    } else {
+      canonicalByKey.set(key, explicit);
+    }
+  });
+
+  return rows.map((row) => ({
+    ...row,
+    pollster: canonicalByKey.get(normalizePollsterKey(canonicalPollsterName(row.pollster))) || canonicalPollsterName(row.pollster),
+  }));
 }
 
 function pollsterRatingFor(name) {
@@ -1113,7 +1173,203 @@ function seededRandom(seed) {
 }
 
 function normalRandom(random) {
-  const u1 = Math.max(Number…2055 tokens truncated…e((sum, row) => sum + row.value, 0) || 1;
+  const u1 = Math.max(Number.EPSILON, random());
+  const u2 = random();
+  return Math.sqrt(-2 * Math.log(u1)) * Math.cos(2 * Math.PI * u2);
+}
+
+function simulationSd(candidate, summary) {
+  const candidatePolls = summary.windowPolls.filter((poll) => poll.candidate === candidate);
+  if (!candidatePolls.length) return 4;
+  const margins = candidatePolls.map((poll) => poll.margin).filter((value) => value != null && value > 0);
+  const avgMargin = margins.length ? mean(margins) : 3;
+  const totalSample = candidatePolls.reduce((sum, poll) => sum + Math.max(300, poll.sample || 1000), 0);
+  const p = (summary.rows.find((row) => row.candidate === candidate)?.estimate || 0) / 100;
+  const samplingSd = Math.sqrt(Math.max(0.0001, p * (1 - p)) / Math.max(300, totalSample)) * 100;
+  return Math.min(8, Math.max(1.2, avgMargin / Math.sqrt(candidatePolls.length), samplingSd * 2));
+}
+
+function percentText(value) {
+  if (value == null || Number.isNaN(value)) return "sem dados";
+  if (value > 0 && value < 0.05) return "<0,1%";
+  return `${value.toLocaleString("pt-BR", { maximumFractionDigits: 1 })}%`;
+}
+
+function pairKey(a, b) {
+  return [a, b].sort((x, y) => x.localeCompare(y, "pt-BR")).join("|");
+}
+
+function secondRoundRowsFor(candidateA, candidateB, scenario = null) {
+  const candidateSet = new Set([candidateA, candidateB]);
+  const secondRoundPolls = state.polls.filter(
+    (poll) =>
+      /segundo turno/i.test(poll.round || poll.scenario) &&
+      (!scenario || poll.scenario === scenario) &&
+      scenarioMatches(poll) &&
+      state.selectedMonths.has(poll.month) &&
+      state.selectedPollsters.has(poll.pollster) &&
+      candidateSet.has(poll.candidate),
+  );
+  const units = [...groupBy(secondRoundPolls, (poll) => [poll.scenario, poll.pollId, poll.scenarioIndex || 1].join("|")).values()]
+    .map((polls) => ({
+      pollster: polls[0].pollster,
+      dateMid: polls[0].dateMid,
+      t: polls[0].t,
+      sample: polls[0].sample,
+      margin: polls[0].margin,
+      candidates: Object.fromEntries(polls.map((poll) => [poll.candidate, poll.pct])),
+    }))
+    .filter((unit) => unit.candidates[candidateA] != null && unit.candidates[candidateB] != null);
+  return units.map((unit) => {
+    const a = unit.candidates[candidateA];
+    const b = unit.candidates[candidateB];
+    return {
+      candidate: candidateA,
+      pollster: unit.pollster,
+      t: unit.t,
+      dateMid: unit.dateMid,
+      sample: unit.sample,
+      margin: unit.margin,
+      pct: (a / Math.max(0.0001, a + b)) * 100,
+    };
+  });
+}
+
+function secondRoundWinProbability(candidate, opponent, scenario = null) {
+  const pairRows = secondRoundRowsFor(candidate, opponent, scenario);
+  if (!pairRows.length) return null;
+  const latestTime = Math.max(...pairRows.map((poll) => poll.t));
+  const halfLifeDays = Number(els.halfLife.value);
+  const latestTimes = recentPollTimes(pairRows.map((poll) => ({ ...poll, scenario: "Segundo turno", pollId: `${poll.pollster}|${poll.dateMid}` })), "Segundo turno");
+  const estimate = bayesianEstimateAt(
+    pairRows.map((poll) => ({ ...poll, isRecent: latestTimes.has(poll.t) })),
+    pairRows,
+    latestTime,
+    halfLifeDays,
+    candidate,
+  );
+  const margins = pairRows.map((poll) => poll.margin).filter((value) => value != null && value > 0);
+  const avgMargin = margins.length ? mean(margins) : 3;
+  const sd = Math.min(8, Math.max(1.4, avgMargin / Math.sqrt(pairRows.length)));
+  const random = seededRandom(VICTORY_SIMULATION_SEED + candidate.length * 31 + opponent.length * 17 + (scenario || "").length);
+  let wins = 0;
+  for (let i = 0; i < VICTORY_SIMULATIONS; i += 1) {
+    if (estimate + normalRandom(random) * sd > 50) wins += 1;
+  }
+  return wins / VICTORY_SIMULATIONS;
+}
+
+function secondRoundProbabilityFromPairCache(cache, candidate, opponent, scenario = null) {
+  const candidates = [candidate, opponent].sort((a, b) => a.localeCompare(b, "pt-BR"));
+  const key = `${candidates.join("|")}|${scenario || ""}`;
+  if (!cache.has(key)) {
+    const probability = secondRoundWinProbability(candidates[0], candidates[1], scenario);
+    cache.set(
+      key,
+      probability == null
+        ? null
+        : new Map([
+            [candidates[0], probability],
+            [candidates[1], 1 - probability],
+          ]),
+    );
+  }
+  return cache.get(key)?.get(candidate) ?? null;
+}
+
+function simulatedPairWinProbability(candidate, opponent, modelByCandidate) {
+  const candidateModel = modelByCandidate.get(candidate);
+  const opponentModel = modelByCandidate.get(opponent);
+  if (!candidateModel || !opponentModel) return null;
+  const random = seededRandom(VICTORY_SIMULATION_SEED + candidate.length * 43 + opponent.length * 29);
+  let wins = 0;
+  for (let i = 0; i < VICTORY_SIMULATIONS; i += 1) {
+    const candidateDraw = candidateModel.mean + normalRandom(random) * candidateModel.sd;
+    const opponentDraw = opponentModel.mean + normalRandom(random) * opponentModel.sd;
+    if (candidateDraw > opponentDraw) wins += 1;
+  }
+  return wins / VICTORY_SIMULATIONS;
+}
+
+function simulatedPairProbabilityFromCache(cache, candidate, opponent, modelByCandidate) {
+  const candidates = [candidate, opponent].sort((a, b) => a.localeCompare(b, "pt-BR"));
+  const key = candidates.join("|");
+  if (!cache.has(key)) {
+    const probability = simulatedPairWinProbability(candidates[0], candidates[1], modelByCandidate);
+    cache.set(
+      key,
+      probability == null
+        ? null
+        : new Map([
+            [candidates[0], probability],
+            [candidates[1], 1 - probability],
+          ]),
+    );
+  }
+  return cache.get(key)?.get(candidate) ?? null;
+}
+
+function probabilityRowHtml(row) {
+  const firstRound = row.firstRoundWin === "na" ? "—" : percentText(row.firstRoundWin == null ? null : row.firstRoundWin * 100);
+  const runoff = row.runoff === "na" ? "—" : percentText(row.runoff == null ? null : row.runoff * 100);
+  const secondRound =
+    row.secondRoundWin === "na" ? "—" : percentText(row.secondRoundWin == null ? null : row.secondRoundWin * 100);
+  return `<tr>
+        <td>${escapeHtml(row.candidate)}</td>
+        <td>${firstRound}</td>
+        <td>${runoff}</td>
+        <td>${secondRound}</td>
+        <td>${row.estimate.toLocaleString("pt-BR", { maximumFractionDigits: 1 })}%</td>
+      </tr>`;
+}
+
+function currentSecondRoundOpponentWeights(candidate) {
+  const scenarioPolls = state.polls.filter(
+    (poll) =>
+      poll.scenario === state.selectedScenario &&
+      /segundo turno/i.test(poll.round || poll.scenario) &&
+      scenarioMatches(poll) &&
+      state.selectedMonths.has(poll.month) &&
+      state.selectedPollsters.has(poll.pollster) &&
+      !isSpecialChoice(poll.candidate) &&
+      !isOtherChoice(poll.candidate),
+  );
+  const weights = new Map();
+  [...groupBy(scenarioPolls, (poll) => [poll.pollId, poll.scenarioIndex || 1].join("|")).values()].forEach((polls) => {
+    const names = [...new Set(polls.map((poll) => poll.candidate))];
+    if (!names.includes(candidate)) return;
+    names
+      .filter((name) => name !== candidate)
+      .forEach((opponent) => weights.set(opponent, (weights.get(opponent) || 0) + 1));
+  });
+  return weights;
+}
+
+function renderFirstRoundVictoryProbabilities(summary, validRows, displayRows) {
+  if (displayRows.length < 2 || validRows.length < 2) {
+    els.probabilityMeta.textContent = "São necessários ao menos dois candidatos com votos válidos para simular.";
+    els.probabilityRows.innerHTML = "";
+    state.probabilityRows = [];
+    state.probabilityMode = "first";
+    return;
+  }
+
+  const random = seededRandom(VICTORY_SIMULATION_SEED);
+  const candidates = validRows.map((row) => ({
+    candidate: row.candidate,
+    mean: row.estimate,
+    sd: simulationSd(row.candidate, summary),
+  }));
+  const modelByCandidate = new Map(candidates.map((row) => [row.candidate, row]));
+  const displaySet = new Set(displayRows.map((row) => row.candidate));
+  const stats = new Map(displayRows.map((row) => [row.candidate, { firstRoundWins: 0, runoff: 0, opponents: new Map() }]));
+
+  for (let i = 0; i < VICTORY_SIMULATIONS; i += 1) {
+    const draw = candidates.map((row) => ({
+      candidate: row.candidate,
+      value: Math.max(0, row.mean + normalRandom(random) * row.sd),
+    }));
+    const total = draw.reduce((sum, row) => sum + row.value, 0) || 1;
     const validShares = draw
       .map((row) => ({ candidate: row.candidate, share: (row.value / total) * 100 }))
       .sort((a, b) => b.share - a.share);
@@ -1529,7 +1785,7 @@ async function loadData() {
   }
   const html = payload.parse?.text?.["*"];
   if (!html) throw new Error("A API não retornou HTML da página.");
-  state.polls = parseTables(html);
+  state.polls = consolidatePollsterNames(parseTables(html));
   if (!state.polls.length) throw new Error("Nenhuma pesquisa reconhecida nas tabelas.");
   state.houseEffects = computeHouseEffects(state.polls);
   renderControls();
