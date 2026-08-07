@@ -23,6 +23,8 @@ O app busca a página pela API pública da Wikipédia no carregamento:
 https://pt.wikipedia.org/wiki/Pesquisas_de_opini%C3%A3o_para_a_elei%C3%A7%C3%A3o_presidencial_no_Brasil_em_2026
 ```
 
+Em produção, o app prioriza `data/wikipedia-latest.json`, coletado automaticamente pelo GitHub Actions a cada oito horas. Se o arquivo versionado estiver indisponível, ele utiliza a API da Wikipédia como fallback. O histórico das coletas fica em `data/history/` e o índice em `data/manifest.json`.
+
 ## Observações metodológicas
 
 Este é um primeiro protótipo exploratório. A curva bayesiana implementada aqui não estima um modelo hierárquico completo; ela usa um prior empírico por candidato e combina pesquisas por proximidade temporal, amostra e margem de erro. Para uma versão analítica mais forte, o próximo passo seria modelar efeitos por instituto, modo de coleta e indecisos/brancos/nulos em um modelo multinomial ou logit-normal.
