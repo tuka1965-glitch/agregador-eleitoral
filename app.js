@@ -16,7 +16,9 @@ const COLORS = [
 ];
 
 const HOUSE_EFFECT_CORRECTION = 0.6;
-const BOLSONARO_SYSTEMIC_BIAS = 0.5;
+// Não aplicar correção política fixa por padrão. Ajustes desse tipo devem ser
+// estimados por validação fora da amostra e ativados explicitamente.
+const BOLSONARO_SYSTEMIC_BIAS = 0;
 const REGIME_SHIFT_THRESHOLD = 3;
 const REGIME_HALF_LIFE_DAYS = 7;
 const MOMENTUM_WEIGHT = 2;
@@ -368,8 +370,17 @@ function normalizeHeader(parts) {
 }
 
 function parseNumber(value) {
-  const match = cleanText(value).match(/-?\d+(?:[.,]\d+)?/);
-  return match ? Number(match[0].replace(".", "").replace(",", ".")) : null;
+  const match = cleanText(value).match(/-?\d[\d.,]*/);
+  if (!match) return null;
+  const token = match[0];
+  const lastComma = token.lastIndexOf(",");
+  const lastDot = token.lastIndexOf(".");
+  const decimalIndex = Math.max(lastComma, lastDot);
+  const hasDecimalSeparator = decimalIndex >= 0 && token.length - decimalIndex - 1 <= 2;
+  if (!hasDecimalSeparator) return Number(token.replace(/[.,]/g, ""));
+  const integerPart = token.slice(0, decimalIndex).replace(/[.,]/g, "");
+  const decimalPart = token.slice(decimalIndex + 1).replace(/[.,]/g, "");
+  return Number(`${integerPart}.${decimalPart}`);
 }
 
 function parsePercent(value) {
@@ -1146,7 +1157,7 @@ function renderBayesianSummary() {
   }
 
   const { halfLifeDays, latestTime, adaptiveHalfLife, houseAdjustedPollsters, rows } = summary;
-  els.bayesMeta.textContent = `Janela configurada: ${halfLifeDays} dias até ${dateKey(new Date(latestTime))}. Meia-vida efetiva: ${adaptiveHalfLife} dias. Ponderação por recência, n, margem de erro, rating histórico, momentum das últimas ${MOMENTUM_POLL_COUNT} pesquisas, correção parcial de house effect com n > 2 (${houseAdjustedPollsters} institutos) e ajuste sistêmico Bolsonaro de +${BOLSONARO_SYSTEMIC_BIAS.toLocaleString("pt-BR")} pp.`;
+  els.bayesMeta.textContent = `Janela configurada: ${halfLifeDays} dias até ${dateKey(new Date(latestTime))}. Meia-vida efetiva: ${adaptiveHalfLife} dias. Ponderação por recência, n, margem de erro, rating histórico, momentum das últimas ${MOMENTUM_POLL_COUNT} pesquisas, correção parcial de house effect com n > 2 (${houseAdjustedPollsters} institutos) e sem ajuste sistêmico fixo por candidato.`;
   els.bayesRows.innerHTML = rows
     .map(
       (row) => `<tr>
@@ -1429,16 +1440,6 @@ function renderSecondRoundVictoryProbabilities(summary, displayRows) {
   }
 
   const pairProbabilities = new Map();
-  const modelByCandidate = new Map(
-    displayRows.map((row) => [
-      row.candidate,
-      {
-        candidate: row.candidate,
-        mean: row.estimate,
-        sd: simulationSd(row.candidate, summary),
-      },
-    ]),
-  );
   const rows = displayRows.map((row) => {
     const strongestOpponent = displayRows.find((candidateRow) => candidateRow.candidate !== row.candidate)?.candidate;
     return {
@@ -1447,18 +1448,16 @@ function renderSecondRoundVictoryProbabilities(summary, displayRows) {
       firstRoundWin: "na",
       runoff: "na",
       secondRoundWin: strongestOpponent
-        ? simulatedPairProbabilityFromCache(pairProbabilities, row.candidate, strongestOpponent, modelByCandidate)
+        ? secondRoundProbabilityFromPairCache(pairProbabilities, row.candidate, strongestOpponent)
         : null,
     };
   });
 
   els.probabilityMeta.textContent =
-    `${VICTORY_SIMULATIONS.toLocaleString("pt-BR")} simulações de segundo turno, usando os confrontos diretos disponíveis nos filtros atuais.`;
+    "Estimativa baseada exclusivamente nos confrontos diretos de segundo turno disponíveis nos filtros atuais; sem confronto compatível, a célula fica sem dados.";
   els.probabilityRows.innerHTML = rows.map(probabilityRowHtml).join("");
   state.probabilityRows = rows;
   state.probabilityMode = "second";
-  els.probabilityMeta.textContent =
-    `${VICTORY_SIMULATIONS.toLocaleString("pt-BR")} simulacoes de segundo turno contra o adversario mais forte na tabela atual.`;
 }
 
 function renderVictoryProbabilities() {
