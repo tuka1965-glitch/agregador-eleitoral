@@ -28,3 +28,6 @@ Em produção, o app prioriza `data/wikipedia-latest.json`, coletado automaticam
 ## Observações metodológicas
 
 Este é um primeiro protótipo exploratório. A curva bayesiana implementada aqui não estima um modelo hierárquico completo; ela usa um prior empírico por candidato e combina pesquisas por proximidade temporal, amostra e margem de erro. Para uma versão analítica mais forte, o próximo passo seria modelar efeitos por instituto, modo de coleta e indecisos/brancos/nulos em um modelo multinomial ou logit-normal.
+## Backtest histórico
+
+A rotina `backtest.mjs` compara snapshots de previsões com resultados observados e calcula erro absoluto médio, viés médio e número de observações. Os snapshots devem ser colocados em `data/backtest/snapshots/`; instruções detalhadas estão em `data/backtest/GUIA.md`. Como a base atual não contém eleições passadas compatíveis e a eleição de 2026 ainda não ocorreu, o backtest permanece corretamente marcado como `insufficient_data` até que esses arquivos sejam fornecidos.
