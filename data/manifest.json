@@ -1,5 +1,10 @@
 [
   {
+    "collected_at": "2026-08-11T17:15:57.026Z",
+    "file": "wikipedia-latest.json",
+    "source_url": "https://pt.wikipedia.org/w/api.php?action=parse&page=Pesquisas%20de%20opini%C3%A3o%20para%20a%20elei%C3%A7%C3%A3o%20presidencial%20no%20Brasil%20em%202026&prop=text&format=json&origin=*"
+  },
+  {
     "collected_at": "2026-08-11T09:16:35.510Z",
     "file": "wikipedia-latest.json",
     "source_url": "https://pt.wikipedia.org/w/api.php?action=parse&page=Pesquisas%20de%20opini%C3%A3o%20para%20a%20elei%C3%A7%C3%A3o%20presidencial%20no%20Brasil%20em%202026&prop=text&format=json&origin=*"
