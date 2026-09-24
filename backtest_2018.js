@@ -379,6 +379,15 @@ async function main() {
   const secondSection = html.slice(secondStart, secondEnd);
   const firstPolls = parseTables(firstSection, "Primeiro turno");
   const secondPolls = parseTables(secondSection, "Segundo turno");
+  const electionDate = new Date("2018-10-28T00:00:00Z");
+  const checkpoints = [30,21,14,7,3,1].map(daysBefore => {
+    const cutoffDate = new Date(electionDate.getTime() - daysBefore*86400000).toISOString().slice(0,10);
+    const model = aggregate(secondPolls,cutoffDate,["Bolsonaro","Haddad"],14,{houseCorrection:.6,bolsonaroRawBias:0,dynamicRegime:true,momentumWeight:2});
+    const valid = validVoteShare(model.estimates,["Bolsonaro","Haddad"]);
+    const predictedMargin = valid.Bolsonaro == null || valid.Haddad == null ? null : valid.Bolsonaro-valid.Haddad;
+    const observedMargin = SECOND_RESULTS.Bolsonaro-SECOND_RESULTS.Haddad;
+    return {daysBefore,cutoffDate,pollsUsed:model.usable,predictedMargin,observedMargin,marginError:predictedMargin==null?null:predictedMargin-observedMargin,absoluteMarginError:predictedMargin==null?null:Math.abs(predictedMargin-observedMargin)};
+  });
   const baselineFirst = aggregate(firstPolls, "2018-10-06", ["Bolsonaro", "Haddad", "Ciro Gomes", "Alckmin", "Amoedo"], 14);
   const baselineSecond = aggregate(secondPolls, "2018-10-27", ["Bolsonaro", "Haddad"], 14);
   const options = { houseCorrection: 0.6, bolsonaroRawBias: 2.5, dynamicRegime: true, momentumWeight: 2 };
@@ -410,6 +419,7 @@ async function main() {
     },
     first: { pollsUsed: first.usable, estimates: first.estimates, valid: firstValid, errors: firstErrors, mae: mae(firstErrors) },
     second: { pollsUsed: second.usable, estimates: second.estimates, valid: secondValid, errors: secondErrors, mae: mae(secondErrors) },
+    temporalSecondRoundBacktest: checkpoints,
   }, null, 2));
 }
 
