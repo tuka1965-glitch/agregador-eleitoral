@@ -143,8 +143,16 @@ async function main(){
   const ss=html.indexOf('id="Segundo_turno"'), se=Math.min(...[html.indexOf('id="Referências"',ss),html.length].filter(x=>x>ss));
   const second=parse(html.slice(ss,se),"Segundo turno");
   const c1=Object.keys(FIRST_RESULTS), c2=Object.keys(SECOND_RESULTS);
+  const electionDate = new Date("2014-10-26T00:00:00Z");
+  const checkpoints = [30,21,14,7,3,1].map(daysBefore => {
+    const cutoffDate = new Date(electionDate.getTime() - daysBefore*86400000).toISOString().slice(0,10);
+    const est = valid(aggregate(second,cutoffDate,c2,{houseCorrection:.6,dynamicRegime:true,momentumWeight:2}),c2);
+    const predictedMargin = est.Dilma == null || est.Aecio == null ? null : est.Dilma-est.Aecio;
+    const observedMargin = SECOND_RESULTS.Dilma-SECOND_RESULTS.Aecio;
+    return {daysBefore,cutoffDate,predictedMargin,observedMargin,marginError:predictedMargin==null?null:predictedMargin-observedMargin,absoluteMarginError:predictedMargin==null?null:Math.abs(predictedMargin-observedMargin)};
+  });
   const baseline1=valid(aggregate(first,"2014-10-04",c1),c1), improved1=valid(aggregate(first,"2014-10-04",c1,{houseCorrection:.6,dynamicRegime:true,momentumWeight:2}),c1);
   const baseline2=valid(aggregate(second,"2014-10-25",c2),c2), improved2=valid(aggregate(second,"2014-10-25",c2,{houseCorrection:.6,dynamicRegime:true,momentumWeight:2}),c2);
-  console.log(JSON.stringify({counts:{first:first.length,second:second.length},baseline:{first:{valid:baseline1,errors:err(baseline1,FIRST_RESULTS),mae:mae(err(baseline1,FIRST_RESULTS))},second:{valid:baseline2,errors:err(baseline2,SECOND_RESULTS),mae:mae(err(baseline2,SECOND_RESULTS))}},improved:{first:{valid:improved1,errors:err(improved1,FIRST_RESULTS),mae:mae(err(improved1,FIRST_RESULTS))},second:{valid:improved2,errors:err(improved2,SECOND_RESULTS),mae:mae(err(improved2,SECOND_RESULTS))}}},null,2));
+  console.log(JSON.stringify({counts:{first:first.length,second:second.length},baseline:{first:{valid:baseline1,errors:err(baseline1,FIRST_RESULTS),mae:mae(err(baseline1,FIRST_RESULTS))},second:{valid:baseline2,errors:err(baseline2,SECOND_RESULTS),mae:mae(err(baseline2,SECOND_RESULTS))}},improved:{first:{valid:improved1,errors:err(improved1,FIRST_RESULTS),mae:mae(err(improved1,FIRST_RESULTS))},second:{valid:improved2,errors:err(improved2,SECOND_RESULTS),mae:mae(err(improved2,SECOND_RESULTS))}},temporalSecondRoundBacktest:checkpoints},null,2));
 }
 main().catch(e=>{console.error(e);process.exit(1);});
