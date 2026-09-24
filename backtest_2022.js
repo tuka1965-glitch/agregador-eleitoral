@@ -410,6 +410,28 @@ async function main() {
   const secondSection = html.slice(secondStart, Math.min(...secondEndCandidates));
   const firstPolls = parseTables(firstSection, "Primeiro turno");
   const secondPolls = parseTables(secondSection, "Segundo turno");
+  const electionDate = new Date("2022-10-30T00:00:00Z");
+  const checkpoints = [30, 21, 14, 7, 3, 1].map((daysBefore) => {
+    const cutoffDate = new Date(electionDate.getTime() - daysBefore * 86400000).toISOString().slice(0, 10);
+    const model = aggregate(secondPolls, cutoffDate, ["Lula", "Bolsonaro"], 14, null, {
+      houseCorrection: 0.6,
+      bolsonaroRawBias: 0,
+      dynamicRegime: true,
+      momentumWeight: 2,
+    });
+    const valid = validVoteShare(model.estimates, ["Lula", "Bolsonaro"]);
+    const predictedMargin = valid.Lula == null || valid.Bolsonaro == null ? null : valid.Lula - valid.Bolsonaro;
+    const observedMargin = SECOND_RESULTS.Lula - SECOND_RESULTS.Bolsonaro;
+    return {
+      daysBefore,
+      cutoffDate,
+      pollsUsed: model.usable,
+      predictedMargin,
+      observedMargin,
+      marginError: predictedMargin == null ? null : predictedMargin - observedMargin,
+      absoluteMarginError: predictedMargin == null ? null : Math.abs(predictedMargin - observedMargin),
+    };
+  });
   const baselineFirst = aggregate(firstPolls, "2022-10-01", ["Lula", "Bolsonaro", "Tebet", "Ciro Gomes"], 14);
   const baselineSecond = aggregate(secondPolls, "2022-10-29", ["Lula", "Bolsonaro"], 14);
   const options = { houseCorrection: 0.6, bolsonaroRawBias: 2.5, dynamicRegime: true, momentumWeight: 2 };
@@ -443,6 +465,7 @@ async function main() {
     first: { pollsUsed: first.usable, estimates: first.estimates, valid: firstValid, errors: firstErrors, mae: mae(firstErrors) },
     second: { pollsUsed: second.usable, estimates: second.estimates, valid: secondValid, errors: secondErrors, mae: mae(secondErrors) },
     houseRows,
+    temporalSecondRoundBacktest: checkpoints,
   }, null, 2));
 }
 
