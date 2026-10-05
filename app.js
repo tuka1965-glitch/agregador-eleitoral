@@ -21,8 +21,17 @@ const HOUSE_EFFECT_CORRECTION = 0.6;
 const BOLSONARO_SYSTEMIC_BIAS = 0;
 const REGIME_SHIFT_THRESHOLD = 3;
 const REGIME_HALF_LIFE_DAYS = 7;
-const MOMENTUM_WEIGHT = 2;
+// v3: momentum só é aplicado após confirmação por institutos independentes.
+const MOMENTUM_WEIGHT = 1;
 const MOMENTUM_POLL_COUNT = 5;
+const TREND_MIN_INSTITUTES = 3;
+const TREND_MIN_WEIGHTED_MOVE = 1;
+const TREND_MOMENTUM_LAMBDA = 0.25;
+const TREND_MOMENTUM_CAP = 2;
+const TREND_SIGNAL_RELIEF = 0.15;
+const TREND_CONFIRMED_RELIEF = 0.50;
+const TREND_STRONG_RELIEF = 0.75;
+const ELECTION_DAY_2026 = new Date("2026-10-04T12:00:00Z").getTime();
 const VICTORY_SIMULATIONS = 100000;
 const VICTORY_SIMULATION_SEED = 20260601;
 
@@ -238,10 +247,13 @@ function houseEffectFor(name) {
   return state.houseEffects.get(normalizePollsterKey(canonicalPollsterName(name))) || null;
 }
 
-function houseEffectWeight(name) {
+function houseEffectWeight(name, trendRelief = 0) {
   const houseEffect = houseEffectFor(name);
   if (!houseEffect || houseEffect.n <= 2) return 1;
-  return Math.min(1.1, Math.max(0.35, 1 / (1 + Math.abs(houseEffect.effect) / 4)));
+  const base = Math.min(1.1, Math.max(0.35, 1 / (1 + Math.abs(houseEffect.effect) / 4)));
+  // Em tendência replicada, reduzimos apenas a penalização de peso atribuível à divergência.
+  // Qualidade, recência e demais componentes permanecem inalterados.
+  return base + (1 - base) * Math.min(1, Math.max(0, trendRelief));
 }
 
 function clampPercent(value) {
@@ -350,11 +362,13 @@ function canonicalCandidateName(header) {
   return CANDIDATE_ALIAS_INDEX.get(key) || withoutParty || special;
 }
 
-function houseAdjustedValue(value, pollster, candidate = "") {
+function houseAdjustedValue(value, pollster, candidate = "", trendRelief = 0) {
   if (isSpecialChoice(candidate)) return value;
   const houseEffect = houseEffectFor(pollster);
   if (!houseEffect || houseEffect.n <= 2 || value < 15) return value;
-  return clampPercent(value - HOUSE_EFFECT_CORRECTION * houseEffect.effect);
+  // Evita que a correção de house effect neutralize uma mudança já replicada.
+  const effectiveCorrection = HOUSE_EFFECT_CORRECTION * (1 - Math.min(1, Math.max(0, trendRelief)));
+  return clampPercent(value - effectiveCorrection * houseEffect.effect);
 }
 
 function mean(values) {
@@ -773,10 +787,10 @@ function bayesianCurve(points, halfLifeDays, candidate = "") {
       const sampleWeight = Math.max(300, point.sample || 1000);
       const marginWeight = point.margin ? 1 / Math.max(0.0001, point.margin * point.margin) : 1;
       const qualityWeight = point.pollster ? pollsterQualityWeight(point.pollster) : 1;
-      const houseWeight = point.pollster && !isSpecialChoice(candidate) ? houseEffectWeight(point.pollster) : 1;
+      const houseWeight = point.pollster && !isSpecialChoice(candidate) ? houseEffectWeight(point.pollster, point.trendRelief || 0) : 1;
       const momentumWeight = point.isRecent ? MOMENTUM_WEIGHT : 1;
       const w = sampleWeight * marginWeight * timeWeight * qualityWeight * houseWeight * momentumWeight;
-      const adjustedY = houseAdjustedValue(point.y, point.pollster, candidate);
+      const adjustedY = houseAdjustedValue(point.y, point.pollster, candidate, point.trendRelief || 0);
       weightSum += w;
       valueSum += adjustedY * w;
     });
@@ -784,7 +798,7 @@ function bayesianCurve(points, halfLifeDays, candidate = "") {
   });
 }
 
-function bayesianEstimateAt(points, allCandidatePoints, targetTime, halfLifeDays, candidate = "") {
+function bayesianEstimateAt(points, allCandidatePoints, targetTime, halfLifeDays, candidate = "", trendInfo = null) {
   if (!points.length) return null;
   const priorSource = allCandidatePoints.length ? allCandidatePoints : points;
   const priorMean = priorSource.reduce((sum, point) => sum + point.pct, 0) / priorSource.length;
@@ -803,14 +817,15 @@ function bayesianEstimateAt(points, allCandidatePoints, targetTime, halfLifeDays
       marginWeight *
       timeWeight *
       pollsterQualityWeight(point.pollster) *
-      (isSpecialChoice(candidate) ? 1 : houseEffectWeight(point.pollster)) *
+      (isSpecialChoice(candidate) ? 1 : houseEffectWeight(point.pollster, point.trendRelief || 0)) *
       (point.isRecent ? MOMENTUM_WEIGHT : 1);
-    const adjustedPct = houseAdjustedValue(point.pct, point.pollster, candidate);
+    const adjustedPct = houseAdjustedValue(point.pct, point.pollster, candidate, point.trendRelief || 0);
     weightSum += weight;
     valueSum += adjustedPct * weight;
   });
 
-  return clampPercent(valueSum / weightSum + systemicCandidateBias(candidate));
+  const confirmedMomentum = trendInfo?.momentum || 0;
+  return clampPercent(valueSum / weightSum + systemicCandidateBias(candidate) + confirmedMomentum);
 }
 
 function pollUnitsFromRows(rows, scenario) {
@@ -863,6 +878,83 @@ function recentPollTimes(rows, scenario) {
       .slice(-MOMENTUM_POLL_COUNT)
       .map((unit) => unit.t),
   );
+}
+
+function trendWindowDays(latestTime) {
+  const dayMs = 24 * 60 * 60 * 1000;
+  const daysToElection = Math.max(0, (ELECTION_DAY_2026 - latestTime) / dayMs);
+  if (daysToElection <= 2) return 3; // até 72h de campo
+  if (daysToElection <= 7) return 5;
+  if (daysToElection <= 30) return 7;
+  return 14;
+}
+
+function candidateTrendInfo(rows, scenario, candidate, latestTime) {
+  const dayMs = 24 * 60 * 60 * 1000;
+  const windowDays = trendWindowDays(latestTime);
+  const cutoff = latestTime - windowDays * dayMs;
+  const units = pollUnitsFromRows(rows, scenario);
+  const byPollster = groupBy(units, (unit) => normalizePollsterKey(unit.pollster));
+  const moves = [];
+
+  byPollster.forEach((pollsterUnits) => {
+    const ordered = [...pollsterUnits].sort((a, b) => a.t - b.t);
+    const currentIndex = ordered.map((unit) => unit.t).findLastIndex((t) => t >= cutoff && t <= latestTime);
+    if (currentIndex <= 0) return;
+    const current = ordered[currentIndex];
+    const previous = ordered[currentIndex - 1];
+    const currentValue = current.candidates[candidate];
+    const previousValue = previous.candidates[candidate];
+    if (currentValue == null || previousValue == null) return;
+    moves.push({
+      pollster: current.pollster,
+      delta: currentValue - previousValue,
+      weight: pollsterQualityWeight(current.pollster),
+      t: current.t,
+    });
+  });
+
+  const positive = moves.filter((move) => move.delta > 0);
+  const negative = moves.filter((move) => move.delta < 0);
+  const dominant = positive.length >= negative.length ? positive : negative;
+  const opposite = dominant === positive ? negative : positive;
+  const direction = dominant === positive ? 1 : -1;
+  const weightedNumerator = dominant.reduce((sum, move) => sum + move.delta * move.weight, 0);
+  const weightedDenominator = dominant.reduce((sum, move) => sum + move.weight, 0);
+  const weightedMove = weightedDenominator ? weightedNumerator / weightedDenominator : 0;
+  const dominantCount = dominant.length;
+
+  let status = "none";
+  let relief = 0;
+  if (dominantCount >= 2 && dominantCount > opposite.length) {
+    status = "signal";
+    relief = TREND_SIGNAL_RELIEF;
+  }
+  if (
+    dominantCount >= TREND_MIN_INSTITUTES &&
+    dominantCount > opposite.length &&
+    Math.abs(weightedMove) >= TREND_MIN_WEIGHTED_MOVE
+  ) {
+    status = dominantCount >= 4 ? "strong" : "confirmed";
+    relief = status === "strong" ? TREND_STRONG_RELIEF : TREND_CONFIRMED_RELIEF;
+  }
+
+  const momentum =
+    status === "confirmed" || status === "strong"
+      ? Math.max(-TREND_MOMENTUM_CAP, Math.min(TREND_MOMENTUM_CAP, TREND_MOMENTUM_LAMBDA * weightedMove))
+      : 0;
+
+  return {
+    status,
+    direction,
+    dominantCount,
+    oppositeCount: opposite.length,
+    weightedMove,
+    momentum,
+    relief,
+    windowDays,
+    moves,
+  };
 }
 
 function bayesianMeanFromUnits(units, candidate) {
@@ -1111,8 +1203,20 @@ function bayesianSummaryData() {
     .map((candidate) => {
       const candidateWindowPolls = byCandidate.get(candidate) || [];
       const candidateAllPolls = allByCandidate.get(candidate) || [];
-      const candidateWindowPoints = candidateWindowPolls.map((poll) => ({ ...poll, isRecent: latestTimes.has(poll.t) }));
-      const estimate = bayesianEstimateAt(candidateWindowPoints, candidateAllPolls, latestTime, adaptiveHalfLife, candidate);
+      const trendInfo = candidateTrendInfo(polls, state.selectedScenario, candidate, latestTime);
+      const candidateWindowPoints = candidateWindowPolls.map((poll) => ({
+        ...poll,
+        isRecent: false,
+        trendRelief: trendInfo.relief,
+      }));
+      const estimate = bayesianEstimateAt(
+        candidateWindowPoints,
+        candidateAllPolls,
+        latestTime,
+        adaptiveHalfLife,
+        candidate,
+        trendInfo,
+      );
       if (estimate == null) return null;
       const dates = candidateWindowPolls.map((poll) => poll.t);
       return {
@@ -1124,6 +1228,7 @@ function bayesianSummaryData() {
           .size,
         start: dateKey(new Date(Math.min(...dates))),
         end: dateKey(new Date(Math.max(...dates))),
+        trend: trendInfo,
       };
     })
     .filter(Boolean)
@@ -1157,7 +1262,11 @@ function renderBayesianSummary() {
   }
 
   const { halfLifeDays, latestTime, adaptiveHalfLife, houseAdjustedPollsters, rows } = summary;
-  els.bayesMeta.textContent = `Janela configurada: ${halfLifeDays} dias até ${dateKey(new Date(latestTime))}. Meia-vida efetiva: ${adaptiveHalfLife} dias. Ponderação por recência, n, margem de erro, rating histórico, momentum das últimas ${MOMENTUM_POLL_COUNT} pesquisas, correção parcial de house effect com n > 2 (${houseAdjustedPollsters} institutos) e sem ajuste sistêmico fixo por candidato.`;
+  const confirmed = rows.filter((row) => row.trend?.status === "confirmed" || row.trend?.status === "strong");
+  const trendText = confirmed.length
+    ? ` Tendência confirmada: ${confirmed.map((row) => `${row.candidate} (${row.trend.dominantCount} institutos; Δ ${row.trend.weightedMove.toLocaleString("pt-BR", { maximumFractionDigits: 1 })} p.p.)`).join("; ")}.`
+    : " Sem tendência confirmada.";
+  els.bayesMeta.textContent = `Janela configurada: ${halfLifeDays} dias até ${dateKey(new Date(latestTime))}. Meia-vida efetiva: ${adaptiveHalfLife} dias. v3: tendência exige ≥3 institutos independentes, direção dominante e movimento conjunto ≥1 p.p.; momentum λ=0,25 somente após confirmação. Correção parcial de house effect com n > 2 (${houseAdjustedPollsters} institutos), sem bônus fixo por candidato.${trendText}`;
   els.bayesRows.innerHTML = rows
     .map(
       (row) => `<tr>
