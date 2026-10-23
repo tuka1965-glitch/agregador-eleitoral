@@ -1,0 +1,278 @@
+[
+  {
+    "type": "inconsistent_total_excluded",
+    "year": 2022,
+    "round": 1,
+    "pollster": "Paraná Pesquisas BR-07917/2022",
+    "date": "27–29 Set",
+    "total": 93.1,
+    "residual": 11.9,
+    "locator": "line:507"
+  },
+  {
+    "type": "inconsistent_total_excluded",
+    "year": 2022,
+    "round": 2,
+    "pollster": "Genial/Quaest",
+    "date": "28–29 Out 2022",
+    "total": 89.0,
+    "residual": 14.0,
+    "locator": "line:2068"
+  },
+  {
+    "type": "inconsistent_total_excluded",
+    "year": 2022,
+    "round": 2,
+    "pollster": "Brasmarket",
+    "date": "21–25 Out 2022",
+    "total": 89.9,
+    "residual": 7.4,
+    "locator": "line:2080"
+  },
+  {
+    "type": "duplicate_datafolha_conflict_excluded",
+    "locator": "table:2/row:6",
+    "reason": "2002 sample conflicts with primary final 4006 interviews"
+  },
+  {
+    "type": "censored_values_excluded",
+    "year": 2026,
+    "round": 1,
+    "pollster": "AtlasIntel",
+    "date": "27 Set – 2 Out",
+    "locator": "table:2/row:12",
+    "candidates": [
+      "Zema",
+      "Samara",
+      "Grassi",
+      "Clariana",
+      "Dias",
+      "Costa",
+      "Pimenta"
+    ]
+  },
+  {
+    "type": "incomplete_first_round_scenario_excluded",
+    "pollster": "Veritá",
+    "date": "26 Set – 2 Out",
+    "locator": "table:2/row:13"
+  },
+  {
+    "type": "censored_values_excluded",
+    "year": 2026,
+    "round": 1,
+    "pollster": "DataTrends",
+    "date": "28 Set – 30 Set",
+    "locator": "table:3/row:4",
+    "candidates": [
+      "Samara",
+      "Avalanche",
+      "Grassi",
+      "Clariana",
+      "Dias",
+      "Costa",
+      "Pimenta"
+    ]
+  },
+  {
+    "type": "censored_values_excluded",
+    "year": 2026,
+    "round": 1,
+    "pollster": "Real Time Big Data",
+    "date": "26 Set – 30 Set",
+    "locator": "table:3/row:5",
+    "candidates": [
+      "Samara",
+      "Avalanche",
+      "Grassi",
+      "Clariana",
+      "Dias",
+      "Costa",
+      "Pimenta"
+    ]
+  },
+  {
+    "type": "censored_values_excluded",
+    "year": 2026,
+    "round": 1,
+    "pollster": "AtlasIntel",
+    "date": "23 Set – 28 Set",
+    "locator": "table:3/row:12",
+    "candidates": [
+      "Samara",
+      "Avalanche",
+      "Grassi",
+      "Clariana",
+      "Dias",
+      "Costa",
+      "Pimenta"
+    ]
+  },
+  {
+    "type": "censored_values_excluded",
+    "year": 2026,
+    "round": 1,
+    "pollster": "Palver",
+    "date": "20 Set – 23 Set",
+    "locator": "table:3/row:17",
+    "candidates": [
+      "Samara",
+      "Avalanche",
+      "Grassi",
+      "Clariana",
+      "Dias",
+      "Costa",
+      "Pimenta"
+    ]
+  },
+  {
+    "type": "censored_values_excluded",
+    "year": 2026,
+    "round": 1,
+    "pollster": "Real Time Big Data",
+    "date": "19 Set – 23 Set",
+    "locator": "table:3/row:20",
+    "candidates": [
+      "Samara",
+      "Avalanche",
+      "Grassi",
+      "Clariana",
+      "Dias",
+      "Costa",
+      "Pimenta"
+    ]
+  },
+  {
+    "type": "censored_values_excluded",
+    "year": 2026,
+    "round": 1,
+    "pollster": "Alfa Inteligência",
+    "date": "18 Set – 23 Set",
+    "locator": "table:3/row:21",
+    "candidates": [
+      "Samara",
+      "Avalanche",
+      "Grassi",
+      "Clariana",
+      "Dias",
+      "Costa",
+      "Pimenta"
+    ]
+  },
+  {
+    "type": "censored_values_excluded",
+    "year": 2026,
+    "round": 1,
+    "pollster": "Nexus/BTG",
+    "date": "18 Set – 20 Set",
+    "locator": "table:3/row:23",
+    "candidates": [
+      "Samara",
+      "Grassi",
+      "Clariana",
+      "Dias",
+      "Costa",
+      "Pimenta"
+    ]
+  },
+  {
+    "type": "censored_values_excluded",
+    "year": 2026,
+    "round": 1,
+    "pollster": "Palver",
+    "date": "15 Set – 18 Set",
+    "locator": "table:3/row:27",
+    "candidates": [
+      "Samara",
+      "Grassi",
+      "Clariana",
+      "Dias",
+      "Costa",
+      "Pimenta"
+    ]
+  },
+  {
+    "type": "censored_values_excluded",
+    "year": 2026,
+    "round": 1,
+    "pollster": "CNT/MDA",
+    "date": "9 Set – 13 Set",
+    "locator": "table:3/row:38",
+    "candidates": [
+      "Samara",
+      "Grassi",
+      "Clariana",
+      "Dias",
+      "Costa",
+      "Pimenta"
+    ]
+  },
+  {
+    "type": "incomplete_first_round_scenario_excluded",
+    "pollster": "Veritá",
+    "date": "4 Set – 12 Set",
+    "locator": "table:3/row:39"
+  },
+  {
+    "type": "inconsistent_total_excluded",
+    "year": 2026,
+    "round": 2,
+    "pollster": "Quaest",
+    "date": "17 Out – 20 Out",
+    "total": 89.0,
+    "residual": 9.0,
+    "locator": "table:21/row:26"
+  },
+  {
+    "type": "duplicate_collapsed",
+    "key": [
+      2026,
+      1,
+      "Datafolha",
+      "2026-09-08",
+      "2026-09-11",
+      "final_ballot"
+    ],
+    "same_values": false,
+    "locator": "table:3/row:42"
+  },
+  {
+    "type": "duplicate_collapsed",
+    "key": [
+      2026,
+      1,
+      "Palver",
+      "2026-09-04",
+      "2026-09-07",
+      "final_ballot"
+    ],
+    "same_values": false,
+    "locator": "table:3/row:48"
+  },
+  {
+    "type": "duplicate_collapsed",
+    "key": [
+      2026,
+      1,
+      "Nexus",
+      "2026-09-04",
+      "2026-09-07",
+      "final_ballot"
+    ],
+    "same_values": false,
+    "locator": "table:3/row:51"
+  },
+  {
+    "type": "duplicate_collapsed",
+    "key": [
+      2026,
+      1,
+      "Quaest",
+      "2026-09-03",
+      "2026-09-06",
+      "final_ballot"
+    ],
+    "same_values": false,
+    "locator": "table:3/row:53"
+  }
+]

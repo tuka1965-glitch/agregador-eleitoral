@@ -1,0 +1,86 @@
+[
+  {
+    "year": 2014,
+    "round": 1,
+    "candidate": "Dilma",
+    "opponent": "Aécio",
+    "published": 44,
+    "official": 41.59,
+    "error": 2.4099999999999966,
+    "opponent_error": -7.549999999999997,
+    "margin_error": 9.959999999999994,
+    "source": "https://datafolha.folha.uol.com.br/eleicoes/2014/10/1527380-dilma-lidera-com-44-aecio-26-e-marina-24-empatam-por-2-turno.shtml"
+  },
+  {
+    "year": 2014,
+    "round": 2,
+    "candidate": "Dilma",
+    "opponent": "Aécio",
+    "published": 52,
+    "official": 51.64,
+    "error": 0.35999999999999943,
+    "opponent_error": -0.35999999999999943,
+    "margin_error": 0.7199999999999989,
+    "source": "https://datafolha.folha.uol.com.br/eleicoes/2014/10/1538369-dilma-52-e-aecio-48-chegam-empatados-ao-dia-da-eleicao.shtml"
+  },
+  {
+    "year": 2018,
+    "round": 1,
+    "candidate": "Haddad",
+    "opponent": "Bolsonaro",
+    "published": 25,
+    "official": 29.28,
+    "error": -4.280000000000001,
+    "opponent_error": -6.030000000000001,
+    "margin_error": 1.75,
+    "source": "https://www1.folha.uol.com.br/poder/2018/10/bolsonaro-alcanca-40-dos-votos-validos-no-datafolha-haddad-tem-25-e-ciro-15.shtml"
+  },
+  {
+    "year": 2018,
+    "round": 2,
+    "candidate": "Haddad",
+    "opponent": "Bolsonaro",
+    "published": 45,
+    "official": 44.87,
+    "error": 0.13000000000000256,
+    "opponent_error": -0.13000000000000256,
+    "margin_error": 0.2600000000000051,
+    "source": "https://www1.folha.uol.com.br/poder/2018/10/pesquisa-datafolha-mostra-bolsonaro-com-55-e-haddad-com-45-na-vespera-da-eleicao.shtml"
+  },
+  {
+    "year": 2022,
+    "round": 1,
+    "candidate": "Lula",
+    "opponent": "Bolsonaro",
+    "published": 50,
+    "official": 48.43,
+    "error": 1.5700000000000003,
+    "opponent_error": -7.200000000000003,
+    "margin_error": 8.770000000000003,
+    "source": "https://datafolha.folha.uol.com.br/eleicoes/2022/10/na-vespera-da-eleicao-lula-tem-50-e-bolsonaro-36.shtml"
+  },
+  {
+    "year": 2022,
+    "round": 2,
+    "candidate": "Lula",
+    "opponent": "Bolsonaro",
+    "published": 52,
+    "official": 50.9,
+    "error": 1.1000000000000014,
+    "opponent_error": -1.1000000000000014,
+    "margin_error": 2.200000000000003,
+    "source": "https://noticias.uol.com.br/eleicoes/2022/10/29/datafolha-lula-bolsonaro-segundo-turno.htm"
+  },
+  {
+    "year": 2026,
+    "round": 1,
+    "candidate": "Lula",
+    "opponent": "Flávio",
+    "published": 45,
+    "official": 45.16,
+    "error": -0.1599999999999966,
+    "opponent_error": -5.030000000000001,
+    "margin_error": 4.8700000000000045,
+    "source": "https://datafolha.folha.uol.com.br/eleicoes/2026/10/na-vespera-da-eleicao-lula-tem-45-dos-validos-no-1o-turno-empatado-com-flavio-bolsonaro-42.shtml"
+  }
+]

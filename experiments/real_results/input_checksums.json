@@ -1,0 +1,22 @@
+{
+  "app.js": {
+    "sha256": "958614fe63ed23d1049ae162ebabf6e007285f4c7d7b5c6b0f155cf80706b323",
+    "bytes": 90733
+  },
+  "experiments/house_effect_contemporaneous.mjs": {
+    "sha256": "1b0e4511ff482f6e1c137db87bf96d497c5a61189a7889200ccc69a1a498682f",
+    "bytes": 2672
+  },
+  "experiments/real_data/polls.json": {
+    "sha256": "3f21810b621aea603a0bfd93772e5520e5a38fb065baab1b9125991716cf8423",
+    "bytes": 313852
+  },
+  "experiments/real_data/tse_results.json": {
+    "sha256": "74985b362c629796accc46c284ff68f7b55d211038deb5bf371621c4ea5ec905",
+    "bytes": 2229
+  },
+  "data/wikipedia-latest.json": {
+    "sha256": "0e076ab1539359a3b66ffe819595f5d0b4ad87e31ee151d343a0850180d6306e",
+    "bytes": 2185951
+  }
+}

@@ -1,0 +1,9 @@
+{
+  "status": "passed",
+  "checks": 202,
+  "synthetic_observations": 0,
+  "polls": 299,
+  "outcome_independent_estimator": true,
+  "future_deletion_invariance": "passed for every forecast",
+  "publication_timestamp_certification": "incomplete; proxy availability explicitly reported"
+}

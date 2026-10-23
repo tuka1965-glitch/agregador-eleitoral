@@ -1,0 +1,24 @@
+[
+  {
+    "contrast": "M2-M1",
+    "delta_mae": 0.15853276920567008,
+    "ci95_election_cluster": [
+      -0.36170955126453685,
+      0.678775089675877
+    ],
+    "elections": 4,
+    "election_rounds": 7,
+    "note": "Few clusters; descriptive, low power. Positive means M2 is worse."
+  },
+  {
+    "contrast": "M2-M0",
+    "delta_mae": 0.11235583490423474,
+    "ci95_election_cluster": [
+      -0.3568267072686367,
+      0.5815383770771062
+    ],
+    "elections": 4,
+    "election_rounds": 7,
+    "note": "Few clusters; descriptive, low power. Positive means M2 is worse."
+  }
+]

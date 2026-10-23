@@ -1,0 +1,114 @@
+Pesquisas de opinião para a eleição presidencial no Brasil em 2014 – Wikipédia, a enciclopédia livre (https://pt.wikipedia.org/wiki/Pesquisas_de_opini%C3%A3o_para_a_elei%C3%A7%C3%A3o_presidencial_no_Brasil_em_2014)
+【turn12view0】 [wordlim: 200] Crawled: today; Content type: text/html; Source: open({"ref_id":"turn3view0","lineno":162}); Total lines: 335
+L141: O episódio demonstrou que as exigências de registro não tinham caráter meramente burocrático. Informações relativas à composição da amostra e aos critérios utilizados para ponderar os entrevistados poderiam ser examinadas judicialmente e, quando consideradas insuficientes, resultar na suspensão da divulgação de um levantamento.^{【64†[7]】}
+L142: Outro aspecto importante da regulamentação de 2014 foi a exigência de que as pesquisas apresentassem todos os candidatos que tivessem solicitado registro de candidatura à Justiça Eleitoral. A regra passou a ser aplicada a partir de 10 de julho, quando os registros de candidatura já estavam sendo apresentados à Justiça Eleitoral.^{【60†[4]】}
+L143: Segundo o TSE, as pesquisas realizadas mediante apresentação de uma relação de candidatos ao entrevistado deveriam conter o nome de todos aqueles que tivessem solicitado registro de candidatura. A regra procurava evitar que a seleção dos nomes apresentados aos entrevistados produzisse tratamento desigual entre candidaturas formalmente submetidas ao processo eleitoral.^{【60†[4]】}
+L144: A exigência, entretanto, não significava que todos os cenários de uma pesquisa precisassem ser idênticos. A regulamentação tratava especificamente da relação de candidatos apresentada aos entrevistados e das candidaturas que haviam solicitado registro perante a Justiça Eleitoral.^{【60†[4]】}
+L145: O registro das pesquisas também tinha uma finalidade de transparência. As informações cadastradas ficavam disponíveis para consulta pública, permitindo que partidos, candidatos, jornalistas e eleitores examinassem os elementos declarados pelos institutos antes da divulgação dos resultados.^{【59†[3]】}
+L146: O TSE considerava o registro especialmente importante devido à repercussão que as pesquisas poderiam produzir no processo eleitoral. O sistema buscava assegurar publicidade sobre os métodos empregados e sobre os recursos utilizados nos levantamentos, sem estabelecer um controle prévio sobre o resultado da pesquisa.^{【58†[2]】}
+L147: A regulamentação não transformava o registro em uma certificação da qualidade ou da correção dos resultados. O instituto continuava responsável pela metodologia empregada e pelas informações fornecidas no registro, enquanto eventuais irregularidades poderiam ser submetidas à apreciação da Justiça Eleitoral por meio de representação.^{【56†[1]】}
+L148: A diferença entre uma pesquisa incorreta e uma pesquisa fraudulenta também era relevante. A legislação eleitoral estabelecia punições específicas para a fraude em pesquisas, enquanto uma divergência entre uma estimativa e o resultado posteriormente verificado nas urnas não constituía, por si só, prova de fraude.^{【62†[6]】}
+L149: A regulamentação de 2014 estabeleceu ainda regras específicas para pesquisas realizadas no dia da votação. A divulgação de pesquisas de boca de urna somente poderia ocorrer após o encerramento da votação no respectivo Estado, de acordo com as regras eleitorais vigentes naquele pleito.^{【58†[2]】}
+L150: A base histórica de pesquisas de 2014 atualmente disponibilizada pelo TSE inclui não apenas os registros dos levantamentos, mas também informações complementares, como notas fiscais dos serviços, questionários e detalhamento dos bairros e municípios onde as entrevistas foram realizadas.^{【61†[5]】}
+L151: A disponibilidade desses dados permite analisar posteriormente não apenas os resultados divulgados, mas também aspectos relacionados à contratação e ao financiamento das pesquisas, aos métodos empregados e à distribuição territorial das entrevistas.^{【61†[5]】}
+L152: A eleição de 2014 foi, portanto, realizada sob um sistema de fiscalização de pesquisas mais detalhado do que em pleitos anteriores. A regulamentação determinava o registro prévio, a identificação do contratante e dos recursos utilizados, a descrição da metodologia, o detalhamento do plano amostral e a apresentação do questionário completo, além de estabelecer mecanismos de impugnação e suspensão da divulgação.^{【56†[1]】}
+L153: O volume de registros cresceu rapidamente durante o ano. Em maio, o TSE contabilizava 300 pesquisas relacionadas à eleição presidencial, sendo 100 de abrangência nacional e 200 de âmbito estadual; em julho, o número já havia chegado a 465 pesquisas registradas no Portal do Tribunal.^{【59†[3]】}^{【60†[4]】}
+L154: A judicialização de pesquisas também fez parte do processo eleitoral. O caso da pesquisa GPP em Minas Gerais mostrou que a Justiça Eleitoral podia suspender a divulgação de um levantamento quando as informações metodológicas apresentadas no registro não atendiam às exigências regulamentares.^{【64†[7]】}
+L155: Assim, as pesquisas eleitorais de 2014 foram marcadas pela consolidação de mecanismos de registro, transparência e fiscalização perante a Justiça Eleitoral, por um volume crescente de levantamentos ao longo da campanha e por uma regulamentação que detalhava aspectos metodológicos e financeiros dos estudos.^{【56†[1]】}^{【59†[3]】}^{【60†[4]】} O ciclo também foi caracterizado pela proibição de enquetes e sondagens não submetidas aos requisitos das pesquisas eleitorais e pela possibilidade de impugnação e suspensão judicial de levantamentos que não cumprissem as exigências estabelecidas.^{【58†[2]】}^{【62†[6]】}^{【64†[7]】}
+L156: ## Primeiro turno
+L157: 
+L158: [【65†editar】 | 【66†editar código】]
+L159:  | Período da pesquisa  | Instituto  | Margem
+L160: de erro  | Candidato  | Branco ou Nulo  | NS ou NR
+L161: --- | --- | --- | --- | --- | --- | ---
+L162: 【67†Dilma Rousseff】 (PT)  | 【68†Marina Silva】 (PSB)  | 【69†Aécio Neves】 (PSDB)  | 【70†Pastor Everaldo】 (PSC)  | 【71†Luciana Genro】 (PSOL)  | 【72†Eduardo Jorge】 (PV)  | 【73†Eymael】 (PSDC)  | 【74†Levy Fidelix】 (PRTB)  | 【75†Mauro Iasi】 (PCB)  | 【76†José Maria】 (PSTU)  | 【77†Rui Costa】 (PCO)
+L163: --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | ---
+L164: 44  | 03 a 04 de outubro  | Ibope^{【78†[8]】}  | ±2%  | 40%  | 21%  | 24%  | 1%  | 1%  | 1%  | 0%  | 0%  | 0%  | 0%  | 0%  | 7%  | 5%
+L165: 43  | 03 a 04 de outubro  | Datafolha^{【79†[9]】}  | ±2%  | 40%  | 22%  | 24%  | 1%  | 1%  | 1%  | 0%  | 0%  | 0%  | 0%  | 0%  | 4%  | 5%
+L166: 42  | 03 a 04 de outubro  | Vox Populi^{【80†[10]】}  | ±2%  | 41%  | 20%  | 23%  | 1%  | 2%  | 0%  | 0%  | 0%  | 0%  | 0%  | 0%  | 6%  | 6%
+L167: 41  | 02 a 03 de outubro  | CNT/MDA^{【81†[11]】}  | ±2,2%  | 40,6%  | 21,4%  | 24%  | 0,8%  | 1,1%  | 0%  | 0%  | 0,5%  | 0%  | 0%  | 0%  | 5,2%  | 5,8%
+L168: 40  | 01 a 02 de outubro  | Datafolha^{【82†[12]】}  | ±2%  | 40%  | 24%  | 21%  | 1%  | 1%  | 1%  | 0%  | 0%  | 0%  | 0%  | 0%  | 5%  | 5%
+L169: 39  | 29 de setembro a 01 de outubro  | Ibope^{【83†[13]】}  | ±2%  | 40%  | 24%  | 19%  | 1%  | 1%  | 0%  | 0%  | 0%  | 0%  | 0%  | 0%  | 8%  | 7%
+L170: 38  | 29 a 30 de setembro  | Datafolha^{【84†[14]】}  | ±2%  | 40%  | 25%  | 20%  | 1%  | 1%  | 0%  | 0%  | 0%  | 0%  | 0%  | 0%  | 5%  | 5%
+L171: 37  | 27 a 29 de setembro  | Ibope^{【85†[15]】}  | ±2%  | 39%  | 25%  | 19%  | 1%  | 1%  | 0%  | 0%  | 0%  | 0%  | 0%  | 0%  | 7%  | 7%
+L172: 36  | 27 a 28 de setembro  | Vox Populi^{【86†[16]】}  | ±2,2%  | 40%  | 24%  | 18%  | 1%  | 1%  | 0%  | 0%  | 0%  | 0%  | 0%  | 0%  | 6%  | 11%
+L173: 35  | 27 a 28 de setembro  | CNT/MDA^{【87†[17]】}  | ±2,2%  | 40,4%  | 25,2%  | 19,8%  | 0,6%  | 1,2%  | 0%  | 0%  | 0%  | 0%  | 0%  | 0%  | 5,9%  | 6,4%
+L174: 34  | 25 a 26 de setembro  | Datafolha^{【88†[18]】}  | ±2%  | 40%  | 27%  | 18%  | 1%  | 1%  | 1%  | 0%  | 0%  | 0%  | 0%  | 0%  | 5%  | 6%
+L175: 33  | 23 a 24 de setembro  | Vox Populi^{【89†[19]】}  | ±2,2%  | 38%  | 25%  | 17%  | 1%  | 0%  | 0%  | 0%  | 0%  | 0%  | 0%  | 0%  | 7%  | 11%
+L176: 32  | 20 a 22 de setembro  | Ibope^{【90†[20]】}  | ±2%  | 38%  | 29%  | 19%  | 1%  | 0%  | 0%  | 0%  | 0%  | 0%  | 0%  | 0%  | 7%  | 5%
+L177: 31  | 20 a 21 de setembro  | Vox Populi^{【91†[21]】}  | ±2,2%  | 40%  | 22%  | 17%  | 1%  | 1%  | 0%  | 0%  | 0%  | 0%  | 0%  | 0%  | 6%  | 12%
+L178: 30  | 20 a 21 de setembro  | CNT/MDA^{【92†[22]】}  | ±2,2%  | 36%  | 27,4%  | 17,6%  | 0,8%  | 0,9%  | 0%  | 0%  | 0%  | 0%  | 0%  | 0%  | 7,2%  | 9,3%
+L179: 29  | 17 a 18 de setembro  | Datafolha^{【93†[23]】}  | ±2%  | 37%  | 30%  | 17%  | 1%  | 1%  | 1%  | 0%  | 0%  | 0%  | 0%  | 0%  | 6%  | 7%
+L180: 28  | 13 a 15 de setembro  | Ibope^{【94†[24]】}  | ±2%  | 36%  | 30%  | 19%  | 1%  | 0%  | 0%  | 0%  | 0%  | 0%  | 0%  | 0%  | 7%  | 6%
+L181: 27  | 13 a 14 de setembro  | Vox Populi^{【95†[25]】}  | ±2,2%  | 36%  | 27%  | 15%  | 1%  | 1%  | 0%  | 0%  | 0%  | 0%  | 0%  | 0%  | 8%  | 12%
+L182: 26  | 08 a 09 de setembro  | Datafolha^{【96†[26]】}  | ±2%  | 36%  | 33%  | 15%  | 1%  | 1%  | 1%  | 0%  | 0%  | 0%  | 0%  | 0%  | 6%  | 7%
+L183: 25  | 08 a 09 de setembro  | Vox Populi^{【97†[27]】}  | ±2,2%  | 36%  | 28%  | 15%  | 1%  | 0%  | 0%  | 0%  | 0%  | 0%  | 0%  | 0%  | 7%  | 13%
+L184: 24  | 05 a 08 de setembro  | Ibope^{【98†[28]】}  | ±2%  | 39%  | 31%  | 15%  | 1%  | 0%  | 0%  | 0%  | 0%  | 0%  | 0%  | 0%  | 8%  | 5%
+L185: 23  | 05 a 07 de setembro  | CNT/MDA^{【99†[29]】}  | ±2,2%  | 38,1%  | 33,5%  | 14,7%  | 1,0%  | 0%  | 0%  | 0%  | 0%  | 0%  | 0%  | 0%  | 5,9%  | 5,7%
+L186: 22  | 01 a 03 de setembro  | Datafolha^{【100†[30]】}  | ±2%  | 35%  | 34%  | 14%  | 1%  | 1%  | 1%  | 0%  | 0%  | 0%  | 1%  | 0%  | 6%  | 7%
+L187: 21  | 01 a 03 de setembro  | Ibope^{【101†[31]】}  | ±2%  | 37%  | 33%  | 15%  | 1%  | 0%  | 0%  | 0%  | 0%  | 0%  | 0%  | 0%  | 7%  | 5%
+L188: 20  | 28 a 29 de agosto  | Datafolha^{【102†[32]】}  | ±2%  | 34%  | 34%  | 15%  | 2%  | 0%  | 0%  | 0%  | 0%  | 0%  | 0%  | 0%  | 8%  | 9%
+L189: 19  | 23 a 25 de agosto  | Ibope^{【103†[33]】}  | ±2%  | 34%  | 29%  | 19%  | 1%  | 1%  | 0%  | 0%  | 0%  | 0%  | 0%  | 0%  | 7%  | 8%
+L190: 18  | 21 a 24 de agosto  | CNT/MDA^{【104†[34]】}  | ±2,2%  | 34,2%  | 28,2%  | 16,0%  | 1,3%  | 0,3%  | 0,4%  | 0,1%  | 0,2%  | 0%  | 0,1%  | 0,1%  | 8,7%  | 10,4%
+L191: 17  | 14 a 15 de agosto  | Datafolha^{【105†[35]】}  | ±2%  | 36%  | 21%  | 20%  | 3%  | 0%  | 1%  | 0%  | 0%  | 0%  | 1%  | 0%  | 8%  | 9%
+L192: 16  | 02 a 07 de agosto  | Ibope^{【106†[36]】}  | ±2%  | 38%  | —  | 23%  | 3%  | 1%  | 1%  | 0%  | 0%  | 0%  | 0%  | 0%  | 13%  | 11%
+L193: 15  | 18 a 22 de julho  | Ibope^{【107†[37]】}  | ±2%  | 38%  | —  | 22%  | 3%  | 1%  | 1%  | 0%  | 0%  | 0%  | 1%  | 0%  | 16%  | 9%
+L194: 14  | 15 a 16 de julho  | Datafolha^{【108†[38]】}  | ±2%  | 36%  | —  | 20%  | 3%  | 1%  | 1%  | 1%  | 0%  | 0%  | 1%  | 1%  | 13%  | 14%
+L195: 13  | 01 a 02 de julho  | Datafolha^{【109†[39]】}  | ±2%  | 38%  | —  | 20%  | 4%  | 1%  | 1%  | 0%  | 0%  | 1%  | 2%  | —  | 13%  | 11%
+L196: 12  | 13 a 15 de junho  | Ibope^{【110†[40]】}  | ±2%  | 39%  | —  | 21%  | 3%  | —  | 0%  | 0%  | 0%  | 0%  | 1%  | —  | 13%  | 8%
+L197: 11  | 04 a 07 de junho  | Ibope^{【111†[41]】}  | ±2%  | 38%  | —  | 22%  | 3%  | —  | 1%  | 0%  | 0%  | 0%  | 1%  | —  | 13%  | 7%
+L198: 10  | 03 a 05 de junho  | Datafolha^{【112†[42]】}  | ±2%  | 34%  | —  | 19%  | 4%  | —  | 1%  | 0%  | 0%  | 0%  | 1%  | —  | 17%  | 13%
+L199: 9  | 31 de maio a 01 de junho  | Vox Populi^{【113†[43]】}  | ±2,2%  | 40%  | —  | 21%  | 2%  | —  | 0%  | 0%  | 0%  | 0%  | 1%  | —  | 14%  | 14%
+L200: 8  | 15 a 19 de maio  | Ibope^{【114†[44]】}  | ±2%  | 40%  | —  | 20%  | 3%  | —  | 1%  | 0%  | 0%  | 0%  | 1%  | —  | 14%  | 10%
+L201: 7  | 07 a 08 de maio  | Datafolha^{【115†[45]】}  | ±2%  | 37%  | —  | 20%  | 3%  | —  | 1%  | 0%  | 0%  | 0%  | 0%  | —  | 16%  | 8%
+L202: 6  | 10 a 14 de abril  | Ibope^{【116†[46]】}  | ±2%  | 37%  | —  | 14%  | 2%  | —  | 0%  | 0%  | 0%  | 0%  | —  | —  | 24%  | 13%
+L203: 5  | 06 a 08 de abril  | Vox Populi^{【117†[47]】}  | ±2,2%  | 40%  | —  | 16%  | 2%  | —  | —  | 0%  | 0%  | 0%  | —  | —  | 15%  | 18%
+L204: 4  | 02 a 03 de abril  | Datafolha^{【118†[48]】}  | ±2%  | 38%  | 27%  | 16%  | 2%  | —  | 1%  | 0%  | 1%  | 0%  | 1%  | —  | 20%  | 9%
+L205: 3  | 13 a 17 de março  | Ibope^{【119†[49]】}  | ±2%  | 40%  | —  | 13%  | 3%  | —  | —  | 0%  | 0%  | 0%  | —  | —  | 24%  | 12%
+L206: 2  | 19 a 20 de fevereiro  | Datafolha^{【120†[50]】}  | ±2%  | 43%  | 23%  | 15%  | 3%  | —  | 1%  | 0%  | 0%  | 0%  | 1%  | —  | 19%  | 7%
+L207: 1  | 13 a 15 de fevereiro  | Vox Populi^{【121†[51]】}  | ±2,2%  | 41%  | —  | 17%  | 0%  | —  | —  | 0%  | 0%  | 0%  | —  | —  | 20%  | 15%
+L208: ## Segundo turno
+L209: 
+L210: [【122†editar】 | 【123†editar código】]
+L211:  | Período da pesquisa  | Instituto  | Margem
+L212: de erro  | Candidato  | Branco ou Nulo  | NS ou NR
+L213: --- | --- | --- | --- | --- | --- | ---
+L214: Dilma Rousseff (PT)  | Aécio Neves (PSDB)
+L215: --- | ---
+L216: 15  | 25 de outubro  | Vox Populi^{【124†[52]】}  | ± 2,2%  | 48%  | 41%  | 5%  | 5%
+L217: 14  | 24 e 25 de outubro  | Datafolha^{【125†[53]】}  | ± 2%  | 47%  | 43%  | 5%  | 5%
+L218: 13  | 24 e 25 de outubro  | Ibope^{【126†[54]】}  | ± 2%  | 49%  | 43%  | 5%  | 3%
+L219: 12  | 23 e 24 de outubro  | CNT/MDA^{【127†[55]】}  | ± 2,2%  | 44,7%  | 45,3%  | 5,9%  | 4,2%
+L220: 11  | 22 e 23 de outubro  | Datafolha^{【128†[56]】}  | ± 2%  | 48%  | 42%  | 5%  | 5%
+L221: 10  | 20 e 22 de outubro  | Ibope^{【129†[57]】}  | ± 2%  | 49%  | 41%  | 7%  | 3%
+L222: 9  | 21 de outubro  | Datafolha^{【130†[58]】}  | ± 2%  | 47%  | 43%  | 6%  | 4%
+L223: 8  | 20 de outubro  | Datafolha^{【131†[59]】}  | ± 2%  | 46%  | 43%  | 5%  | 6%
+L224: 7  | 18 a 19 de outubro  | Vox Populi^{【132†[60]】}  | ± 2,2%  | 46%  | 43%  | 5%  | 5%
+L225: 6  | 18 a 19 de outubro  | CNT/MDA^{【133†[61]】}  | ± 2,2%  | 45,5%  | 44,5%  | 5,7%  | 4,3%
+L226: 5  | 14 a 15 de outubro  | Datafolha^{【134†[62]】}  | ± 2%  | 43%  | 45%  | 6%  | 6%
+L227: 4  | 12 a 14 de outubro  | Ibope^{【135†[63]】}  | ± 2%  | 43%  | 45%  | 7%  | 5%
+L228: 3  | 11 a 12 de outubro  | Vox Populi^{【136†[64]】}  | ± 2,2%  | 45%  | 44%  | 5%  | 5%
+L229: 2  | 8 a 9 de outubro  | Datafolha^{【137†[65]】}  | ± 2%  | 44%  | 46%  | 4%  | 6%
+L230: 1  | 7 a 8 de outubro  | Ibope^{【138†[66]】}  | ± 2%  | 44%  | 46%  | 6%  | 4%
+L231: ## Ver também
+L232: 
+L233: [【139†editar】 | 【140†editar código】]
+L234: 
+L235:   * 【47†Eleição presidencial no Brasil em 2014】
+L236:   * 【141†Eleições gerais no Brasil em 2014】
+L237: ## Referências
+L238:   1. 【142†1】 【143†2】 【144†3】 【145†4】 【146†5】 【147†6】 【148†7】 【149†«Resolução nº 23.400»†www.tse.jus.br】. Tribunal Superior Eleitoral. 17 de dezembro de 2013. Consultado em 24 de agosto de 2026
+L239:   2. 【150†1】 【151†2】 【152†3】 【153†4】 【154†5】 【155†6】 【156†«Calendário Eleitoral: TSE proíbe enquetes e regulamenta pesquisas eleitorais»†www.tse.jus.br】. Tribunal Superior Eleitoral. 29 de janeiro de 2014. Consultado em 24 de agosto de 2026
+L240:   3. 【157†1】 【158†2】 【159†3】 【160†4】 【161†5】 【162†«Eleições 2014: entidades registram 300 pesquisas eleitorais no Portal do TSE»†www.tse.jus.br】. Tribunal Superior Eleitoral. 28 de maio de 2014. Consultado em 24 de agosto de 2026
+L241:   4. 【163†1】 【164†2】 【165†3】 【166†4】 【167†5】 【168†6】 【169†7】 【170†«A partir de hoje (10), pesquisas devem abranger todos os candidatos que pediram registro à Justiça Eleitoral»†www.tse.jus.br】. Tribunal Superior Eleitoral. 10 de julho de 2014. Consultado em 24 de agosto de 2026
+L242:   5. 【171†1】 【172†2】 【173†3】 【174†«Pesquisas Eleitorais - 2014»†dadosabertos.tse.jus.br】. Portal de Dados Abertos do Tribunal Superior Eleitoral. Consultado em 24 de agosto de 2026
+L243:   6. 【175†1】 【176†2】 【177†3】 【178†«Enquetes e sondagens eleitorais estão proibidas nas Eleições 2014»†www.tse.jus.br】. Tribunal Superior Eleitoral. 18 de outubro de 2014. Consultado em 24 de agosto de 2026
+L244:   7. 【179†1】 【180†2】 【181†3】 【182†4】 【183†5】 【184†6】 【185†«Ministro suspende divulgação de pesquisa eleitoral em Minas Gerais»†www.tse.jus.br】. Tribunal Superior Eleitoral. 18 de outubro de 2014. Consultado em 24 de agosto de 2026
+L245:   8. 【186†↑】 【187†«Ibope, votos válidos: Dilma tem 46%, Aécio, 27%, e Marina, 24%»†g1.globo.com】. 【188†G1】. 4 de outubro de 2014. Consultado em 14 de fevereiro de 2018. 【189†Cópia arquivada em 1 de março de 2017†web.archive.org】
+L246:   9. 【190†↑】 【191†«Datafolha, votos válidos: Dilma tem 44%, Aécio, 26%, e Marina, 24%»†g1.globo.com】. 【188†G1】. 4 de outubro de 2014. Consultado em 14 de fevereiro de 2018. 【192†Cópia arquivada em 24 de janeiro de 2018†web.archive.org】
+L247:   10. 【193†↑】 Vox Populi/Rede Record (4 de outubro de 2014). 【194†«Vox Populi mostra Dilma na liderança, e Aécio à frente de Marina»†noticias.r7.com】. 【195†R7】. Consultado em 14 de fevereiro de 2018. 【196†Cópia arquivada em 19 de maio de 2017†web.archive.org】
+L248:   11. 【197†↑】 【198†«Pesquisa CNT/MDA: Aécio ultrapassa Marina pela primeira vez»†oglobo.globo.com】. O Globo. 4 de outubro de 2014. Consultado em 14 de fevereiro de 2018. 【199†Cópia arquivada em 19 de maio de 2017†web.archive.org】
+L249:   12. 【200†↑】 Datafolha (2 de outubro de 2014). 【201†«Dilma tem 40%, Marina, 24%, e Aécio, 21%, aponta pesquisa Datafolha»†media.folha.uol.com.br】 (PDF). Consultado em 14 de fevereiro de 2018. 【202†Cópia arquivada (PDF) em 26 de março de 2015†web.archive.org】
+L250:   13. 【203†↑】 【204†«Dilma tem 40%, Marina, 24%, e Aécio, 19%, aponta pesquisa Ibope»†g1.globo.com】. 【188†G1】. 2 de outubro de 2014. Consultado em 14 de fevereiro de 2018. 【205†Cópia arquivada em 31 de março de 2017†web.archive.org】
+L251:   14. 【206†↑】 【207†«Dilma tem 40%, Marina, 25%, e Aécio, 20%, aponta pesquisa Datafolha»†g1.globo.com】. 【188†G1】. 30 de setembro de 2014. Consultado em 14 de fevereiro de 2018. 【208†Cópia arquivada em 2 de março de 2017†web.archive.org】
+

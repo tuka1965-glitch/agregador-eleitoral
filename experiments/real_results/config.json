@@ -1,0 +1,15 @@
+{
+  "data": "observed_real_polls_only",
+  "code_commit": "043d4e670d93e0ed4dcbdcfd376d11867160757d",
+  "asof": "2026-10-23",
+  "comparison": "Controlled substitution of house-effect component on the pinned-branch aggregation backbone; not a verified full Sites v3.0 reproduction.",
+  "half_life": 21,
+  "prior_sd": 2,
+  "window_days": 7,
+  "minimum_rounds": 3,
+  "minimum_peers": 2,
+  "historical_quality_ratings": "disabled in all models because current ratings incorporate later elections",
+  "publication": "known dates used when available; otherwise end of fieldwork + 2 days, explicitly a proxy",
+  "metrics": "two eventual finalists, actual full valid-vote shares; each election-round equal weight",
+  "outcome_fitting": "none; no results or future elections enter estimation; default experimental parameters retained"
+}

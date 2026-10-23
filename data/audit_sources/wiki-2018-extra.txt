@@ -1,0 +1,424 @@
+Pesquisas de opinião para a eleição presidencial no Brasil em 2018 – Wikipédia, a enciclopédia livre (https://pt.wikipedia.org/wiki/Pesquisas_de_opini%C3%A3o_para_a_elei%C3%A7%C3%A3o_presidencial_no_Brasil_em_2018)
+【turn10view0】 [wordlim: 200] Crawled: today; Content type: text/html; Source: open({"ref_id":"turn3view1","lineno":250}); Total lines: 4700
+L219: 5–6 de outubro de 2018  | 【111†Globo e O Estado de S. Paulo/IBOPE†g1.globo.com】 BR-01537/2018  | 3.010  | 2  | 22%
+L220: (Haddad)  | 11%
+L221: (Gomes)  | –  | 3%
+L222: (Silva)  | 2%
+L223: (Meirelles)  | 1%
+L224: (Dias)  | 7%
+L225: (Alckmin)  | 2%
+L226: (Amoêdo)  | 36%
+L227: (Bolsonaro)  | 3%  | 12%
+L228: 5–6 de outubro de 2018  | 【112†Globo e Folha/Datafolha†g1.globo.com】 BR-01584/2018  | 19.552  | 2  | 22%
+L229: (Haddad)  | 13%
+L230: (Gomes)  | –  | 3%
+L231: (Silva)  | 2%
+L232: (Meirelles)  | 2%
+L233: (Dias)  | 7%
+L234: (Alckmin)  | 3%
+L235: (Amoêdo)  | 36%
+L236: (Bolsonaro)  | 2%  | 10%
+L237: 4–5 de outubro de 2018  | 【113†CNT/MDA†cms.cnt.org.br】 BR-04819/2018  | 2.002  | 2,2  | 24,0%
+L238: (Haddad)  | 9,9%
+L239: (Gomes)  | –  | 2,2%
+L240: (Silva)  | 1,6%
+L241: (Meirelles)  | 1,7%
+L242: (Dias)  | 5,8%
+L243: (Alckmin)  | 2,3%
+L244: (Amoêdo)  | 36,7%
+L245: (Bolsonaro)  | 1,9%  | 13,8%
+L246: 2–5 de outubro de 2018  | 【114†Veritá†www.institutoverita.com.br】 BR-03229/2018  | 5.208  | 2  | 18,8%
+L247: (Haddad)  | 8,4%
+L248: (Gomes)  | –  | 1,4%
+L249: (Silva)  | 0,8%
+L250: (Meirelles)  | 1,0%
+L251: (Dias)  | 4,2%
+L252: (Alckmin)  | 2,9%
+L253: (Amoêdo)  | 41,5%
+L254: (Bolsonaro)  | 2,0%  | 19,0%
+L255: 3–4 de outubro de 2018  | 【115†XP/Ipespe†www.infomoney.com.br】 BR-06509/2018  | 2.000  | 2,2  | 22%
+L256: (Haddad)  | 11%
+L257: (Gomes)  | –  | 4%
+L258: (Silva)  | 2%
+L259: (Meirelles)  | 2%
+L260: (Dias)  | 7%
+L261: (Alckmin)  | 3%
+L262: (Amoêdo)  | 36%
+L263: (Bolsonaro)  | 1%  | 12%
+L264: 3–4 de outubro de 2018  | 【116†RecordTV/RealTime Big Data†noticias.r7.com】 BR-05770/2018  | 10.000  | 2  | 24%
+L265: (Haddad)  | 12%
+L266: (Gomes)  | –  | 4%
+L267: (Silva)  | 1%
+L268: (Meirelles)  | 1%
+L269: (Dias)  | 6%
+L270: (Alckmin)  | 2%
+L271: (Amoêdo)  | 34%
+L272: (Bolsonaro)  | 1%  | 15%
+L273: 3–4 de outubro de 2018  | 【117†DataPoder360†www.poder360.com.br】 BR-07142/2018  | 4.000  | 2  | 25%
+L274: (Haddad)  | 15%
+L275: (Gomes)  | –  | 2%
+L276: (Silva)  | 3%
+L277: (Meirelles)  | 4%
+L278: (Dias)  | 7%
+L279: (Alckmin)  | 2%
+L280: (Amoêdo)  | 30%
+L281: (Bolsonaro)  | 5%  | 7%
+L282: 3–4 de outubro de 2018  | 【118†Globo e Folha/Datafolha†g1.globo.com】 BR-02581/2018  | 10.930  | 2  | 22%
+L283: (Haddad)  | 11%
+L284: (Gomes)  | –  | 4%
+L285: (Silva)  | 2%
+L286: (Meirelles)  | 2%
+L287: (Dias)  | 8%
+L288: (Alckmin)  | 3%
+L289: (Amoêdo)  | 35%
+L290: (Bolsonaro)  | 1%  | 11%
+
+--------------------------------------------------------------------------------
+Pesquisas de opinião para a eleição presidencial no Brasil em 2018 – Wikipédia, a enciclopédia livre (https://pt.wikipedia.org/wiki/Pesquisas_de_opini%C3%A3o_para_a_elei%C3%A7%C3%A3o_presidencial_no_Brasil_em_2018)
+【turn10view1】 [wordlim: 200] Crawled: today; Content type: text/html; Source: open({"ref_id":"turn3view1","lineno":310}); Total lines: 4700
+L291: 2–4 de outubro de 2018  | 【119†Empiricus/Paraná Pesquisas†www.paranapesquisas.com.br】 BR-08437/2018  | 2.080  | 2,0  | 21,8%
+L292: (Haddad)  | 9,4%
+L293: (Gomes)  | –  | 3,5%
+L294: (Silva)  | 1,7%
+L295: (Meirelles)  | 1,4%
+L296: (Dias)  | 7,4%
+L297: (Alckmin)  | 3,1%
+L298: (Amoêdo)  | 34,9%
+L299: (Bolsonaro)  | 2,1%  | 14,7%
+L300: 28 de setembro–3 de outubro de 2018  | 【120†Movimento Parlamentarista Brasileiro/Amostra†www.parlamentarismo.com.br】 BR-09143/2018  | 2.500  | 2  | 22%
+L301: (Haddad)  | 10%
+L302: (Gomes)  | –  | 6%
+L303: (Silva)  | 2%
+L304: (Meirelles)  | 1%
+L305: (Dias)  | 6%
+L306: (Alckmin)  | 2%
+L307: (Amoêdo)  | 30%
+L308: (Bolsonaro)  | 0%  | 18%
+L309: 2 de outubro de 2018  | 【121†Folha/Datafolha†g1.globo.com】 BR-03147/2018  | 3.240  | 2  | 21%
+L310: (Haddad)  | 11%
+L311: (Gomes)  | –  | 4%
+L312: (Silva)  | 2%
+L313: (Meirelles)  | 2%
+L314: (Dias)  | 9%
+L315: (Alckmin)  | 3%
+L316: (Amoêdo)  | 32%
+L317: (Bolsonaro)  | 2%  | 13%
+L318: 1–2 de outubro de 2018  | 【122†Globo e O Estado de S. Paulo/IBOPE†g1.globo.com】 BR-08245/2018  | 3.010  | 2  | 23%
+L319: (Haddad)  | 10%
+L320: (Gomes)  | –  | 4%
+L321: (Silva)  | 2%
+L322: (Meirelles)  | 1%
+L323: (Dias)  | 7%
+L324: (Alckmin)  | 2%
+L325: (Amoêdo)  | 32%
+L326: (Bolsonaro)  | 1%  | 17%
+L327: 29–30 de setembro de 2018  | 【123†BTG Pactual/FSB Pesquisa†static.poder360.com.br】 BR-05879/2018  | 2.000  | 2  | 24%
+L328: (Haddad)  | 9%
+L329: (Gomes)  | –  | 4%
+L330: (Silva)  | 2%
+L331: (Meirelles)  | 2%
+L332: (Dias)  | 11%
+L333: (Alckmin)  | 5%
+L334: (Amoêdo)  | 31%
+L335: (Bolsonaro)  | 1%  | 12%
+L336: 29–30 de setembro de 2018  | 【124†Globo e O Estado de S. Paulo/IBOPE†g1.globo.com】 BR-08650/2018  | 3.010  | 2  | 21%
+L337: (Haddad)  | 11%
+L338: (Gomes)  | –  | 4%
+L339: (Silva)  | 2%
+L340: (Meirelles)  | 2%
+L341: (Dias)  | 8%
+L342: (Alckmin)  | 3%
+L343: (Amoêdo)  | 31%
+L344: (Bolsonaro)  | 1%  | 17%
+L345: 28–29 de setembro de 2018  | 【125†RecordTV/RealTime Big Data†noticias.r7.com】 BR-06298/2018  | 3.200  | 2  | 24%
+L346: (Haddad)  | 11%
+L347: (Gomes)  | –  | 5%
+L348: (Silva)  | 3%
+L349: (Meirelles)  | 2%
+L350: (Dias)  | 7%
+L351: (Alckmin)  | 3%
+L352: (Amoêdo)  | 29%
+L353: (Bolsonaro)  | 1%  | 15%
+L354: 27–28 de setembro de 2018  | 【126†CNT/MDA†cms.cnt.org.br】 BR-03303/2018  | 2.000  | 2,2  | 25,2%
+L355: (Haddad)  | 9,4%
+L356: (Gomes)  | –  | 2,6%
+L357: (Silva)  | 2,0%
+L358: (Meirelles)  | 1,7%
+L359: (Dias)  | 7,3%
+L360: (Alckmin)  | 2,0%
+
+--------------------------------------------------------------------------------
+Pesquisas de opinião para a eleição presidencial no Brasil em 2018 – Wikipédia, a enciclopédia livre (https://pt.wikipedia.org/wiki/Pesquisas_de_opini%C3%A3o_para_a_elei%C3%A7%C3%A3o_presidencial_no_Brasil_em_2018)
+【turn10view2】 [wordlim: 200] Crawled: today; Content type: text/html; Source: open({"ref_id":"turn3view1","lineno":440}); Total lines: 4700
+L415: (Amoêdo)  | 30,6%
+L416: (Bolsonaro)  | 1,3%  | 22,4%
+L417: 22–23 de setembro de 2018  | 【133†Globo e O Estado de S. Paulo/IBOPE†g1.globo.com】 BR-06630/2018  | 2.506  | 2  | 22%
+L418: (Haddad)  | 11%
+L419: (Gomes)  | –  | 5%
+L420: (Silva)  | 2%
+L421: (Meirelles)  | 2%
+L422: (Dias)  | 8%
+L423: (Alckmin)  | 3%
+L424: (Amoêdo)  | 28%
+L425: (Bolsonaro)  | 1%  | 18%
+L426: 22–23 de setembro de 2018  | 【134†BTG Pactual/FSB Pesquisa†static.poder360.com.br】 BR-03861/2018  | 2.000  | 2  | 23%
+L427: (Haddad)  | 10%
+L428: (Gomes)  | –  | 5%
+L429: (Silva)  | 3%
+L430: (Meirelles)  | 2%
+L431: (Dias)  | 8%
+L432: (Alckmin)  | 3%
+L433: (Amoêdo)  | 33%
+L434: (Bolsonaro)  | 1%  | 13%
+L435: 19–20 de setembro de 2018  | 【135†DataPoder360†www.poder360.com.br】 BR-02039/2018  | 4.000  | 2  | 22%
+L436: (Haddad)  | 14%
+L437: (Gomes)  | –  | 4%
+L438: (Silva)  | 3%
+L439: (Meirelles)  | 3%
+L440: (Dias)  | 6%
+L441: (Alckmin)  | 1%
+L442: (Amoêdo)  | 26%
+L443: (Bolsonaro)  | 5%  | 15%
+L444: 18–19 de setembro de 2018  | 【136†Globo e Folha/Datafolha†g1.globo.com】 BR-06919/2018  | 8.601  | 2  | 16%
+L445: (Haddad)  | 13%
+L446: (Gomes)  | –  | 7%
+L447: (Silva)  | 2%
+L448: (Meirelles)  | 3%
+L449: (Dias)  | 9%
+L450: (Alckmin)  | 3%
+L451: (Amoêdo)  | 28%
+L452: (Bolsonaro)  | 2%  | 17%
+L453: 【137†17–19 de setembro de 2018†www.infomoney.com.br】  | 【138†Genial Investimentos/Brasilis†blog.genialinvestimentos.com.br】 BR-01687/2018  | 1.000  | 3,5  | 17%
+L454: (Haddad)  | 7%
+L455: (Gomes)  | –  | 6%
+L456: (Silva)  | 3%
+L457: (Meirelles)  | 4%
+L458: (Dias)  | 7%
+L459: (Alckmin)  | 5%
+L460: (Amoêdo)  | 30%
+L461: (Bolsonaro)  | 4%  | 18%
+L462: 17–19 de setembro de 2018  | 【139†XP/Ipespe†www.infomoney.com.br】 BR-02995/2018  | 2.000  | 2,2  | 16%
+L463: (Haddad)  | 11%
+L464: (Gomes)  | –  | 6%
+L465: (Silva)  | 2%
+L466: (Meirelles)  | 3%
+L467: (Dias)  | 7%
+L468: (Alckmin)  | 3%
+L469: (Amoêdo)  | 28%
+L470: (Bolsonaro)  | 1%  | 23%
+L471: 17%
+L472: (Haddad, apoiado por Lula)  | 10%
+L473: (Gomes)  | –  | 4%
+L474: (Silva)  | 2%
+L475: (Meirelles)  | 3%
+L476: (Dias)  | 7%
+L477: (Alckmin)  | 3%
+L478: (Amoêdo)  | 27%
+L479: (Bolsonaro)  | 1%  | 26%
+L480: 16–18 de setembro de 2018  | 【140†Globo e O Estado de S. Paulo/IBOPE†g1.globo.com】 BR-09678/2018  | 2.506  | 2  | 19%
+L481: (Haddad)  | 11%
+L482: (Gomes)  | –  | 6%
+L483: (Silva)  | 2%
+L484: (Meirelles)  | 3%
+L485: (Dias)  | 7%
+L486: (Alckmin)  | 2%
+L487: (Amoêdo)  | 28%
+L488: (Bolsonaro)  | 1%  | 21%
+
+--------------------------------------------------------------------------------
+Pesquisas de opinião para a eleição presidencial no Brasil em 2018 – Wikipédia, a enciclopédia livre (https://pt.wikipedia.org/wiki/Pesquisas_de_opini%C3%A3o_para_a_elei%C3%A7%C3%A3o_presidencial_no_Brasil_em_2018)
+【turn10view3】 [wordlim: 200] Crawled: today; Content type: text/html; Source: open({"ref_id":"turn3view1","lineno":580}); Total lines: 4700
+L562: 10 de setembro de 2018  | 【148†Globo e Folha/Datafolha†g1.globo.com】 BR-02376/2018  | 2.804  | 2  | 9%
+L563: (Haddad)  | 13%
+L564: (Gomes)  | –  | 11%
+L565: (Silva)  | 3%
+L566: (Meirelles)  | 3%
+L567: (Dias)  | 10%
+L568: (Alckmin)  | 3%
+L569: (Amoêdo)  | 24%
+L570: (Bolsonaro)  | 3%  | 22%
+L571: 8–10 de setembro de 2018  | 【149†IBOPE†g1.globo.com】 BR-05221/2018  | 2.002  | 2  | 8%
+L572: (Haddad)  | 11%
+L573: (Gomes)  | –  | 9%
+L574: (Silva)  | 3%
+L575: (Meirelles)  | 3%
+L576: (Dias)  | 9%
+L577: (Alckmin)  | 3%
+L578: (Amoêdo)  | 26%
+L579: (Bolsonaro)  | 2%  | 26%
+L580: 8–9 de setembro de 2018  | 【150†BTG Pactual/FSB Pesquisa†especiais.gazetadopovo.com.br】 BR-01522/2018  | 2.000  | 2  | 8%
+L581: (Haddad)  | 12%
+L582: (Gomes)  | –  | 8%
+L583: (Silva)  | 3%
+L584: (Meirelles)  | 3%
+L585: (Dias)  | 8%
+L586: (Alckmin)  | 3%
+L587: (Amoêdo)  | 30%
+L588: (Bolsonaro)  | 2%  | 24%
+L589: 7–9 de setembro de 2018  | 【151†RecordTV/RealTime Big Data†noticias.r7.com】 BR-05291/2018  | 3.200  | 2  | 7%
+L590: (Haddad)  | 11%
+L591: (Gomes)  | –  | 11%
+L592: (Silva)  | 2%
+L593: (Meirelles)  | 4%
+L594: (Dias)  | 9%
+L595: (Alckmin)  | 3%
+L596: (Amoêdo)  | 25%
+L597: (Bolsonaro)  | 2%  | 26%
+L598: 3–5 de setembro de 2018  | 【152†XP/Ipespe†www.infomoney.com.br】 BR-00339/2018  | 2.000  | 2,2  | 8%
+L599: (Haddad)  | 11%
+L600: (Gomes)  | –  | 11%
+L601: (Silva)  | 1%
+L602: (Meirelles)  | 4%
+L603: (Dias)  | 9%
+L604: (Alckmin)  | 4%
+L605: (Amoêdo)  | 23%
+L606: (Bolsonaro)  | 2%  | 27%
+L607: 14%
+L608: (Haddad, apoiado por Lula)  | 10%
+L609: (Gomes)  | –  | 8%
+L610: (Silva)  | 2%
+L611: (Meirelles)  | 4%
+L612: (Dias)  | 8%
+L613: (Alckmin)  | 4%
+L614: (Amoêdo)  | 20%
+L615: (Bolsonaro)  | 1%  | 28%
+L616: 33%
+L617: (Lula)  | 8%
+L618: (Gomes)  | –  | 6%
+L619: (Silva)  | 1%
+L620: (Meirelles)  | 3%
+L621: (Dias)  | 7%
+L622: (Alckmin)  | 5%
+L623: (Amoêdo)  | 22%
+L624: (Bolsonaro)  | 2%  | 12%
+L625: 1–3 de setembro de 2018  | 【153†Globo e O Estado de S. Paulo/IBOPE†g1.globo.com】 BR‐05003/2018  | 2.002  | 2  | 6%
+L626: (Haddad)  | 12%
+L627: (Gomes)  | –  | 12%
+L628: (Silva)  | 2%
+L629: (Meirelles)  | 3%
+L630: (Dias)  | 9%
+L631: (Alckmin)  | 3%
+L632: (Amoêdo)  | 22%
+L633: (Bolsonaro)  | 3%  | 28%
+L634: 1–2 de setembro de 2018  | 【154†BTG Pactual/FSB Pesquisa†www.poder360.com.br】 BR-01057/2018  | 2.000  | 2  | 6%
+L635: (Haddad)  | 12%
+L636: (Gomes)  | –  | 11%
+L637: (Silva)  | 1%
+L638: (Meirelles)  | 3%
+L639: (Dias)  | 8%
+L640: (Alckmin)  | 4%
+L641: (Amoêdo)  | 26%
+
+--------------------------------------------------------------------------------
+Pesquisas de opinião para a eleição presidencial no Brasil em 2018 – Wikipédia, a enciclopédia livre (https://pt.wikipedia.org/wiki/Pesquisas_de_opini%C3%A3o_para_a_elei%C3%A7%C3%A3o_presidencial_no_Brasil_em_2018)
+【turn10view4】 [wordlim: 200] Crawled: today; Content type: text/html; Source: open({"ref_id":"turn3view1","lineno":620}); Total lines: 4700
+L580: 8–9 de setembro de 2018  | 【150†BTG Pactual/FSB Pesquisa†especiais.gazetadopovo.com.br】 BR-01522/2018  | 2.000  | 2  | 8%
+L581: (Haddad)  | 12%
+L582: (Gomes)  | –  | 8%
+L583: (Silva)  | 3%
+L584: (Meirelles)  | 3%
+L585: (Dias)  | 8%
+L586: (Alckmin)  | 3%
+L587: (Amoêdo)  | 30%
+L588: (Bolsonaro)  | 2%  | 24%
+L589: 7–9 de setembro de 2018  | 【151†RecordTV/RealTime Big Data†noticias.r7.com】 BR-05291/2018  | 3.200  | 2  | 7%
+L590: (Haddad)  | 11%
+L591: (Gomes)  | –  | 11%
+L592: (Silva)  | 2%
+L593: (Meirelles)  | 4%
+L594: (Dias)  | 9%
+L595: (Alckmin)  | 3%
+L596: (Amoêdo)  | 25%
+L597: (Bolsonaro)  | 2%  | 26%
+L598: 3–5 de setembro de 2018  | 【152†XP/Ipespe†www.infomoney.com.br】 BR-00339/2018  | 2.000  | 2,2  | 8%
+L599: (Haddad)  | 11%
+L600: (Gomes)  | –  | 11%
+L601: (Silva)  | 1%
+L602: (Meirelles)  | 4%
+L603: (Dias)  | 9%
+L604: (Alckmin)  | 4%
+L605: (Amoêdo)  | 23%
+L606: (Bolsonaro)  | 2%  | 27%
+L607: 14%
+L608: (Haddad, apoiado por Lula)  | 10%
+L609: (Gomes)  | –  | 8%
+L610: (Silva)  | 2%
+L611: (Meirelles)  | 4%
+L612: (Dias)  | 8%
+L613: (Alckmin)  | 4%
+L614: (Amoêdo)  | 20%
+L615: (Bolsonaro)  | 1%  | 28%
+L616: 33%
+L617: (Lula)  | 8%
+L618: (Gomes)  | –  | 6%
+L619: (Silva)  | 1%
+L620: (Meirelles)  | 3%
+L621: (Dias)  | 7%
+L622: (Alckmin)  | 5%
+L623: (Amoêdo)  | 22%
+L624: (Bolsonaro)  | 2%  | 12%
+L625: 1–3 de setembro de 2018  | 【153†Globo e O Estado de S. Paulo/IBOPE†g1.globo.com】 BR‐05003/2018  | 2.002  | 2  | 6%
+L626: (Haddad)  | 12%
+L627: (Gomes)  | –  | 12%
+L628: (Silva)  | 2%
+L629: (Meirelles)  | 3%
+L630: (Dias)  | 9%
+L631: (Alckmin)  | 3%
+L632: (Amoêdo)  | 22%
+L633: (Bolsonaro)  | 3%  | 28%
+L634: 1–2 de setembro de 2018  | 【154†BTG Pactual/FSB Pesquisa†www.poder360.com.br】 BR-01057/2018  | 2.000  | 2  | 6%
+L635: (Haddad)  | 12%
+L636: (Gomes)  | –  | 11%
+L637: (Silva)  | 1%
+L638: (Meirelles)  | 3%
+L639: (Dias)  | 8%
+L640: (Alckmin)  | 4%
+L641: (Amoêdo)  | 26%
+L642: (Bolsonaro)  | 2%  | 28%
+L643: 37%
+L644: (Lula)  | 7%
+L645: (Gomes)  | –  | 5%
+L646: (Silva)  | 1%
+L647: (Meirelles)  | 3%
+L648: (Dias)  | 6%
+L649: (Alckmin)  | 4%
+L650: (Amoêdo)  | 22%
+L651: (Bolsonaro)  | 2%  | 13%
+L652: Em 31 de agosto de 2018, o Tribunal Superior Eleitoral indeferiu a candidatura de Luiz Inácio Lula da Silva, do PT.^{【155†[22]】}
+L653: 27–29 de agosto de 2018  | 【156†XP/Ipespe†www.infomoney.com.br】 BR-07252/2018  | 1.000  | 3,2  | 6%
+L654: (Haddad)  | 10%
+L655: (Gomes)  | –  | 13%
+L656: (Silva)  | 1%
+L657: (Meirelles)  | 4%
+L658: (Dias)  | 9%
+L659: (Alckmin)  | 4%
+L660: (Amoêdo)  | 23%
+
+--------------------------------------------------------------------------------
+Pesquisas de opinião para a eleição presidencial no Brasil em 2018 – Wikipédia, a enciclopédia livre (https://pt.wikipedia.org/wiki/Pesquisas_de_opini%C3%A3o_para_a_elei%C3%A7%C3%A3o_presidencial_no_Brasil_em_2018)
+【turn10view5】 [wordlim: 200] Crawled: today; Content type: text/html; Source: open({"ref_id":"turn3view1","lineno":2763}); Total lines: 4700
+L2749: #### Pesquisa boca-de-urna
+L2750: 
+L2751: [【255†editar】 | editar código]
+L2752: 
+L2753: Período da pesquisa  | Contratante/Instituto Referência Número de registro  | Total de entrevistados  | Margem de erro (【98†pontos percentuais】)  | Haddad
+L2754: (【99†PT】)  | Bolsonaro
+L2759: #### Depois do primeiro turno
+L2760: 
+L2761: [editar | editar código]
+L2762: Período da pesquisa  | Contratante/Instituto Referência Número de registro  | Total de entrevistados  | Margem de erro (【98†pontos percentuais】)  | Haddad
+L2763: (【99†PT】)  | Bolsonaro
+L2764: (【106†PSL】)  | Abst./
+L2765: Não decid.
+L2766: --- | --- | --- | --- | --- | --- | ---
+L2767:  |
+L2768: 26–27 de outubro de 2018  | CNT/MDA BR-06933/2018  | 2.002  | 2,2  | 37,0%  | 48,5%  | 14,5%
+L2769: 26–27 de outubro de 2018  | Globo e Folha/Datafolha BR-02460/2018  | 18.371  | 2  | 39%  | 47%  | 13%
+L2770: 26–27 de outubro de 2018  | Globo e O Estado de S. Paulo/IBOPE BR‐ 02934/2018  | 3.010  | 2  | 41%  | 47%  | 12%
+L2771: 26 de outubro de 2018  | RecordTV/RealTime Big Data BR-04450/2018  | 5.000  | 2  | 39%  | 47%  | 14%
+L2772: 24–25 de outubro de 2018  | Globo e Folha/Datafolha BR-05743/2018  | 9.173  | 2  | 38%  | 48%  | 14%
+L2773: 23–25 de outubro de 2018  | Empiricus/Paraná Pesquisas BR-06785/2018  | 2.120  | 2  | 34,4%  | 53,0%  | 12,5%
+L2774: 24 de outubro de 2018  | RecordTV/RealTime Big Data BR-08980/2018  | 5.000  | 2  | 38%  | 49%  | 13%
+L2775: 23–24 de outubro de 2018  | XP/Ipespe BR-08283/2018  | 2.000  | 2,2  | 37%  | 51%  | 12%
+L2776: 22–23 de outubro de 2018  | CUT/Vox Populi BR-00709/2018  | 2.000  | 2,2  | 39%  | 44%  | 17%
+

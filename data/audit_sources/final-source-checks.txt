@@ -1,0 +1,144 @@
+Pesquisas de opinião para a eleição presidencial no Brasil em 2022 – Wikipédia, a enciclopédia livre (https://pt.wikipedia.org/wiki/Pesquisas_de_opini%C3%A3o_para_a_elei%C3%A7%C3%A3o_presidencial_no_Brasil_em_2022)
+【turn16view0】 [wordlim: 200] Crawled: today; Content type: text/html; Source: open({"ref_id":"turn3view2","lineno":500}); Total lines: 3964
+L463: Globe Elections UN (Diário)^{【121†[19]】}  | 1 Oct 2022  | 40%  | 47.5%  | 5.8%  | 4.7%  | 2%  | (N/A)  | Lula +7.5
+L464: The Economist^{【122†[20]】}  | 1 Oct 2022  | 38%  | 51%  | 5%  | 6%  | (N/A)  | (N/A)  | Lula +13.0
+L465: Veja^{【123†[21]】}  | 1 Oct 2022  | 33.7%  | 44.7%  | 6.8%  | 4.7%  | (N/A)  | (N/A)  | Lula +11.0
+L466: Estadão^{【124†[22]】}  | 1 Oct 2022  | 33%  | 47%  | 5%  | 6%  | 2%  | 7%  | Lula +14.0
+L467: CNN Brasil^{【125†[23]】}  | 1 Oct 2022  | 34%  | 48%  | 5%  | 6%  | 2%  | 6%  | Lula +14.0
+L468: PollingData^{【126†[24]】}  | 1 Oct 2022  | 37.5%  | 43.7%  | 5.1%  | 5.3%  | 1.9%  | 6.5%  | Lula +6.2
+L469: El País^{【127†[25]】}  | 1 Oct 2022  | 35.3%  | 46.7%  | 6%  | 4.9%  | (N/A)  | (N/A)  | Lula +11.4
+L470: El Electoral^{【128†[26]】}  | 1 Oct 2022  | 38.5%  | 48.5%  | 5.5%  | 5%  | (N/A)  | (N/A)  | Lula +10.0
+L471: Pollstergraph^{【129†[27]】}  | 1 Oct 2022  | 37.1%  | 44.8%  | 5.6%  | 4.7%  |  |  | Lula +7.7
+L472: ### 2022
+L473: 
+L474: [【130†editar】 | 【131†editar código】]
+L475: #### 3º trimestre
+L476: 
+L477: [【132†editar】 | 【133†editar código】]
+L478: Contratante / Pesquisa Número de
+L479: identificação  | Data(s) de
+L480: Pesquisa  | Tamanho
+L481: da Amostra  | Margem
+L482: de erro
+L483: (
+L484: 【134†pontospercentuais】)  |  |  |  |  |  |  |  |  |  | [[Imagem:|x80px]]  |  |  | Outros  | Indecisos e Absentos
+L485: --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | ---
+L486: 【112†Bolsonaro】
+L487: 【113†PL】  | 【114†Lula】
+L488: 【115†PT】  | 【116†Gomes】
+L489: 【117†PDT】  | 【118†Tebet】
+L490: 【119†MDB】  | 【135†Thronicke】
+L491: 【136†UNIÃO】  | 【137†D'Avila】
+L492: 【138†NOVO】  | 【139†Eymael】
+L493: 【140†DC】  | 【141†Manzano】
+L494: 【142†PCB】  | 【143†Péricles】
+L495: 【144†UP】  | 【145†Salgado】
+L496: 【146†PSTU】  | 【147†Marçal】
+L497: 【148†PROS】  | 【149†Kelmon】
+L498: 【150†PTB】
+L499: --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | ---
+L500:  |  |  |  |  |  |  |  |  |  |  |
+L501: --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | ---
+L502: 【151†Globo】/【152†Datafolha】^{【153†[28]】} BR-00245/2022  | 30 Set–01 Out  | 12.800  | 2  | 34%  | 48%  | 5%  | 6%  | 1%  | 1%  | 0%  | 0%  | 0%  | 0%  | —  | 0%  | —  | 5%
+L503: Globo/【154†IPEC】^{【155†[29]】} BR-00999/2022  | 25 Set–01 Out  | 3.008  | 2  | 34%  | 47%  | 5%  | 5%  | 1%  | 1%  | 0%  | 0%  | 0%  | 0%  | —  | 0%  | —  | 7%
+L504: Abrapel/【156†Ipespe】^{【157†[30]】} BR-05007/2022  | 30 Set  | 1.100  | 3  | 33%  | 46%  | 7%  | 6%  | 1%  | 0%  | 0%  | 0%  | 0%  | 0%  | —  | 1%  | —  | 4%
+L505: Arko Advice/AtlasIntel^{【158†[31]】} BR-07338/2022  | 28–30 Set  | 4.500  | 1  | 40,7%  | 49,8%  | 3,9%  | 2,6%  | 0,7%  | 0,8%  | 0%  | 0%  | 0%  | 0%  | —  | 0,3%  | —  | 1%
+L506: CNT/MDA^{【159†[32]】} BR-02944/2022  | 28–30 Set  | 2.002  | 2,2  | 36,3%  | 44,2%  | 4,5%  | 4,3%  | 1,2%  | 0,4%  | 0%  | 0,2%  | 0%  | 0,1%  | —  | 0,3%  | —  | 8,5%
+L507: 【160†Paraná Pesquisas】^{【161†[33]】} BR-07917/2022  | 27–29 Set  | 2.020  | 2,2  | 37,3%  | 43,9%  | 4,9%  | 5,8%  | 0,5%  | 0,4%  | 0,1%  | 0%  | 0%  | 0,1%  | —  | 0,1%  | —  | 11,9%
+L508: Globo/Datafolha^{【162†[34]】} BR-09479/2022  | 27–29 Set  | 6.800  | 2  | 34%  | 48%  | 6%  | 5%  | 1%  | 0%  | 0%  | 0%  | 0%  | 0%  | —  | 0%  | —  | 5%
+L509: 【163†Instituto Veritá】^{【164†[35]】} BR-05980/2022  | 24–29 Set  | 51.169  | 2  | 44,6%  | 41,6%  | 4,1%  | 4,2%  | 0,9%  | 1,4%  | 0,3%  | 0%  | 0,1%  | 0%  | —  | 0,4%  | —  | 2,4%
+L510: 【165†Brasmarket】^{【166†[36]】} BR-08847/2022  | 26–28 Set  | 1.600  | 2,45  | 45,4%  | 30,9%  | 6,2%  | 5,2%  | 0,8%  | 0,3%  | 0%  | 0%  | 0,1%  | 0%  | —  | 0,3%  | —  | 10,9%
+L511: 【167†Modalmais】/Futura^{【168†[37]】} BR-06743/2022  | 26–28 Set  | 2.000  | 2,2  | 37,8%  | 40,7%  | 5,6%  | 7,2%  | 0,9%  | 0,4%  | 0%  | 0,1%  | 0,3%  | 0,3%  | —  | 0,1%  | —  | 6,7%
+L512: 【169†Arko Advice】/AtlasIntel^{【170†[38]】} BR-01318/2022  | 24–28 Set  | 4.500  | 1  | 39,9%  | 49,3%  | 3,5%  | 2,5%  | 0,8%  | 0,7%  | 0,1%  | 0%  | 0%  | 0,2%  | —  | 0,1%  | —  | 2,7%
+L513: 【171†Exame】/Ideia^{【172†[39]】} BR-09782/2022  | 23–28 Set  | 1.500  | 3  | 37%  | 47%  | 6%  | 5%  | 0,2%  | 0,4%  | 0,1%  | 0,1%  | 0,1%  | 0,2%  | —  | 0,1%  | —  | 4%
+L514: PoderData^{【173†[40]】} BR-01426/2022  | 25–27 Set  | 4.500  | 1,5  | 36%  | 45%  | 6%  | 4%  | 1%  | 1%  | 0%  | 0%  | 0%  | 0%  | —  | 0%  | —  | 5%
+L515: 【174†Genial】/【175†Quaest】^{【176†[41]】} BR-04371/2022  | 24–27 Set  | 2.000  | 2  | 33%  | 46%  | 6%  | 5%  | 1%  | 0%  | 0%  | 0%  | 0%  | 0%  | —  | 0%  | —  | 9%
+L516: Globo/IPEC^{【177†[42]】} BR-01640/2022  | 25–26 Set  | 3.008  | 2  | 31%  | 48%  | 6%  | 5%  | 1%  | 1%  | 0%  | 0%  | 0%  | 0%  | —  | 0%  | —  | 8%
+L517: Paraná Pesquisas^{【178†[43]】} BR-03928/2022  | 22–26 Set  | 2.020  | 2,2  | 36,4%  | 42,7%  | 5,6%  | 5%  | 0,8%  | 0,1%  | 0%  | 0%  | 0,1%  | 0,1%  | —  | 0,1%  | —  | 9,2%
+L518: Arko Advice/AtlasIntel^{【179†[44]】} BR-02714/2022  | 22–26 Set  | 4.500  | 1  | 41%  | 48,3%  | 3,5%  | 2,1%  | 1%  | 1,3%  | 0,1%  | 0%  | 0%  | 0,2%  | —  | 0,1%  | —  | 2,3%
+L519: 【180†BTG Pactual】/FSB^{【181†[45]】} BR-08123/2022  | 23–25 Set  | 2.000  | 2  | 35%  | 45%  | 7%  | 4%  | 1%  | 1%  | 0%  | 0%  | 0%  | 0%  | —  | 0%  | —  | 6%
+L520: Instituto Veritá^{【182†[46]】} BR-06580/2022  | 19–23 Set  | 11.000  | 2  | 43,2%  | 42,1%  | 4,7%  | 4%  | 1,1%  | 1%  | 0,3%  | 0,1%  | 0,1%  | 0,1%  | —  | 0,1%  | —  | 3,3%
+L521: Equilíbrio Brasil^{【183†[47]】} BR-02018/2022  | 20–22 Set  | 11.500  | 3  | 44%  | 39%  | 5%  | 4%  | 2%  | 1%  | 0%  | 0%  | 0%  | 0%  | —  | 0%  | —  | 4%
+L522: Globo/Datafolha^{【184†[48]】} BR-04180/2022  | 20–22 Set  | 6.754  | 2  | 33%  | 47%  | 7%  | 5%  | 1%  | 0%  | 0%  | 0%  | 0%  | 0%  | —  | 0%  | —  | 6%
+L523: Modalmais/Futura^{【185†[49]】} BR-02650/2022  | 19–21 Set  | 2.000  | 2,2  | 39,2%  | 39,1%  | 6,6%  | 6,1%  | 0,8%  | 0,3%  | 0,2%  | 0,2%  | —  | 0,4%  | —  | 0,1%  | —  | 7,1%
+L524: Abrapel/Ipespe^{【186†[50]】} BR-08425/2022  | 19–21 Set  | 2.000  | 2,2  | 35%  | 46%  | 7%  | 4%  | 1%  | 0%  | 0%  | 0%  | 0%  | 0%  | —  | 0%  | —  | 7%
+
+--------------------------------------------------------------------------------
+Pesquisas de opinião para a eleição presidencial no Brasil em 2014 – Wikipédia, a enciclopédia livre (https://pt.wikipedia.org/wiki/Pesquisas_de_opini%C3%A3o_para_a_elei%C3%A7%C3%A3o_presidencial_no_Brasil_em_2014)
+【turn16view1】 [wordlim: 200] Crawled: today; Content type: text/html; Source: open({"ref_id":"turn3view0","lineno":246}); Total lines: 335
+L240:   3. 【157†1】 【158†2】 【159†3】 【160†4】 【161†5】 【162†«Eleições 2014: entidades registram 300 pesquisas eleitorais no Portal do TSE»†www.tse.jus.br】. Tribunal Superior Eleitoral. 28 de maio de 2014. Consultado em 24 de agosto de 2026
+L241:   4. 【163†1】 【164†2】 【165†3】 【166†4】 【167†5】 【168†6】 【169†7】 【170†«A partir de hoje (10), pesquisas devem abranger todos os candidatos que pediram registro à Justiça Eleitoral»†www.tse.jus.br】. Tribunal Superior Eleitoral. 10 de julho de 2014. Consultado em 24 de agosto de 2026
+L242:   5. 【171†1】 【172†2】 【173†3】 【174†«Pesquisas Eleitorais - 2014»†dadosabertos.tse.jus.br】. Portal de Dados Abertos do Tribunal Superior Eleitoral. Consultado em 24 de agosto de 2026
+L243:   6. 【175†1】 【176†2】 【177†3】 【178†«Enquetes e sondagens eleitorais estão proibidas nas Eleições 2014»†www.tse.jus.br】. Tribunal Superior Eleitoral. 18 de outubro de 2014. Consultado em 24 de agosto de 2026
+L244:   7. 【179†1】 【180†2】 【181†3】 【182†4】 【183†5】 【184†6】 【185†«Ministro suspende divulgação de pesquisa eleitoral em Minas Gerais»†www.tse.jus.br】. Tribunal Superior Eleitoral. 18 de outubro de 2014. Consultado em 24 de agosto de 2026
+L245:   8. 【186†↑】 【187†«Ibope, votos válidos: Dilma tem 46%, Aécio, 27%, e Marina, 24%»†g1.globo.com】. 【188†G1】. 4 de outubro de 2014. Consultado em 14 de fevereiro de 2018. 【189†Cópia arquivada em 1 de março de 2017†web.archive.org】
+L246:   9. 【190†↑】 【191†«Datafolha, votos válidos: Dilma tem 44%, Aécio, 26%, e Marina, 24%»†g1.globo.com】. 【188†G1】. 4 de outubro de 2014. Consultado em 14 de fevereiro de 2018. 【192†Cópia arquivada em 24 de janeiro de 2018†web.archive.org】
+L247:   10. 【193†↑】 Vox Populi/Rede Record (4 de outubro de 2014). 【194†«Vox Populi mostra Dilma na liderança, e Aécio à frente de Marina»†noticias.r7.com】. 【195†R7】. Consultado em 14 de fevereiro de 2018. 【196†Cópia arquivada em 19 de maio de 2017†web.archive.org】
+L248:   11. 【197†↑】 【198†«Pesquisa CNT/MDA: Aécio ultrapassa Marina pela primeira vez»†oglobo.globo.com】. O Globo. 4 de outubro de 2014. Consultado em 14 de fevereiro de 2018. 【199†Cópia arquivada em 19 de maio de 2017†web.archive.org】
+L249:   12. 【200†↑】 Datafolha (2 de outubro de 2014). 【201†«Dilma tem 40%, Marina, 24%, e Aécio, 21%, aponta pesquisa Datafolha»†media.folha.uol.com.br】 (PDF). Consultado em 14 de fevereiro de 2018. 【202†Cópia arquivada (PDF) em 26 de março de 2015†web.archive.org】
+L250:   13. 【203†↑】 【204†«Dilma tem 40%, Marina, 24%, e Aécio, 19%, aponta pesquisa Ibope»†g1.globo.com】. 【188†G1】. 2 de outubro de 2014. Consultado em 14 de fevereiro de 2018. 【205†Cópia arquivada em 31 de março de 2017†web.archive.org】
+L251:   14. 【206†↑】 【207†«Dilma tem 40%, Marina, 25%, e Aécio, 20%, aponta pesquisa Datafolha»†g1.globo.com】. 【188†G1】. 30 de setembro de 2014. Consultado em 14 de fevereiro de 2018. 【208†Cópia arquivada em 2 de março de 2017†web.archive.org】
+L252:   15. 【209†↑】 【210†«Dilma tem 39%, Marina, 25%, e Aécio, 19%, aponta pesquisa Ibope»†g1.globo.com】. 【188†G1】. 30 de setembro de 2014. Consultado em 14 de fevereiro de 2018. 【211†Cópia arquivada em 31 de março de 2017†web.archive.org】
+L253:   16. 【212†↑】 Vox Populi/Rede Record (29 de setembro de 2014). 【213†«Vox Populi indica vantagem menor no 1º turno, mas Dilma venceria Marina no 2º»†noticias.r7.com】. 【195†R7】. Consultado em 14 de fevereiro de 2018. 【214†Cópia arquivada em 19 de maio de 2017†web.archive.org】
+L254:   17. 【215†↑】 CNT/MDA (29 de setembro de 2014). 【216†«Intenções de voto em Dilma Rousseff crescem e petista se distancia mais de Marina Silva»†web.archive.org】. CNT. Consultado em 14 de fevereiro de 2018. Arquivado do 【217†original†www.cnt.org.br】 em 3 de outubro de 2014
+L255:   18. 【218†↑】 Datafolha (26 de setembro de 2014). 【219†«Dilma abre 13 pontos sobre Marina»†media.folha.uol.com.br】 (PDF). Consultado em 14 de fevereiro de 2018
+L256:   19. 【220†↑】 Vox Populi/Carta Capital (25 de setembro de 2014). 【221†«VoxPopuli / CartaCapital: Dilma abre 13 pontos sobre Marina»†www.cartacapital.com.br】. Carta Capital. Consultado em 14 de fevereiro de 2018. 【222†Cópia arquivada em 19 de maio de 2017†web.archive.org】
+L257:   20. 【223†↑】 【224†«Dilma tem 38%, Marina, 29%, e Aécio, 19%, aponta pesquisa Ibope»†g1.globo.com】. 【188†G1】. 23 de setembro de 2014. Consultado em 14 de fevereiro de 2018. 【225†Cópia arquivada em 31 de março de 2017†web.archive.org】
+L258:   21. 【226†↑】 Vox Populi/Rede Record (23 de setembro de 2014). 【227†«Dilma amplia vantagem e venceria Marina no 2º turno, diz Vox Populi»†noticias.r7.com】. 【195†R7】. Consultado em 14 de fevereiro de 2018. 【228†Cópia arquivada em 23 de novembro de 2017†web.archive.org】
+L259:   22. 【229†↑】 【230†«Marina cai e 2º turno com Dilma seria mais acirrado, aponta CNT/MDA»†ultimosegundo.ig.com.br】. Último Segundo. iG. 23 de setembro de 2014. Consultado em 14 de fevereiro de 2018. 【231†Cópia arquivada em 31 de março de 2017†web.archive.org】
+L260:   23. 【232†↑】 【233†«Dilma tem 37%, Marina, 30%, e Aécio, 17%, diz pesquisa Datafolha»†g1.globo.com】. 【188†G1】. 19 de setembro de 2014. Consultado em 14 de fevereiro de 2018. 【234†Cópia arquivada em 5 de dezembro de 2016†web.archive.org】
+L261:   24. 【235†↑】 【236†«Dilma tem 36%, Marina, 30%, e Aécio, 19%, aponta pesquisa Ibope»†g1.globo.com】. Globo.com. 16 de setembro de 2014. Consultado em 14 de fevereiro de 2018. 【237†Cópia arquivada em 24 de janeiro de 2018†web.archive.org】
+L262:   25. 【238†↑】 Vox Populi/Rede Record (15 de setembro de 2014). 【239†«Vox Populi mostra Dilma 9 pontos na frente de Marina»†noticias.r7.com】. 【195†R7】. Consultado em 14 de fevereiro de 2018. 【240†Cópia arquivada em 31 de março de 2017†web.archive.org】
+
+--------------------------------------------------------------------------------
+Pesquisas de opinião para a eleição presidencial no Brasil em 2014 – Wikipédia, a enciclopédia livre (https://pt.wikipedia.org/wiki/Pesquisas_de_opini%C3%A3o_para_a_elei%C3%A7%C3%A3o_presidencial_no_Brasil_em_2014)
+【turn16view2】 [wordlim: 200] Crawled: today; Content type: text/html; Source: open({"ref_id":"turn3view0","lineno":292}); Total lines: 335
+L284:   47. ↑ Carta Capital (16 de abril de 2014). «Em cenário estável, Dilma segue favorita para vencer no 1º turno». Consultado em 14 de fevereiro de 2018. Cópia arquivada em 24 de janeiro de 2018
+L285:   48. ↑ Folha de S.Paulo (5 de abril de 2014). «Com pessimismo econômico, Dilma perde seis pontos, aponta Datafolha». Consultado em 14 de fevereiro de 2018. Cópia arquivada em 24 de janeiro de 2018
+L286:   49. ↑ Ibope (20 de março de 2014). «Dilma Rousseff lidera pesquisa de intenção de voto para presidente». Consultado em 14 de fevereiro de 2018. Cópia arquivada em 24 de janeiro de 2018
+L287:   50. ↑ Datafolha (24 de fevereiro de 2014). «Mesmo com desejo de mudança, Dilma Rousseff lidera corrida eleitoral». Consultado em 14 de fevereiro de 2018. Cópia arquivada em 24 de janeiro de 2018
+L288:   51. ↑ Carta Capital (24 de fevereiro de 2014). «Dilma é favorita para se reeleger no 1º turno». Consultado em 14 de fevereiro de 2018. Cópia arquivada em 24 de janeiro de 2018
+L289:   52. ↑ «Dilma amplia vantagem sobre Aécio para 7 pontos, segundo Vox Populi». 【195†R7】. 25 de outubro de 2014. Consultado em 14 de fevereiro de 2018. Cópia arquivada em 24 de abril de 2017
+L290:   53. ↑ «Dilma tem 52%, e Aécio, 48% dos votos válidos, diz Datafolha». 【188†G1】. 25 de outubro de 2014. Consultado em 14 de fevereiro de 2018. Cópia arquivada em 14 de janeiro de 2017
+L291:   54. ↑ «Dilma tem 53%, e Aécio, 47% dos votos válidos, aponta Ibope». 【188†G1】. 25 de outubro de 2014. Consultado em 14 de fevereiro de 2018. Cópia arquivada em 4 de março de 2016
+L292:   55. ↑ «Pesquisa CNT mostra empate técnico entre Dilma Rousseff e Aécio Neves». Portal 【195†R7】. 25 de outubro de 2014. Consultado em 14 de fevereiro de 2018. Cópia arquivada em 3 de março de 2016
+L293:   56. ↑ Ricardo Mendonça (23 de outubro de 2014). «Dilma atinge 53% e abre 6 pontos de vantagem sobre Aécio, diz Datafolha». Folha de S.Paulo. Consultado em 14 de fevereiro de 2018. Cópia arquivada em 2 de março de 2017
+L294:   57. ↑ «Dilma tem 54%, e Aécio, 46% dos votos válidos, diz pesquisa Ibope». 【188†G1】. 23 de outubro de 2014. Consultado em 14 de fevereiro de 2018. Cópia arquivada em 21 de março de 2017
+L295:   58. ↑ «Dilma tem 52%, e Aécio, 48% dos votos válidos, diz pesquisa Datafolha». 【188†G1】 São Paulo. 22 de outubro de 2014. Consultado em 14 de fevereiro de 2018. Cópia arquivada em 1 de abril de 2017
+L296:   59. ↑ «Dilma tem 52%, e Aécio, 48% dos votos válidos, aponta Datafolha». 【188†G1】. 【188†G1】 São Paulo. 20 de outubro de 2014. Consultado em 14 de fevereiro de 2018. Cópia arquivada em 11 de dezembro de 2016
+L297:   60. ↑ 【195†R7】 (20 de outubro de 2014). «Vox Populi indica Dilma à frente de Aécio, mas empate técnico persiste». 【195†R7】. Consultado em 14 de fevereiro de 2018. Cópia arquivada em 3 de março de 2016
+L298:   61. ↑ Chico de Gois (20 de outubro de 2014). «Pesquisa CNT/MDA mostra empate técnico entre Dilma e Aécio». O Globo. Consultado em 14 de fevereiro de 2018. Cópia arquivada em 4 de março de 2016
+L299:   62. ↑ «Aécio tem 51%, e Dilma, 49% dos votos válidos, aponta Datafolha». 【188†G1】 São Paulo. 15 de outubro de 2014. Consultado em 14 de fevereiro de 2018. Cópia arquivada em 24 de janeiro de 2018
+L300:   63. ↑ «Aécio tem 51%, e Dilma, 49% dos votos válidos, aponta Ibope». 【188†G1】. 15 de outubro de 2014. Consultado em 14 de fevereiro de 2018. Cópia arquivada em 24 de janeiro de 2018
+L301:   64. ↑ Carmen Munari (13 de outubro de 2014). «Vox Populi mostra empate técnico entre Dilma e Aécio». Valor. Consultado em 14 de fevereiro de 2018. Cópia arquivada em 24 de janeiro de 2018
+L302:   65. ↑ «Aécio tem 46% e Dilma, 44%, diz 1ª pesquisa Datafolha do 2º turno». 【188†G1】. 9 de outubro de 2014. Consultado em 14 de fevereiro de 2018. Cópia arquivada em 24 de janeiro de 2018
+L303:   66. ↑ «Aécio tem 46%, e Dilma, 44%, diz 1ª pesquisa Ibope do segundo turno». 【188†G1】. 9 de outubro de 2014. Consultado em 14 de fevereiro de 2018. Cópia arquivada em 31 de março de 2017
+L304: Image
+L305: 
+L306: Obtida de "【37†https://pt.wikipedia.org/w/index.php?title=Pesquisas_de_opinião_para_a_eleição_presidencial_no_Brasil_em_2014&oldid=73055945】"
+L307: 
+L308: Categorias:
+L309: 
+L310:   * Eleição presidencial no Brasil em 2014
+L311:   * Pesquisas de opinião para as eleições presidenciais no Brasil
+L312:   * Esta página foi editada pela última vez em 26 de setembro de 2026, às 00h20min.
+L313:   * A página foi renderizada com Parsoid.
+L314:   * Este texto é disponibilizado nos termos da licença Atribuição-CompartilhaIgual 4.0 Internacional (CC BY-SA 4.0) da Creative Commons; pode estar sujeito a condições adicionais. Para mais detalhes, consulte as condições de utilização.
+L315:   * Política de privacidade
+L316:   * Sobre a Wikipédia
+L317:   * Avisos gerais
+L318:   * Contactos Legais e Segurança
+L319:   * Código de Conduta
+L320:   * Desenvolvedores
+L321:   * Estatísticas
+L322:   * Declaração sobre cookies
+L323:   * Busca
+L324: 
+L325: [Input: Pesquisar na Wikipédia]
+L326: 
+L327: [Input]
+L328: 
+L329: [Button: Procurar]
+L330: 
+L331: [Input] Alternar o índice
+
