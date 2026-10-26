@@ -1,0 +1,114 @@
+{
+  "2014-1": {
+    "date": "2014-10-05",
+    "focal": [
+      "Dilma",
+      "Aécio"
+    ],
+    "values": {
+      "Dilma": 41.59,
+      "Aécio": 33.55,
+      "Marina": 21.32,
+      "Outros": 3.54
+    },
+    "source": "https://www.tre-mg.jus.br/eleicoes/eleicoes-2018/informacoes-para-imprensa-2o-turno/resultados-eleicoes-anteriores-2013-presidente"
+  },
+  "2014-2": {
+    "date": "2014-10-26",
+    "focal": [
+      "Dilma",
+      "Aécio"
+    ],
+    "values": {
+      "Dilma": 51.64,
+      "Aécio": 48.36
+    },
+    "source": "https://www.tse.jus.br/comunicacao/noticias/2021/Julho/fato-ou-boato-e-falsa-a-planilha-que-mostra-inversoes-entre-aecio-neves-e-dilma-rousseff-no-2o-turno-de-2014"
+  },
+  "2018-1": {
+    "date": "2018-10-07",
+    "focal": [
+      "Haddad",
+      "Bolsonaro"
+    ],
+    "values": {
+      "Haddad": 29.28,
+      "Bolsonaro": 46.03,
+      "Ciro": 12.47,
+      "Alckmin": 4.76,
+      "Amoêdo": 2.5,
+      "Outros": 4.96
+    },
+    "source": "https://www.tse.jus.br/comunicacao/noticias/2018/Outubro/concluida-totalizacao-de-votos-do-1o-turno-das-eleicoes-2018"
+  },
+  "2018-2": {
+    "date": "2018-10-28",
+    "focal": [
+      "Haddad",
+      "Bolsonaro"
+    ],
+    "values": {
+      "Haddad": 44.87,
+      "Bolsonaro": 55.13
+    },
+    "source": "https://www.tse.jus.br/comunicacao/noticias/2018/Outubro/eleicoes-2018-justica-eleitoral-conclui-totalizacao-dos-votos-do-segundo-turno"
+  },
+  "2022-1": {
+    "date": "2022-10-02",
+    "focal": [
+      "Lula",
+      "Bolsonaro"
+    ],
+    "values": {
+      "Lula": 48.43,
+      "Bolsonaro": 43.2,
+      "Tebet": 4.16,
+      "Ciro": 3.04,
+      "Outros": 1.17
+    },
+    "source": "https://www.tse.jus.br/comunicacao/noticias/2022/Outubro/100-das-secoes-totalizadas-confira-como-ficou-o-quadro-eleitoral-apos-o-1o-turno"
+  },
+  "2022-2": {
+    "date": "2022-10-30",
+    "focal": [
+      "Lula",
+      "Bolsonaro"
+    ],
+    "values": {
+      "Lula": 50.9,
+      "Bolsonaro": 49.1
+    },
+    "source": "https://www.tse.jus.br/comunicacao/noticias/2022/Outubro/100-das-secoes-totalizadas-confira-como-ficou-o-quadro-eleitoral-apos-o-2o-turno"
+  },
+  "2026-1": {
+    "date": "2026-10-04",
+    "focal": [
+      "Lula",
+      "Flávio"
+    ],
+    "values": {
+      "Lula": 45.1627679106361,
+      "Flávio": 47.02777235637371,
+      "Cury": 2.8906506468339503,
+      "Caiado": 2.1836804632002935,
+      "Renan": 2.2429751260318582,
+      "Zema": 0.27366793252027805,
+      "Outros": 0.21848556440380662
+    },
+    "source": "https://resultados.tse.jus.br/oficial/ele2026/6257/dados/br/br-c0001-e006257-u.json",
+    "note": "finalized official totals; computed directly from integer votes"
+  },
+  "2026-2": {
+    "date": "2026-10-25",
+    "focal": [
+      "Lula",
+      "Flávio"
+    ],
+    "values": {
+      "Lula": 51.7851828842626,
+      "Flávio": 48.2148171157374
+    },
+    "source": "https://resultados.tse.jus.br/oficial/ele2026/6258/dados/br/br-c0001-e006258-u.json",
+    "note": "finalized official totals; computed directly from integer votes"
+  }
+}

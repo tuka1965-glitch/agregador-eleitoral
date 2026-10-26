@@ -1,0 +1,31 @@
+{
+  "date": "2026-10-26",
+  "status": "retrospective_experiment_after_observing_2026_outcomes",
+  "primary_horizon": 1,
+  "secondary_horizons": [7,14],
+  "years": [2014,2018,2022,2026],
+  "availability_proxy_days": 2,
+  "availability_sensitivities": [0,1,3,7,"documented_only"],
+  "half_life_days": 21,
+  "models": {
+    "B0": {"label":"Última rodada por instituto","normalization":"per_round","reset_runoff":true},
+    "B1": {"label":"Média simples de rodadas","normalization":"per_round","reset_runoff":true},
+    "R0": {"label":"Núcleo publicado, escala mista reconstruída","normalization":"after_aggregation","reset_runoff":false},
+    "R1": {"label":"Núcleo publicado, entradas harmonizadas","normalization":"per_round","reset_runoff":false},
+    "R2": {"label":"Harmonização e reinício do segundo turno","normalization":"per_round","reset_runoff":true},
+    "R3": {"label":"Tendência e instituto estimados conjuntamente","normalization":"per_round","reset_runoff":true,"slope_prior_sd_pp_per_day":0.15,"house_prior_sd_pp":2},
+    "R4": {"label":"R2 sem redução robusta de peso","normalization":"per_round","reset_runoff":true}
+  },
+  "joint_model_sensitivities": [{"slope_prior_sd":0.10},{"slope_prior_sd":0.30},{"house_prior_sd":1.0},{"house_prior_sd":4.0}],
+  "ratings":"uniform: no historical snapshots of ratings; current ratings would use later information",
+  "first_round_undecided":"exclude identified values below 3%; never infer from residual; missing information retained and counted",
+  "second_round_undecided":"no exclusions",
+  "quality":"reject negative category shares for every model; retain original records and audit log",
+  "probability_target":"candidate A ahead of candidate B (the two eventual finalists), not qualification or unconditional presidential victory",
+  "uncertainty":"nominal Gaussian intervals of the finalist margin; institute-cluster sampling approximation plus between-poll dispersion; common election error estimated only from prior cycles, with no candidate bias correction",
+  "uncertainty_minimum_prior_cycles":2,
+  "primary_scoring":"two finalists on full valid-vote denominator; equal election-round weight",
+  "secondary_scoring":"all shared categories including Others, and held-out chronological intervals",
+  "promotion_rule":"Do not replace production based only on 2026 or a better pooled average; require gain against simple baselines across cycles and no important regression. Prospective confirmation remains future work.",
+  "forbidden":"No candidate-specific bonus; no simulated polls; no outcome in point estimation; no optimization of parameters against 2026. Sensitivities are reported, not selected."
+}

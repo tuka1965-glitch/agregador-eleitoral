@@ -1,0 +1,79 @@
+{
+  "prepared_on": "2026-10-26",
+  "ancestor_commit": "3af6734e80dc78a466ee75fd0a09c0a4659a6308",
+  "sites_source_commit": "e72e0b6e0b2f543b6658473e3d5d6f0dfef994ad",
+  "curated_input_sha256": "3f21810b621aea603a0bfd93772e5520e5a38fb065baab1b9125991716cf8423",
+  "active_snapshot_sha256": "85fb1368900d54ceeaafca54ee8cdffb4aa04c4770cfd78c8e01d5da1422781c",
+  "production_core_sha256": "b8f8d5f155e03316ea9b2469d25e1e24d4a5157dadbf244b997a9feb93dbfb1a",
+  "polls": 480,
+  "curated_polls": 299,
+  "added_rounds": 181,
+  "counts": {
+    "2014-1": 27,
+    "2014-2": 15,
+    "2018-1": 32,
+    "2018-2": 25,
+    "2022-1": 66,
+    "2022-2": 48,
+    "2026-1": 47,
+    "2026-2": 220
+  },
+  "scope": "observed national polls only; prior source compilation plus frozen active Site snapshot; not a census or individual recertification",
+  "availability": "main protocol keeps documented dates; unknown availability uses field end + 2 days, tested at lags 0,1,3,7 and documented-only subset",
+  "first_round_undecided": "exclude identified values <3% only; missing values never replaced by residual; second round has zero undecided exclusions",
+  "changes": [
+    {
+      "poll_id": "2026-T1-0220",
+      "change": "known 3 October publication from selected primary-source audit"
+    },
+    {
+      "poll_id": "2026-T1-0217",
+      "change": "first-round exclusion: reliably identified undecideds below 3%; no such exclusion in runoff"
+    },
+    {
+      "poll_id": "2026-T1-0218",
+      "change": "known 3 October publication from selected primary-source audit"
+    },
+    {
+      "poll_id": "2026-SITE-T2-0213",
+      "change": "primary valid shares 50.89/49.11 and publication date verified; original total shares preserved separately"
+    },
+    {
+      "poll_id": "2022-T1-0150",
+      "change": "excluded in all models: negative category share in prior normalized input; original record retained without repair",
+      "values": {
+        "Lula": 40.86021505376344,
+        "Bolsonaro": 41.935483870967744,
+        "Tebet": 6.451612903225806,
+        "Ciro": 11.827956989247312,
+        "Outros": -1.0752688172043037
+      }
+    },
+    {
+      "poll_id": "2026-T1-0248",
+      "change": "excluded in all models: negative category share in prior normalized input; original record retained without repair",
+      "values": {
+        "Lula": 44.18604651162791,
+        "Flávio": 41.86046511627907,
+        "Cury": 6.976744186046512,
+        "Caiado": 4.651162790697675,
+        "Renan": 3.488372093023256,
+        "Zema": 0.0,
+        "Outros": -1.1627906976744242
+      }
+    },
+    {
+      "poll_id": "2026-T1-0229",
+      "change": "excluded in all models: negative category share in prior normalized input; original record retained without repair",
+      "values": {
+        "Lula": 44.89795918367347,
+        "Flávio": 44.89795918367347,
+        "Cury": 1.0204081632653061,
+        "Caiado": 1.0204081632653061,
+        "Renan": 8.16326530612245,
+        "Zema": 1.0204081632653061,
+        "Outros": -1.0204081632653157
+      }
+    }
+  ]
+}
